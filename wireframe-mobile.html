@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi" data-mau="blue" data-kieu="soft" data-logo="1" data-tt="data" data-version="a">
+<html lang="vi" data-mau="blue" data-kieu="soft" data-logo="1" data-tt="data" data-version="b">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -245,12 +245,12 @@
       <div class="p-3.5 rounded-xl bg-slate-800 border border-slate-700 space-y-2.5">
         <div class="flex items-center justify-between text-slate-200 font-semibold text-xs">
           <span>3 PHƯƠNG ÁN:</span>
-          <span class="text-[11px] text-blue-400 font-bold" id="sidebar-cur-version">Bản A: Thẻ P2P</span>
+          <span class="text-xs text-blue-400 font-bold" id="sidebar-cur-version">Bản B: Sổ Lệnh</span>
         </div>
         <div class="grid grid-cols-3 gap-1.5" data-wf-param="v">
-          <a href="?v=a" data-value="a" onclick="event.preventDefault(); setVersion('a');" id="s-va" class="px-2 py-2 rounded bg-blue-600 text-white font-bold text-xs text-center cursor-pointer no-underline block">Bản A<br><span class="text-[11px] font-normal opacity-90">Thẻ P2P</span></a>
-          <a href="?v=b" data-value="b" onclick="event.preventDefault(); setVersion('b');" id="s-vb" class="px-2 py-2 rounded bg-slate-700 text-slate-300 hover:text-white font-medium text-xs text-center cursor-pointer no-underline block">Bản B<br><span class="text-[11px] font-normal opacity-90">Sổ Lệnh</span></a>
-          <a href="?v=c" data-value="c" onclick="event.preventDefault(); setVersion('c');" id="s-vc" class="px-2 py-2 rounded bg-slate-700 text-slate-300 hover:text-white font-medium text-xs text-center cursor-pointer no-underline block">Bản C<br><span class="text-[11px] font-normal opacity-90">Đổi Nhanh</span></a>
+          <a href="?v=a" data-value="a" onclick="event.preventDefault(); setVersion('a');" id="s-va" class="px-2 py-2 rounded bg-slate-700 text-slate-300 hover:text-white font-medium text-xs text-center cursor-pointer no-underline block">Bản A<br><span class="text-xs font-normal opacity-90">Thẻ P2P</span></a>
+          <a href="?v=b" data-value="b" onclick="event.preventDefault(); setVersion('b');" id="s-vb" class="px-2 py-2 rounded bg-blue-600 text-white font-bold text-xs text-center cursor-pointer no-underline block">Bản B<br><span class="text-xs font-normal opacity-90">Sổ Lệnh</span></a>
+          <a href="?v=c" data-value="c" onclick="event.preventDefault(); setVersion('c');" id="s-vc" class="px-2 py-2 rounded bg-slate-700 text-slate-300 hover:text-white font-medium text-xs text-center cursor-pointer no-underline block">Bản C<br><span class="text-xs font-normal opacity-90">Đổi Nhanh</span></a>
         </div>
       </div>
 
@@ -369,17 +369,17 @@
           <!-- Switcher 3 phiên bản A / B / C trên điện thoại (Touch target >= 44px) -->
           <div class="px-4 pb-2.5 pt-0.5" role="tablist" aria-label="3 phiên bản bố cục">
             <div class="grid grid-cols-3 p-1 rounded-xl bg-slate-100 border border-slate-200/80 gap-1">
-              <button type="button" role="tab" onclick="setVersion('a')" id="m-va" aria-selected="true" class="press min-h-[44px] px-1 py-1 rounded-lg bg-blue-600 text-white font-bold text-xs flex flex-col items-center justify-center whitespace-nowrap shadow-xs cursor-pointer">
+              <button type="button" role="tab" onclick="setVersion('a')" id="m-va" aria-selected="false" class="press min-h-[44px] px-1 py-1 rounded-lg text-slate-700 hover:text-slate-900 font-semibold text-xs flex flex-col items-center justify-center whitespace-nowrap cursor-pointer">
                 <span class="whitespace-nowrap">Bản A</span>
-                <span class="text-[11px] font-medium text-white whitespace-nowrap">Thẻ P2P</span>
+                <span class="text-xs text-inherit whitespace-nowrap">Thẻ P2P</span>
               </button>
-              <button type="button" role="tab" onclick="setVersion('b')" id="m-vb" aria-selected="false" class="press min-h-[44px] px-1 py-1 rounded-lg text-slate-700 hover:text-slate-900 font-semibold text-xs flex flex-col items-center justify-center whitespace-nowrap cursor-pointer">
+              <button type="button" role="tab" onclick="setVersion('b')" id="m-vb" aria-selected="true" class="press min-h-[44px] px-1 py-1 rounded-lg bg-blue-600 text-white font-bold text-xs flex flex-col items-center justify-center whitespace-nowrap shadow-xs cursor-pointer">
                 <span class="whitespace-nowrap">Bản B</span>
-                <span class="text-[11px] font-medium text-slate-700 whitespace-nowrap">Sổ Lệnh</span>
+                <span class="text-xs text-inherit whitespace-nowrap">Sổ Lệnh</span>
               </button>
               <button type="button" role="tab" onclick="setVersion('c')" id="m-vc" aria-selected="false" class="press min-h-[44px] px-1 py-1 rounded-lg text-slate-700 hover:text-slate-900 font-semibold text-xs flex flex-col items-center justify-center whitespace-nowrap cursor-pointer">
                 <span class="whitespace-nowrap">Bản C</span>
-                <span class="text-[11px] font-medium text-slate-700 whitespace-nowrap">Đổi Nhanh</span>
+                <span class="text-xs text-inherit whitespace-nowrap">Đổi Nhanh</span>
               </button>
             </div>
           </div>
@@ -538,11 +538,11 @@
             <div class="mx-4 grid grid-cols-2 gap-2 p-1 rounded-xl bg-slate-100">
               <button type="button" class="press min-h-[44px] py-1.5 rounded-xl bg-emerald-700 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
                 <span>MUA CNY</span>
-                <span class="text-[11px] opacity-80">(Tôi nhận Tệ)</span>
+                <span class="text-xs text-emerald-100 font-medium">(Tôi nhận Tệ)</span>
               </button>
               <button type="button" class="press min-h-[44px] py-1.5 rounded-xl bg-white text-slate-700 font-semibold text-xs flex items-center justify-center gap-1.5 border border-slate-200 cursor-pointer">
                 <span>BÁN CNY</span>
-                <span class="text-[11px] opacity-80">(Tôi nhận VND)</span>
+                <span class="text-xs text-slate-700 font-medium">(Tôi nhận VND)</span>
               </button>
             </div>
 
@@ -603,7 +603,7 @@
               <div class="p-3.5 rounded-2xl bg-white border border-slate-100 shadow-xs space-y-2">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-1.5">
-                    <span class="font-bold text-sm text-slate-900">Quảng Châu Pay</span>
+                    <span class="font-bold text-sm text-slate-900 whitespace-nowrap">Quảng Châu Pay</span>
                     <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
                     <span class="text-[11px] text-slate-500">2.140 lệnh • 100%</span>
                   </div>
@@ -1123,7 +1123,7 @@
       window.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(location.search);
         route();
-        setVersion(urlParams.get("v") || "a");
+        setVersion(urlParams.get("v") || "b");
         if (urlParams.has("mau")) setColor(urlParams.get("mau"));
         if (urlParams.has("kieu")) setStyle(urlParams.get("kieu"));
         if (urlParams.has("logo")) setLogo(urlParams.get("logo"));

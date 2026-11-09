@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="vi" data-direction="buy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>doite.vn — Sàn Đổi Tệ P2P & Thanh Toán Hộ Alipay, WeChat Uy Tín</title>
+    <meta name="description" content="Sàn giao dịch đổi Nhân Dân Tệ (CNY) sang VND và ngược lại. Khớp lệnh P2P tức thì, bảo chứng ký quỹ 100%, tỷ giá tốt nhất thị trường." />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Allowlisted Tailwind CSS -->
+    <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+
+    <style>
+      :root {
+        --app-font: "Be Vietnam Pro", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --primary: #15803d;
+        --primary-hover: #166534;
+        --primary-light: #f0fdf4;
+        --primary-foreground: #ffffff;
+
+        --buy-color: #15803d;
+        --buy-bg: #f0fdf4;
+        --buy-border: #bbf7d0;
+
+        --sell-color: #1d4ed8;
+        --sell-bg: #eff6ff;
+        --sell-border: #bfdbfe;
+
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --foreground: #0f172a;
+        --muted: #475569;
+        --border: #f1f5f9;
+        --border-strong: #cbd5e1;
+      }
+
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: var(--app-font);
+        background-color: var(--background);
+        color: var(--foreground);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Transitions & Touch Press */
+      .press { transition: transform 120ms ease, opacity 120ms ease; }
+      .press:active { transform: scale(0.97); opacity: 0.9; }
+
+      /* Modals and Drawers */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .modal-backdrop.is-open { display: flex; }
+
+      /* Bottom Sheet on Mobile, Dialog on Desktop */
+      .trade-modal-box {
+        background: var(--surface);
+        border: 1px solid #cbd5e1;
+        border-radius: 24px;
+        width: 100%;
+        max-width: 520px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        animation: scale-up 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes scale-up {
+        from { transform: scale(0.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
+      /* Filter active state */
+      .filter-chip.is-active {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        font-weight: 700;
+        border-color: #0f172a !important;
+      }
+
+      /* I13: No focus rings on buttons, links, and form elements */
+      :focus, :focus-visible, button:focus, button:focus-visible, a:focus, a:focus-visible, input:focus, select:focus {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      /* Row buy/sell display */
+      html[data-direction="buy"] .row-sell { display: none !important; }
+      html[data-direction="sell"] .row-buy { display: none !important; }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- ============================================== -->
+    <!-- 1. TOP TICKER BAR: TỶ GIÁ THỊ TRƯỜNG THỰC TẾ -->
+    <!-- ============================================== -->
+    <aside class="bg-slate-900 text-slate-200 text-xs border-b border-slate-800" aria-label="Tỷ giá thị trường">
+      <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between overflow-x-auto whitespace-nowrap gap-4 [mask-image:linear-gradient(to_right,#000_calc(100%-36px),transparent)]">
+        <div class="flex items-center gap-3 shrink-0">
+          <span class="flex items-center gap-1.5 font-bold text-white shrink-0">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>TỶ GIÁ CNY/VND HÔM NAY:</span>
+          </span>
+          <span class="text-slate-300 shrink-0">Mua vào: <b class="text-emerald-400 font-bold">3.522 ₫</b></span>
+          <span class="text-slate-400" aria-hidden="true">•</span>
+          <span class="text-slate-300 shrink-0">Bán ra: <b class="text-blue-400 font-bold">3.537 ₫</b></span>
+          <span class="text-slate-400" aria-hidden="true">•</span>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold text-xs shrink-0">Chênh lệch: 15đ</span>
+        </div>
+
+        <div class="hidden md:flex items-center gap-4 text-slate-300 text-xs shrink-0">
+          <span>Khối lượng 24h: <b class="text-white">14.850.000 ¥</b> (~52,4 tỷ ₫)</span>
+          <span class="text-slate-400" aria-hidden="true">•</span>
+          <span class="text-emerald-400 font-semibold">68 Thương nhân ký quỹ Online</span>
+          <span class="text-slate-400" aria-hidden="true">•</span>
+          <span class="text-slate-300">Bảo hiểm Escrow: <b class="text-white">100%</b></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============================================== -->
+    <!-- 2. HEADER CHÍNH: LOGO, ĐIỀU HƯỚNG, TÀI KHOẢN -->
+    <!-- ============================================== -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-2xs">
+      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
+        <!-- Logo thương hiệu -->
+        <a href="index.html" class="flex items-center gap-2 text-inherit no-underline shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-emerald-600 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">doite<b class="text-blue-700">.vn</b></span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-bold border border-emerald-200 hidden sm:inline-block">SỔ LỆNH PRO</span>
+            </div>
+            <p class="text-xs text-slate-500 font-medium hidden sm:block -mt-0.5">Sàn Đổi Tệ P2P &amp; Thanh Toán Hộ</p>
+          </div>
+        </a>
+
+        <!-- Menu Desktop -->
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
+          <a href="#orderbook" class="text-blue-700 font-bold flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            <span>Sổ lệnh P2P</span>
+          </a>
+          <a href="#guarantee" class="hover:text-slate-900 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>Bảo chứng Ký quỹ</span>
+          </a>
+          <a href="#guide" class="hover:text-slate-900 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <span>Quy trình đổi tệ</span>
+          </a>
+          <a href="wireframe-mobile.html" class="text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 text-xs font-bold hover:bg-amber-100 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+            <span>Xem bản Mobile Phone</span>
+          </a>
+        </nav>
+
+        <!-- Nút Hành Động Header -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="openPostModal()" class="press h-11 px-3 sm:px-4 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer hover:bg-slate-800 whitespace-nowrap shrink-0">
+            <svg class="w-4 h-4 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            <span class="hidden sm:inline">Đăng tin đổi tệ</span>
+            <span class="sm:hidden">Đăng tin</span>
+          </button>
+
+          <button type="button" onclick="openAuthModal()" class="press min-w-[44px] h-11 px-3 sm:px-3.5 rounded-xl border border-slate-300 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-slate-100 cursor-pointer whitespace-nowrap shrink-0">
+            <svg class="w-4 h-4 text-slate-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="hidden sm:inline">Đăng nhập</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================== -->
+    <!-- 3. KHU VỰC ĐIỀU KHIỂN SỔ LỆNH P2P (BẢN B TỐI ƯU) -->
+    <!-- ============================================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6" id="orderbook">
+
+      <!-- HERO CONTROL BOX: VIỀN NHẸ M14 -->
+      <section class="p-4 sm:p-6 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-5" aria-label="Bảng điều khiển sổ lệnh">
+        
+        <!-- 2 TAB LỚN CHUYỂN LUỒNG: MUA CNY VS BÁN CNY -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" role="tablist" aria-label="Chọn chiều giao dịch">
+          <!-- TAB MUA CNY -->
+          <button type="button" role="tab" id="tab-buy" onclick="setDirection('buy')" aria-selected="true" class="press min-h-[56px] p-3 rounded-2xl bg-emerald-700 text-white flex items-center justify-between shadow-xs cursor-pointer transition-all">
+            <div class="flex items-center gap-3 text-left">
+              <div class="w-10 h-10 rounded-xl bg-emerald-900 border border-emerald-600 text-emerald-100 flex items-center justify-center font-black text-lg shrink-0">
+                <span>¥</span>
+              </div>
+              <div>
+                <span class="text-base font-extrabold tracking-tight block whitespace-nowrap">TÔI MUỐN MUA CNY</span>
+                <span class="text-xs text-emerald-100 font-medium">Trả VND qua Ngân hàng • Nhận Tệ Alipay/WeChat</span>
+              </div>
+            </div>
+            <div class="text-right shrink-0 pl-2">
+              <span class="text-xs text-emerald-100 block">Tỷ giá tốt:</span>
+              <span class="text-lg font-black text-white">3.522 ₫</span>
+            </div>
+          </button>
+
+          <!-- TAB BÁN CNY -->
+          <button type="button" role="tab" id="tab-sell" onclick="setDirection('sell')" aria-selected="false" class="press min-h-[56px] p-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-300 flex items-center justify-between hover:bg-slate-200 cursor-pointer transition-all">
+            <div class="flex items-center gap-3 text-left">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-300 text-blue-900 flex items-center justify-center font-black text-lg shrink-0">
+                <span>₫</span>
+              </div>
+              <div>
+                <span class="text-base font-extrabold tracking-tight block text-slate-900 whitespace-nowrap">TÔI MUỐN BÁN CNY</span>
+                <span class="text-xs text-slate-700 font-medium">Chuyển Tệ Alipay/WeChat • Nhận VND về Ngân hàng</span>
+              </div>
+            </div>
+            <div class="text-right shrink-0 pl-2">
+              <span class="text-xs text-slate-700 block">Tỷ giá thu mua:</span>
+              <span class="text-lg font-black text-blue-700">3.538 ₫</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- THANH TÌM KIẾM NHANH & MÁY TÍNH HẠN MỨC -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 pt-2 border-t border-slate-100">
+          <!-- Nhập số tiền cần đổi -->
+          <div class="md:col-span-5 relative">
+            <label class="text-xs font-bold text-slate-700 block mb-1">Số lượng Nhân Dân Tệ (¥) bạn cần đổi:</label>
+            <div class="relative">
+              <input type="number" id="filter-amount" value="5000" placeholder="Nhập số tệ, VD: 5000" aria-label="Số tệ cần giao dịch" class="w-full h-12 pl-4 pr-20 rounded-xl bg-slate-50 border border-slate-300 text-base font-bold text-slate-900 focus:bg-white focus:outline-none focus:border-blue-700" />
+              <button type="button" onclick="document.getElementById('filter-amount').value='10000'; updateCalculations();" class="absolute right-2 top-2 px-2.5 h-8 rounded-lg bg-slate-200 text-slate-800 text-xs font-semibold hover:bg-slate-300 cursor-pointer">10.000¥</button>
+            </div>
+          </div>
+
+          <!-- Lựa chọn Phương thức thanh toán -->
+          <div class="md:col-span-4">
+            <label class="text-xs font-bold text-slate-700 block mb-1">Phương thức thanh toán ưu tiên:</label>
+            <select id="filter-method" onchange="filterPaymentMethod()" aria-label="Phương thức thanh toán" class="w-full h-12 px-3 rounded-xl bg-slate-50 border border-slate-300 text-base text-slate-800 font-medium focus:bg-white focus:outline-none focus:border-blue-700">
+              <option value="all">Tất cả phương thức thanh toán</option>
+              <option value="vietcombank">Vietcombank / Techcombank / MB Bank</option>
+              <option value="alipay">Ví cá nhân Alipay (Quét QR)</option>
+              <option value="wechat">WeChat Pay (Hồng bao / Quét mã)</option>
+              <option value="cash">Tiền mặt trực tiếp (Hà Nội / TP.HCM)</option>
+            </select>
+          </div>
+
+          <!-- Sắp xếp & Trạng thái -->
+          <div class="md:col-span-3 flex items-end">
+            <div class="w-full h-12 px-3.5 rounded-xl bg-slate-50 border border-slate-300 flex items-center justify-between">
+              <span class="text-xs text-slate-600 font-medium">Ước tính VND:</span>
+              <span class="text-base font-black text-emerald-800" id="hero-vnd-calc">17.610.000 ₫</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHIP LỌC NHANH NGÂN HÀNG & BẢO CHỨNG -->
+        <div class="flex items-center justify-between flex-wrap gap-2 pt-1 text-xs">
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 max-w-full [mask-image:linear-gradient(to_right,#000_calc(100%-36px),transparent)]" style="scrollbar-width: none;">
+            <button type="button" onclick="setChipFilter('all')" class="filter-chip is-active min-h-[36px] px-3.5 py-2 rounded-lg border border-slate-300 text-xs cursor-pointer whitespace-nowrap shrink-0">Tất cả</button>
+            <button type="button" onclick="setChipFilter('vietcombank')" class="filter-chip min-h-[36px] px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 font-medium text-xs cursor-pointer whitespace-nowrap shrink-0">Vietcombank</button>
+            <button type="button" onclick="setChipFilter('techcombank')" class="filter-chip min-h-[36px] px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 font-medium text-xs cursor-pointer whitespace-nowrap shrink-0">Techcombank</button>
+            <button type="button" onclick="setChipFilter('alipay')" class="filter-chip min-h-[36px] px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 font-medium text-xs cursor-pointer whitespace-nowrap shrink-0">Ví Alipay</button>
+            <button type="button" onclick="setChipFilter('wechat')" class="filter-chip min-h-[36px] px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 font-medium text-xs cursor-pointer whitespace-nowrap shrink-0">WeChat Pay</button>
+          </div>
+
+          <label class="inline-flex items-center gap-2.5 min-h-[44px] cursor-pointer text-slate-700 font-semibold text-xs select-none">
+            <span class="relative flex items-center justify-center shrink-0">
+              <input type="checkbox" id="check-verified-only" checked onchange="toggleVerifiedOnly()" class="peer size-5 cursor-pointer appearance-none rounded-md border-[1.5px] border-slate-400 bg-white outline-hidden transition-colors checked:border-emerald-700 checked:bg-emerald-700" />
+              <svg class="pointer-events-none absolute inset-0 m-auto size-3.5 stroke-[3] text-white opacity-0 peer-checked:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <span>Chỉ xem Thương nhân Ký quỹ Bảo chứng</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 4. DANH SÁCH SỔ LỆNH P2P CHÍNH THỨC -->
+      <!-- ============================================== -->
+      <section class="space-y-3" aria-label="Danh sách lệnh P2P">
+        <div class="flex items-center justify-between text-xs text-slate-600 px-1 font-semibold">
+          <span id="order-count-text">HIỂN THỊ 4 THƯƠNG NHÂN BÁN CNY (BẠN MUA):</span>
+          <span>Cập nhật trực tiếp: <b>Vừa xong</b></span>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DANH SÁCH LỆNH: CHIỀU MUA CNY (Khách Mua Tệ) -->
+        <!-- ============================================== -->
+        <div id="buy-rows" class="space-y-3">
+          
+          <!-- HÀNG 1 -->
+          <article class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs transition-all row-buy" data-merchant="Đại Lý Hà Khẩu" data-rate="3522" data-min="2000" data-max="100000" data-banks="vietcombank,techcombank,alipay" data-verified="true">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <!-- Cột 1: Thương nhân & Độ uy tín -->
+              <div class="md:col-span-4 flex items-start gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg class="w-5 h-5 fill-amber-500 text-amber-900" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-base text-slate-900 truncate">Đại Lý Hà Khẩu</h3>
+                    <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 font-extrabold text-xs border border-amber-200 shrink-0">Ký quỹ 100tr</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-medium pt-0.5">2.450 lệnh hoàn tất • <b class="text-emerald-700">99,9%</b> • Phản hồi &lt; 1 phút</p>
+                </div>
+              </div>
+
+              <!-- Cột 2: Đơn giá tỷ giá -->
+              <div class="md:col-span-2">
+                <span class="text-xs text-slate-600 font-medium block">Tỷ giá bán cho bạn:</span>
+                <span class="text-2xl font-black text-emerald-800 tracking-tight">3.522&nbsp;<span class="text-xs font-normal text-slate-600">₫/¥</span></span>
+              </div>
+
+              <!-- Cột 3: Hạn mức & Khả dụng -->
+              <div class="md:col-span-3 text-xs">
+                <p class="text-slate-600">Khả dụng: <b class="text-slate-900 font-bold">120.000 ¥</b></p>
+                <p class="text-slate-600 pt-0.5">Hạn mức: <b class="text-slate-900 font-semibold">2.000 ¥ – 100.000 ¥</b></p>
+                <div class="flex items-center gap-1.5 pt-1.5">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">Vietcombank</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">Techcombank</span>
+                  <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold text-xs">Ví Alipay</span>
+                </div>
+              </div>
+
+              <!-- Cột 4: Nút Mua CNY -->
+              <div class="md:col-span-3 flex items-center justify-end gap-3">
+                <div class="text-right hidden sm:block">
+                  <span class="text-xs text-slate-600 block">Thành tiền tạm tính:</span>
+                  <span class="text-sm font-bold text-slate-900 calc-result">17.610.000 ₫</span>
+                </div>
+                <button type="button" onclick="openTradeModal('Đại Lý Hà Khẩu', 3522, 'buy', 2000, 100000, 'Ký quỹ 100tr')" class="press min-h-[44px] px-6 rounded-xl bg-emerald-700 text-white font-bold text-sm shadow-xs hover:bg-emerald-800 cursor-pointer flex items-center justify-center shrink-0">
+                  Mua CNY
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- HÀNG 2 -->
+          <article class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs transition-all row-buy" data-merchant="Bảo Tín Logistics" data-rate="3524" data-min="1000" data-max="50000" data-banks="vietcombank,techcombank,wechat" data-verified="true">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-4 flex items-start gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg class="w-5 h-5 fill-amber-500 text-amber-900" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-base text-slate-900 truncate">Bảo Tín Logistics</h3>
+                    <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 font-extrabold text-xs border border-amber-200 shrink-0">Ký quỹ 50tr</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-medium pt-0.5">1.820 lệnh hoàn tất • <b class="text-emerald-700">99,6%</b> • Khớp &lt; 2 phút</p>
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <span class="text-xs text-slate-600 font-medium block">Tỷ giá bán cho bạn:</span>
+                <span class="text-2xl font-black text-emerald-800 tracking-tight">3.524&nbsp;<span class="text-xs font-normal text-slate-600">₫/¥</span></span>
+              </div>
+
+              <div class="md:col-span-3 text-xs">
+                <p class="text-slate-600">Khả dụng: <b class="text-slate-900 font-bold">65.000 ¥</b></p>
+                <p class="text-slate-600 pt-0.5">Hạn mức: <b class="text-slate-900 font-semibold">1.000 ¥ – 50.000 ¥</b></p>
+                <div class="flex items-center gap-1.5 pt-1.5">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">MB Bank</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">Vietcombank</span>
+                  <span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-semibold text-xs">WeChat Pay</span>
+                </div>
+              </div>
+
+              <div class="md:col-span-3 flex items-center justify-end gap-3">
+                <div class="text-right hidden sm:block">
+                  <span class="text-xs text-slate-600 block">Thành tiền tạm tính:</span>
+                  <span class="text-sm font-bold text-slate-900 calc-result">17.620.000 ₫</span>
+                </div>
+                <button type="button" onclick="openTradeModal('Bảo Tín Logistics', 3524, 'buy', 1000, 50000, 'Ký quỹ 50tr')" class="press min-h-[44px] px-6 rounded-xl bg-emerald-700 text-white font-bold text-sm shadow-xs hover:bg-emerald-800 cursor-pointer flex items-center justify-center shrink-0">
+                  Mua CNY
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- HÀNG 3 -->
+          <article class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs transition-all row-buy" data-merchant="Quảng Châu Express" data-rate="3525" data-min="500" data-max="30000" data-banks="vietcombank,alipay" data-verified="true">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-4 flex items-start gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg class="w-5 h-5 fill-amber-500 text-amber-900" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-base text-slate-900 truncate">Quảng Châu Express</h3>
+                    <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 font-extrabold text-xs border border-amber-200 shrink-0">Ký quỹ 50tr</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-medium pt-0.5">3.120 lệnh hoàn tất • <b class="text-emerald-700">100%</b> • Khớp &lt; 2 phút</p>
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <span class="text-xs text-slate-600 font-medium block">Tỷ giá bán cho bạn:</span>
+                <span class="text-2xl font-black text-emerald-800 tracking-tight">3.525&nbsp;<span class="text-xs font-normal text-slate-600">₫/¥</span></span>
+              </div>
+
+              <div class="md:col-span-3 text-xs">
+                <p class="text-slate-600">Khả dụng: <b class="text-slate-900 font-bold">42.000 ¥</b></p>
+                <p class="text-slate-600 pt-0.5">Hạn mức: <b class="text-slate-900 font-semibold">500 ¥ – 30.000 ¥</b></p>
+                <div class="flex items-center gap-1.5 pt-1.5">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">Tất cả Ngân Hàng</span>
+                  <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold text-xs">Ví Alipay</span>
+                </div>
+              </div>
+
+              <div class="md:col-span-3 flex items-center justify-end gap-3">
+                <div class="text-right hidden sm:block">
+                  <span class="text-xs text-slate-600 block">Thành tiền tạm tính:</span>
+                  <span class="text-sm font-bold text-slate-900 calc-result">17.625.000 ₫</span>
+                </div>
+                <button type="button" onclick="openTradeModal('Quảng Châu Express', 3525, 'buy', 500, 30000, 'Ký quỹ 50tr')" class="press min-h-[44px] px-6 rounded-xl bg-emerald-700 text-white font-bold text-sm shadow-xs hover:bg-emerald-800 cursor-pointer flex items-center justify-center shrink-0">
+                  Mua CNY
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- HÀNG 4 -->
+          <article class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs transition-all row-buy" data-merchant="Bằng Tường FastPay" data-rate="3527" data-min="3000" data-max="80000" data-banks="vietcombank,wechat" data-verified="true">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-4 flex items-start gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg class="w-5 h-5 fill-amber-500 text-amber-900" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-base text-slate-900 truncate">Bằng Tường FastPay</h3>
+                    <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 font-extrabold text-xs border border-amber-200 shrink-0">Ký quỹ 80tr</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-medium pt-0.5">1.640 lệnh hoàn tất • <b class="text-emerald-700">99,7%</b> • Khớp &lt; 1.5 phút</p>
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <span class="text-xs text-slate-600 font-medium block">Tỷ giá bán cho bạn:</span>
+                <span class="text-2xl font-black text-emerald-800 tracking-tight">3.527&nbsp;<span class="text-xs font-normal text-slate-600">₫/¥</span></span>
+              </div>
+
+              <div class="md:col-span-3 text-xs">
+                <p class="text-slate-600">Khả dụng: <b class="text-slate-900 font-bold">95.000 ¥</b></p>
+                <p class="text-slate-600 pt-0.5">Hạn mức: <b class="text-slate-900 font-semibold">3.000 ¥ – 80.000 ¥</b></p>
+                <div class="flex items-center gap-1.5 pt-1.5">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">Vietcombank</span>
+                  <span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-semibold text-xs">WeChat Pay</span>
+                </div>
+              </div>
+
+              <div class="md:col-span-3 flex items-center justify-end gap-3">
+                <div class="text-right hidden sm:block">
+                  <span class="text-xs text-slate-600 block">Thành tiền tạm tính:</span>
+                  <span class="text-sm font-bold text-slate-900 calc-result">17.635.000 ₫</span>
+                </div>
+                <button type="button" onclick="openTradeModal('Bằng Tường FastPay', 3527, 'buy', 3000, 80000, 'Ký quỹ 80tr')" class="press min-h-[44px] px-6 rounded-xl bg-emerald-700 text-white font-bold text-sm shadow-xs hover:bg-emerald-800 cursor-pointer flex items-center justify-center shrink-0">
+                  Mua CNY
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DANH SÁCH LỆNH: CHIỀU BÁN CNY (Khách Bán Tệ) -->
+        <!-- ============================================== -->
+        <div id="sell-rows" class="space-y-3">
+          
+          <!-- HÀNG BÁN 1 -->
+          <article class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs transition-all row-sell" data-merchant="Đại Lý Hà Khẩu" data-rate="3538" data-min="2000" data-max="120000" data-banks="vietcombank,techcombank,alipay" data-verified="true">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-4 flex items-start gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-blue-100 border border-blue-300 text-blue-900 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg class="w-5 h-5 fill-blue-500 text-blue-900" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-base text-slate-900 truncate">Đại Lý Hà Khẩu</h3>
+                    <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-900 font-extrabold text-xs border border-blue-200 shrink-0">Ký quỹ 100tr</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-medium pt-0.5">2.450 lệnh thu mua • <b class="text-blue-700">99,9%</b> • Trả VND sau 1 phút</p>
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <span class="text-xs text-slate-600 font-medium block">Tỷ giá trả bạn VND:</span>
+                <span class="text-2xl font-black text-blue-700 tracking-tight">3.538&nbsp;<span class="text-xs font-normal text-slate-600">₫/¥</span></span>
+              </div>
+
+              <div class="md:col-span-3 text-xs">
+                <p class="text-slate-600">Khả năng thu mua: <b class="text-slate-900 font-bold">500.000.000 ₫</b></p>
+                <p class="text-slate-600 pt-0.5">Hạn mức: <b class="text-slate-900 font-semibold">2.000 ¥ – 120.000 ¥</b></p>
+                <div class="flex items-center gap-1.5 pt-1.5">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">Chuyển khoản 24/7</span>
+                  <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold text-xs">Quét QR Alipay</span>
+                </div>
+              </div>
+
+              <div class="md:col-span-3 flex items-center justify-end gap-3">
+                <div class="text-right hidden sm:block">
+                  <span class="text-xs text-slate-600 block">Bạn nhận về VND:</span>
+                  <span class="text-sm font-bold text-emerald-800 calc-result">17.690.000 ₫</span>
+                </div>
+                <button type="button" onclick="openTradeModal('Đại Lý Hà Khẩu', 3538, 'sell', 2000, 120000, 'Ký quỹ 100tr')" class="press min-h-[44px] px-6 rounded-xl bg-blue-700 text-white font-bold text-sm shadow-xs hover:bg-blue-800 cursor-pointer flex items-center justify-center shrink-0">
+                  Bán CNY
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- HÀNG BÁN 2 -->
+          <article class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-100 shadow-2xs transition-all row-sell" data-merchant="Bảo Tín Logistics" data-rate="3537" data-min="1000" data-max="60000" data-banks="vietcombank,techcombank,wechat" data-verified="true">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-4 flex items-start gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-blue-100 border border-blue-300 text-blue-900 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg class="w-5 h-5 fill-blue-500 text-blue-900" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="font-bold text-base text-slate-900 truncate">Bảo Tín Logistics</h3>
+                    <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-900 font-extrabold text-xs border border-blue-200 shrink-0">Ký quỹ 50tr</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-medium pt-0.5">1.820 lệnh thu mua • <b class="text-blue-700">99,6%</b> • Trả VND sau 2 phút</p>
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <span class="text-xs text-slate-600 font-medium block">Tỷ giá trả bạn VND:</span>
+                <span class="text-2xl font-black text-blue-700 tracking-tight">3.537&nbsp;<span class="text-xs font-normal text-slate-600">₫/¥</span></span>
+              </div>
+
+              <div class="md:col-span-3 text-xs">
+                <p class="text-slate-600">Khả năng thu mua: <b class="text-slate-900 font-bold">250.000.000 ₫</b></p>
+                <p class="text-slate-600 pt-0.5">Hạn mức: <b class="text-slate-900 font-semibold">1.000 ¥ – 60.000 ¥</b></p>
+                <div class="flex items-center gap-1.5 pt-1.5">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-xs">MB Bank / Techcombank</span>
+                  <span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-semibold text-xs">WeChat Pay</span>
+                </div>
+              </div>
+
+              <div class="md:col-span-3 flex items-center justify-end gap-3">
+                <div class="text-right hidden sm:block">
+                  <span class="text-xs text-slate-600 block">Bạn nhận về VND:</span>
+                  <span class="text-sm font-bold text-emerald-800 calc-result">17.685.000 ₫</span>
+                </div>
+                <button type="button" onclick="openTradeModal('Bảo Tín Logistics', 3537, 'sell', 1000, 60000, 'Ký quỹ 50tr')" class="press min-h-[44px] px-6 rounded-xl bg-blue-700 text-white font-bold text-sm shadow-xs hover:bg-blue-800 cursor-pointer flex items-center justify-center shrink-0">
+                  Bán CNY
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 5. KHỐI BẢO CHỨNG AN TOÀN P2P (ESCROW SYSTEM) -->
+      <!-- ============================================== -->
+      <section id="guarantee" class="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-6" aria-label="Bảo chứng an toàn">
+        <div class="max-w-3xl">
+          <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs border border-emerald-500/30">CƠ CHẾ BẢO VỆ 100% GIAO DỊCH</span>
+          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white mt-2">Giao dịch P2P qua doite.vn an toàn tuyệt đối như thế nào?</h2>
+          <p class="text-sm text-slate-300 mt-2 leading-relaxed text-pretty">doite.vn áp dụng cơ chế Hợp Đồng Khóa Ký Quỹ (Escrow Lock). Tiền tệ của thương nhân được sàn khóa giữ trong suốt thời gian giao dịch, loại bỏ rủi ro gian lận.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-blue-900 border border-blue-600 text-blue-100 font-black flex items-center justify-center text-base">1</div>
+            <h4 class="font-bold text-base text-white">Khóa tệ ký quỹ tức thì</h4>
+            <p class="text-xs text-slate-300 leading-relaxed text-pretty">Đóng băng Nhân Dân Tệ vào ví ký quỹ của sàn ngay khi bạn mở đơn khớp lệnh.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-emerald-900 border border-emerald-600 text-emerald-100 font-black flex items-center justify-center text-base">2</div>
+            <h4 class="font-bold text-base text-white">Thanh toán bảo mật</h4>
+            <p class="text-xs text-slate-300 leading-relaxed text-pretty">Chuyển tiền theo nội dung đơn hàng. Tỷ giá được bảo lưu cố định trong 15 phút.</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-purple-900 border border-purple-600 text-purple-100 font-black flex items-center justify-center text-base">3</div>
+            <h4 class="font-bold text-base text-white">Giải phóng tiền sau 60s</h4>
+            <p class="text-xs text-slate-300 leading-relaxed text-pretty">Sàn tự động mở khóa chuyển Nhân Dân Tệ ngay khi người bán nhận đủ tiền VND.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- 6. FOOTER TRANG WEB -->
+    <!-- ============================================== -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-10 text-xs text-slate-600">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-blue-700 text-white flex items-center justify-center font-bold">
+              <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+            </div>
+            <span class="text-xl font-black text-slate-900">doite<b class="text-blue-700">.vn</b></span>
+          </div>
+          <p class="text-slate-600 leading-relaxed text-pretty">Nền tảng công nghệ kết nối giao dịch đổi Nhân Dân Tệ và Việt Nam Đồng P2P an toàn số 1 Việt Nam.</p>
+          <p class="text-xs text-slate-600 font-medium">© 2026 doite.vn. Bản quyền đã được bảo hộ.</p>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-sm text-slate-900">Dịch Vụ Nổi Bật</h4>
+          <ul class="space-y-1.5 text-slate-600 list-none p-0">
+            <li><a href="#orderbook" class="hover:text-blue-700">Sổ lệnh đổi tiền Nhân Dân Tệ P2P</a></li>
+            <li><a href="#orderbook" class="hover:text-blue-700">Nạp tiền ví Alipay quét mã QR</a></li>
+            <li><a href="#orderbook" class="hover:text-blue-700">Thanh toán hộ đơn hàng Taobao, 1688</a></li>
+            <li><a href="#guarantee" class="hover:text-blue-700">Đăng ký Thương nhân Bảo chứng Ký quỹ</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-sm text-slate-900">Quy Định &amp; An Toàn</h4>
+          <ul class="space-y-1.5 text-slate-600 list-none p-0">
+            <li><a href="#guarantee" class="hover:text-blue-700">Chính sách bảo mật Escrow 100%</a></li>
+            <li><a href="#guarantee" class="hover:text-blue-700">Quy chế giải quyết khiếu nại P2P</a></li>
+            <li><a href="#guarantee" class="hover:text-blue-700">Biểu phí giao dịch 0đ trọn đời</a></li>
+            <li><a href="#guarantee" class="hover:text-blue-700">Điều khoản sử dụng dịch vụ</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-sm text-slate-900">Hỗ Trợ Trực Tuyến 24/7</h4>
+          <p class="text-slate-600 text-pretty">Đội ngũ CSKH và trọng tài P2P thường trực 24/7 xử lý khiếu nại trong vòng 3 phút.</p>
+          <div class="pt-1 flex items-center gap-2">
+            <span class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-bold text-xs">Telegram: @doite_support</span>
+            <span class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold text-xs">Hotline 24/7</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============================================== -->
+    <!-- MODAL 1: GIAO DỊCH KHỚP LỆNH P2P (TRADE MODAL) -->
+    <!-- ============================================== -->
+    <div id="modal-trade" class="modal-backdrop" onclick="if(event.target===this) closeTradeModal()">
+      <div class="trade-modal-box p-6 space-y-4">
+        <!-- Header Modal -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200" id="trade-badge">MUA CNY P2P</span>
+            <h3 class="text-lg font-black text-slate-900 mt-1" id="trade-title">Giao dịch với: Đại Lý Hà Khẩu</h3>
+          </div>
+          <button type="button" onclick="closeTradeModal()" class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 cursor-pointer" aria-label="Đóng bảng">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Timer đếm ngược khóa tỷ giá -->
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs">
+          <span class="text-amber-900 font-medium">Tỷ giá được khóa giữ an toàn:</span>
+          <div class="flex items-center gap-1.5 font-black text-amber-900">
+            <svg class="w-4 h-4 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="countdown">14:59</span>
+          </div>
+        </div>
+
+        <!-- Form nhập tiền hai chiều -->
+        <form class="space-y-3.5" onsubmit="event.preventDefault(); submitTradeOrder();">
+          <!-- Ô bạn trả -->
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-300 space-y-1">
+            <label class="text-xs font-bold text-slate-700 block" id="trade-lbl-pay">Số tiền bạn thanh toán (VND):</label>
+            <div class="flex items-center justify-between">
+              <input type="text" id="trade-input-vnd" value="17.610.000" class="w-full bg-transparent text-xl font-black text-slate-900 focus:outline-none" />
+              <span class="text-slate-600 font-extrabold text-sm pl-2">VND</span>
+            </div>
+          </div>
+
+          <!-- Mũi tên liên kết -->
+          <div class="flex items-center justify-center -my-1 text-slate-400">
+            <svg class="w-5 h-5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          </div>
+
+          <!-- Ô bạn nhận -->
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-300 space-y-1">
+            <label class="text-xs font-bold text-slate-700 block" id="trade-lbl-receive">Số tiền Nhân Dân Tệ bạn nhận (¥):</label>
+            <div class="flex items-center justify-between">
+              <input type="number" id="trade-input-cny" value="5000" class="w-full bg-transparent text-xl font-black text-emerald-800 focus:outline-none" />
+              <span class="text-emerald-700 font-extrabold text-sm pl-2">CNY (¥)</span>
+            </div>
+          </div>
+
+          <!-- Thông tin tài khoản nhận tiền -->
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Tài khoản nhận tiền / Kênh giao dịch:</label>
+            <input type="text" id="trade-account-input" placeholder="Nhập Số tài khoản Ngân hàng hoặc ID Alipay của bạn" required class="w-full h-12 px-3.5 rounded-xl bg-white border border-slate-300 text-base font-semibold text-slate-900 focus:outline-none focus:border-blue-700" />
+          </div>
+
+          <!-- Cam kết an toàn -->
+          <div class="p-3 rounded-xl bg-slate-100 text-slate-700 text-xs flex items-start gap-2">
+            <svg class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="text-pretty">Thương nhân đã được doite.vn ký quỹ bảo chứng. Số tiền CNY sẽ được khóa an toàn và chuyển ngay khi thanh toán hoàn tất.</span>
+          </div>
+
+          <!-- Nút Đặt Lệnh -->
+          <button type="submit" class="press w-full min-h-[48px] rounded-xl bg-emerald-700 text-white font-black text-base flex items-center justify-center gap-2 shadow-xs cursor-pointer hover:bg-emerald-800">
+            <span>Xác nhận mở đơn giao dịch P2P</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 2: ĐĂNG BÀI TẠO LỆNH MỚI (POST MODAL) -->
+    <!-- ============================================== -->
+    <div id="modal-post" class="modal-backdrop" onclick="if(event.target===this) closePostModal()">
+      <div class="trade-modal-box p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h3 class="text-lg font-black text-slate-900">Đăng tin đổi tệ lên sàn P2P</h3>
+          <button type="button" onclick="closePostModal()" class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 cursor-pointer" aria-label="Đóng bảng đăng tin">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <form class="space-y-3.5" onsubmit="event.preventDefault(); alert('Đăng tin thành công! Tin của bạn đã được hiển thị đầu danh sách Sổ Lệnh.'); closePostModal();">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1.5">Loại nhu cầu của bạn:</label>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="min-h-[44px] px-2 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-800 font-bold text-xs flex items-center justify-center cursor-pointer">
+                <input type="radio" name="p-type" checked class="hidden" />
+                Cần Mua CNY
+              </label>
+              <label class="min-h-[44px] px-2 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold text-xs flex items-center justify-center cursor-pointer">
+                <input type="radio" name="p-type" class="hidden" />
+                Cần Bán CNY
+              </label>
+              <label class="min-h-[44px] px-2 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold text-xs flex items-center justify-center cursor-pointer">
+                <input type="radio" name="p-type" class="hidden" />
+                Nạp Alipay
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">Số lượng tệ (¥):</label>
+              <input type="number" placeholder="5000" required class="w-full h-12 px-3.5 rounded-xl bg-white border border-slate-300 text-base font-bold text-slate-900 focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">Tỷ giá mong muốn (₫):</label>
+              <input type="number" placeholder="3522" required class="w-full h-12 px-3.5 rounded-xl bg-white border border-slate-300 text-base font-bold text-emerald-800 focus:outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Phương thức nhận / chuyển tiền:</label>
+            <select class="w-full h-12 px-3 rounded-xl bg-white border border-slate-300 text-base text-slate-800 focus:outline-none">
+              <option>Chuyển khoản Ngân hàng (Vietcombank / Techcombank / MB)</option>
+              <option>Ví Alipay cá nhân (Quét mã QR)</option>
+              <option>WeChat Pay (Hồng bao / Quét mã)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="press w-full min-h-[48px] rounded-xl bg-slate-900 text-white font-bold text-sm flex items-center justify-center shadow-xs cursor-pointer hover:bg-slate-800">
+            Đăng tin lên sổ lệnh ngay
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODAL 3: ĐĂNG NHẬP / ĐĂNG KÝ (AUTH MODAL) -->
+    <!-- ============================================== -->
+    <div id="modal-auth" class="modal-backdrop" onclick="if(event.target===this) closeAuthModal()">
+      <div class="trade-modal-box p-6 space-y-4 max-w-sm">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h3 class="text-base font-bold text-slate-900">Tài khoản doite.vn</h3>
+          <button type="button" onclick="closeAuthModal()" class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 cursor-pointer" aria-label="Đóng đăng nhập">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <form class="space-y-3.5" onsubmit="event.preventDefault(); alert('Đã gửi mã xác thực OTP về điện thoại của bạn!'); closeAuthModal();">
+          <div>
+            <label class="text-xs font-semibold text-slate-700 block mb-1">Số điện thoại di động</label>
+            <input type="tel" placeholder="0912 345 678" required class="w-full h-12 px-3.5 rounded-xl bg-white border border-slate-300 text-base font-bold text-slate-900 focus:outline-none" />
+          </div>
+
+          <button type="submit" class="press w-full min-h-[44px] rounded-xl bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs hover:bg-blue-800">
+            <span>Tiếp tục với mã xác thực SMS (OTP)</span>
+          </button>
+
+          <div class="relative text-center my-3">
+            <span class="text-xs text-slate-500 bg-white px-2 relative z-10">hoặc</span>
+            <div class="absolute inset-0 top-2.5 border-t border-slate-200"></div>
+          </div>
+
+          <button type="button" onclick="alert('Đăng nhập Google thành công!'); closeAuthModal();" class="press w-full min-h-[44px] rounded-xl border border-slate-300 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer hover:bg-slate-100">
+            <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <span>Tiếp tục với Google</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SCRIPT TƯƠNG TÁC SỔ LỆNH (ORDERBOOK JS) -->
+    <!-- ============================================== -->
+    <script>
+      let currentDirection = "buy";
+      let activeTradeRate = 3522;
+      let activeTradeDirection = "buy";
+
+      // Đổi chiều Mua / Bán
+      function setDirection(dir) {
+        currentDirection = dir;
+        document.documentElement.setAttribute("data-direction", dir);
+
+        const tabBuy = document.getElementById("tab-buy");
+        const tabSell = document.getElementById("tab-sell");
+        const countText = document.getElementById("order-count-text");
+
+        if (dir === "buy") {
+          tabBuy.className = "press min-h-[56px] p-3 rounded-2xl bg-emerald-700 text-white flex items-center justify-between shadow-xs cursor-pointer transition-all";
+          tabBuy.setAttribute("aria-selected", "true");
+          const buySpans = tabBuy.querySelectorAll("span.text-xs");
+          buySpans.forEach(s => s.className = "text-xs text-emerald-100 font-medium");
+
+          tabSell.className = "press min-h-[56px] p-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-300 flex items-center justify-between hover:bg-slate-200 cursor-pointer transition-all";
+          tabSell.setAttribute("aria-selected", "false");
+          const sellSpans = tabSell.querySelectorAll("span.text-xs");
+          sellSpans.forEach(s => s.className = "text-xs text-slate-700 font-medium");
+
+          if (countText) countText.textContent = "HIỂN THỊ 4 THƯƠNG NHÂN BÁN CNY (BẠN MUA):";
+        } else {
+          tabSell.className = "press min-h-[56px] p-3 rounded-2xl bg-blue-700 text-white flex items-center justify-between shadow-xs cursor-pointer transition-all";
+          tabSell.setAttribute("aria-selected", "true");
+          const sellSpans = tabSell.querySelectorAll("span.text-xs");
+          sellSpans.forEach(s => s.className = "text-xs text-blue-100 font-medium");
+
+          tabBuy.className = "press min-h-[56px] p-3 rounded-2xl bg-slate-100 text-slate-700 border border-slate-300 flex items-center justify-between hover:bg-slate-200 cursor-pointer transition-all";
+          tabBuy.setAttribute("aria-selected", "false");
+          const buySpans = tabBuy.querySelectorAll("span.text-xs");
+          buySpans.forEach(s => s.className = "text-xs text-slate-700 font-medium");
+
+          if (countText) countText.textContent = "HIỂN THỊ 2 THƯƠNG NHÂN THU MUA CNY (BẠN BÁN):";
+        }
+        updateCalculations();
+      }
+
+      // Tính toán tức thì khi nhập số tệ
+      function updateCalculations() {
+        const amountInput = document.getElementById("filter-amount");
+        const amount = parseFloat(amountInput.value) || 0;
+        const rate = currentDirection === "buy" ? 3522 : 3538;
+        const vnd = amount * rate;
+        
+        const heroCalc = document.getElementById("hero-vnd-calc");
+        if (heroCalc) heroCalc.textContent = vnd.toLocaleString("vi-VN") + " ₫";
+
+        // Cập nhật cho từng hàng
+        document.querySelectorAll(currentDirection === "buy" ? ".row-buy" : ".row-sell").forEach(row => {
+          const rRate = parseFloat(row.getAttribute("data-rate")) || rate;
+          const rVnd = amount * rRate;
+          const resEl = row.querySelector(".calc-result");
+          if (resEl) resEl.textContent = rVnd.toLocaleString("vi-VN") + " ₫";
+        });
+      }
+
+      document.getElementById("filter-amount")?.addEventListener("input", updateCalculations);
+
+      // Lọc theo chip ngân hàng
+      function setChipFilter(val) {
+        document.querySelectorAll(".filter-chip").forEach(chip => {
+          chip.classList.remove("is-active");
+          chip.classList.add("bg-slate-100", "text-slate-800");
+        });
+        event.target.classList.add("is-active");
+        event.target.classList.remove("bg-slate-100", "text-slate-800");
+
+        filterRows(val, document.getElementById("check-verified-only")?.checked);
+      }
+
+      function filterPaymentMethod() {
+        const val = document.getElementById("filter-method").value;
+        filterRows(val, document.getElementById("check-verified-only")?.checked);
+      }
+
+      function toggleVerifiedOnly() {
+        const checked = document.getElementById("check-verified-only").checked;
+        const method = document.getElementById("filter-method").value;
+        filterRows(method, checked);
+      }
+
+      function filterRows(method, verifiedOnly) {
+        document.querySelectorAll(".row-buy, .row-sell").forEach(row => {
+          const banks = row.getAttribute("data-banks") || "";
+          const isVer = row.getAttribute("data-verified") === "true";
+
+          const matchMethod = (method === "all" || banks.includes(method));
+          const matchVer = (!verifiedOnly || isVer);
+
+          if (matchMethod && matchVer) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      }
+
+      // Mở modal khớp lệnh giao dịch
+      function openTradeModal(merchant, rate, dir, minVal, maxVal, badge) {
+        activeTradeRate = rate;
+        activeTradeDirection = dir;
+
+        document.getElementById("trade-title").textContent = `Giao dịch với: ${merchant}`;
+        document.getElementById("trade-badge").textContent = `${dir === 'buy' ? 'MUA CNY' : 'BÁN CNY'} • ${badge}`;
+
+        const inputCny = document.getElementById("trade-input-cny");
+        const inputVnd = document.getElementById("trade-input-vnd");
+        const currentAmount = parseFloat(document.getElementById("filter-amount").value) || 5000;
+        
+        inputCny.value = currentAmount;
+        inputVnd.value = (currentAmount * rate).toLocaleString("vi-VN");
+
+        document.getElementById("modal-trade").classList.add("is-open");
+      }
+
+      function closeTradeModal() {
+        document.getElementById("modal-trade").classList.remove("is-open");
+      }
+
+      // Sync tính toán trong modal
+      const tradeCny = document.getElementById("trade-input-cny");
+      const tradeVnd = document.getElementById("trade-input-vnd");
+      if (tradeCny && tradeVnd) {
+        tradeCny.addEventListener("input", () => {
+          const val = parseFloat(tradeCny.value) || 0;
+          tradeVnd.value = (val * activeTradeRate).toLocaleString("vi-VN");
+        });
+        tradeVnd.addEventListener("input", () => {
+          const cleaned = tradeVnd.value.replace(/\D/g, "");
+          const val = parseFloat(cleaned) || 0;
+          tradeCny.value = (val / activeTradeRate).toFixed(1);
+        });
+      }
+
+      function submitTradeOrder() {
+        const cny = document.getElementById("trade-input-cny").value;
+        const vnd = document.getElementById("trade-input-vnd").value;
+        const acc = document.getElementById("trade-account-input").value;
+        alert(`Đặt lệnh thành công!\n\nSố tiền: ${cny} ¥ (${vnd} VND)\nTài khoản nhận: ${acc}\n\nSàn doite.vn đã đóng băng tiền bảo chứng. Vui lòng kiểm tra SMS để hoàn tất chuyển tiền.`);
+        closeTradeModal();
+      }
+
+      // Modals
+      function openPostModal() { document.getElementById("modal-post").classList.add("is-open"); }
+      function closePostModal() { document.getElementById("modal-post").classList.remove("is-open"); }
+      function openAuthModal() { document.getElementById("modal-auth").classList.add("is-open"); }
+      function closeAuthModal() { document.getElementById("modal-auth").classList.remove("is-open"); }
+
+      // Timer 15 phút
+      let timeLeft = 15 * 60;
+      setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          const m = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+          const s = (timeLeft % 60).toString().padStart(2, "0");
+          const el = document.getElementById("countdown");
+          if (el) el.textContent = `${m}:${s}`;
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
