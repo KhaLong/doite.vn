@@ -5,23 +5,20 @@ Skill evon:ui-ux đọc file này trước khi dựng. Sửa tay được; file 
 ## Sản phẩm
 - Sản phẩm: Sàn giao dịch đổi Nhân Dân Tệ (CNY) sang VND & ngược lại (doite.vn)
 - Người dùng: Người buôn bán hàng Taobao/1688, kiều bào, du học sinh, thương nhân đổi tệ P2P
-- Việc chính: Khớp lệnh Mua/Bán CNY tức thì, thanh toán hộ Alipay/WeChat, bảo chứng ký quỹ 100%
+- Việc chính: Kết nối người đăng bài đổi tệ và thương nhân chào giá, thanh toán hộ Alipay/WeChat
 - Nền tảng: Web Responsive (Desktop + Mobile Phone)
-- Điểm khác biệt: Cơ chế khóa ký quỹ Escrow bảo hiểm 100% rủi ro lừa đảo, sổ lệnh minh bạch 0đ phí sàn
+- Điểm khác biệt: Kết nối trực tiếp người cần đổi tiền và thương nhân uy tín đã xác thực ký quỹ
 
 ## Giao diện
-- Bộ mặt: Bản B — Sổ lệnh tài chính chuyên nghiệp (P2P Orderbook)
-- Font chữ: Be Vietnam Pro + Inter
-- Màu chủ đạo: Xanh lá Mua (`#15803d` / Emerald-700), Xanh dương Bán (`#1d4ed8` / Blue-700), Nền Slate nhạt (`#f8fafc`)
-- Phong cách: Flat Clean, hiện đại, viền mảnh chuẩn M14, không CDN ngoài, pure inline SVG
-- Tương tác: Chuyển tab Mua/Bán tức thì, tính nhẩm tự động VND <-> CNY, modal đặt lệnh khóa tỷ giá 15 phút
+- Bộ mặt: Soft (P13): font Be Vietnam Pro, sắc Neutral, nhấn Xanh dương (`#2563eb`), Logo 2 (Mũi tên đảo chiều P2P)
+- Phương án chọn: Phương án A — Lưới thẻ bài đăng + Tỷ giá trực tiếp (giữ nguyên nguyên bản theo wireframe)
+- Phong cách: Flat / Soft, pure inline SVG, không dùng CDN ngoài
 
 ## Người dùng dặn
-- Chọn Bản B (Sổ lệnh tài chính) làm bản mặc định và tối ưu toàn diện
-- Đảm bảo xem mượt mà trên điện thoại di động (Mobile Wireframe & Responsive Flagship Web)
-- Không dùng CDN ngoài tránh lỗi CSP môi trường đám mây
+- Chọn Phương án A nguyên bản, không chỉnh sửa thêm bớt bố cục hay nội dung
+- Xuất bản mẫu xem trực tiếp trên đám mây và điện thoại
 
 ## Màn đã dựng
-- `index.html`: Flagship Web Sàn Đổi Tệ P2P (Bản B tối ưu, 0 lỗi probe 360px - 1280px)
-- `wireframe-mobile.html`: Wireframe bản di động (khung smartphone, 0 lỗi probe)
-- `wireframe.html`: Wireframe bản desktop (3 phương án A/B/C với Bản B mặc định)
+- `index.html`: Trang chủ Sàn Đổi Tệ P2P — Phương án A (khớp 153/153 neo 1440px & 144/144 neo 375px với wireframe, 0 mục Hỏng)
+- `wireframe.html`: Wireframe 3 phương án A/B/C (mặc định Phương án A)
+- `wireframe-mobile.html`: Wireframe bản di động (mặc định Phương án A, 0 lỗi probe)
