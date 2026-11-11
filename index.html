@@ -1,1476 +1,645 @@
 <!DOCTYPE html>
-<html lang="vi" data-mau="mau" data-kieu="soft" data-sac="neutral" data-nhan="xanh-duong" data-logo="2">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>doite.vn — Sàn Đổi Tệ P2P & Thanh Toán Hộ Alipay, WeChat</title>
+  <meta name="description" content="Sàn P2P đổi Nhân Dân Tệ (CNY) sang VND và thanh toán hộ Alipay, WeChat, đơn Taobao/1688. Thương nhân ký quỹ, không phụ phí sàn." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' transform='translate(4.8 4.8) scale(.6)'%3E%3Cpath d='m17 2 4 4-4 4'/%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='m7 22-4-4 4-4'/%3E%3Cpath d='M21 18H3'/%3E%3C/g%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Allowlisted Tailwind Script -->
+  <!-- Bộ mặt Soft: font Be Vietnam Pro (DESIGN.md) -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Allowlisted Tailwind Script (Tailwind v3 play CDN) -->
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <script>
-    const LUCIDE_ICONS = {
-      "plus-circle": '<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/>',
-      "user": '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
-      "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
-      "arrow-right-left": '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
-      "chevron-right": '<path d="m9 18 6-6-6-6"/>',
-      "search": '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
-      "inbox": '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
-      "alert-circle": '<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12.01" x2="12.01" y1="16" y2="16"/>',
-      "check-circle": '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
-      "x": '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'
+    // Token màu đặt ở :root (khối style bên dưới); Tailwind chỉ trỏ tên lớp vào biến.
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["var(--app-font)"] },
+          colors: {
+            background: "var(--background)",
+            surface: "var(--surface)",
+            foreground: "var(--foreground)",
+            muted: "var(--muted)",
+            border: "var(--border)",
+            "border-strong": "var(--border-strong)",
+            primary: { DEFAULT: "var(--primary)", hover: "var(--primary-hover)", foreground: "var(--primary-foreground)", light: "var(--primary-light)" },
+            "item-hover": "var(--item-hover)",
+            success: { DEFAULT: "var(--success)", bg: "var(--success-bg)" },
+            warning: { DEFAULT: "var(--warning)", bg: "var(--warning-bg)" },
+            danger: { DEFAULT: "var(--danger)", bg: "var(--danger-bg)" },
+          },
+          boxShadow: { popover: "var(--elevation-popover)" },
+        },
+      },
     };
-    window.lucide = {
-      createIcons() {
-        document.querySelectorAll("i[data-lucide]").forEach(el => {
-          const name = el.getAttribute("data-lucide");
-          if (LUCIDE_ICONS[name]) {
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("viewBox", "0 0 24 24");
-            svg.setAttribute("fill", "none");
-            svg.setAttribute("stroke", "currentColor");
-            svg.setAttribute("stroke-width", "2");
-            svg.setAttribute("stroke-linecap", "round");
-            svg.setAttribute("stroke-linejoin", "round");
-            svg.className.baseVal = el.className;
-            svg.innerHTML = LUCIDE_ICONS[name];
-            el.replaceWith(svg);
-          }
-        });
-      }
-    };
-    document.addEventListener("DOMContentLoaded", () => window.lucide.createIcons());
   </script>
-  
-  <style type="text/tailwindcss">
-    @layer base {
-      :root {
-        color-scheme: light;
-        --app-font: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif;
-        --primary: #181818;
-        --primary-hover: #2e2e2e;
-        --primary-foreground: #ffffff;
-        --primary-light: #1818180d;
-        --background: #f4f4f6;
-        --surface: #ffffff;
-        --foreground: #2c2c2c;
-        --muted: #707070;
-        --border: #f0f0f2;
-        --border-strong: #d4d4d8;
-        --border-focus: var(--primary);
-        --ring-focus: color-mix(in srgb, var(--primary) 15%, transparent);
-        --surface-overlay: #ffffff;
-        --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
-        --elevation-modal: 0 20px 25px -5px rgb(0 0 0 / 0.12), 0 8px 10px -6px rgb(0 0 0 / 0.06);
-        --elevation-card: 0 1px 2px 0 rgb(0 0 0 / 0.04), 0 2px 8px -2px rgb(0 0 0 / 0.06);
-        --item-hover: #e8e8ec;
-        --chart-fill: var(--primary);
-
-        --cat-1: #2563eb;
-        --cat-2: #0d9488;
-        --cat-3: #7c3aed;
-        --cat-4: #c026d3;
-        --accent-to: #3b82f6;
-
-        --success: #16a34a;
-        --success-bg: #f0fdf4;
-        --warning: #d97706;
-        --warning-bg: #fffbeb;
-        --danger: #dc2626;
-        --danger-bg: #fef2f2;
-      }
-
-      :root[data-mau="xam"] {
-        --primary: #2c2c2c;
-        --primary-hover: #404040;
-        --primary-light: #f4f4f5;
-        --ring-focus: rgb(0 0 0 / 0.1);
-        --border-focus: #525252;
-        --success: #525252;
-        --success-bg: #f4f4f5;
-        --warning: #737373;
-        --warning-bg: #f4f4f5;
-        --danger: #525252;
-        --danger-bg: #f4f4f5;
-      }
-
-      :root:not([data-mau="xam"])[data-nhan="xanh-duong"] {
-        --primary: #2563eb;
-        --primary-hover: #1d4ed8;
-        --primary-light: #eff6ff;
-        --accent-to: #3b82f6;
-      }
-      :root:not([data-mau="xam"])[data-nhan="xanh-la"] {
-        --primary: #15803d;
-        --primary-hover: #166534;
-        --primary-light: #f0fdf4;
-        --accent-to: #22c55e;
-      }
-      :root:not([data-mau="xam"])[data-nhan="cam"] {
-        --primary: #c2410c;
-        --primary-hover: #9a3412;
-        --primary-light: #fff7ed;
-        --accent-to: #ea580c;
-      }
-
-      :root:not([data-mau="xam"])[data-kieu="midnight"] {
-        color-scheme: dark;
-        --background: #09090b;
-        --surface: #18181b;
-        --foreground: #f4f4f5;
-        --muted: #a1a1aa;
-        --border: rgb(255 255 255 / 0.1);
-        --border-strong: rgb(255 255 255 / 0.18);
-        --item-hover: #27272a;
-      }
-      :root:not([data-mau="xam"])[data-kieu="soft"] {
-        --app-font: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
-      }
-      :root:not([data-mau="xam"])[data-kieu="clean"] {
-        --app-font: "Inter", ui-sans-serif, system-ui, sans-serif;
-      }
-
-      /* Quy tắc [data-wf-block] trong layer base để sticky thắng */
-      [data-wf-block] {
-        position: relative;
-      }
-    }
-  </style>
-
   <style>
-    /* CSS Reset */
-    *, *::before, *::after {
-      box-sizing: border-box;
+    /* Token của doite.vn. Màu nhấn xanh dương #2563eb theo DESIGN.md: đổi ở đây là đổi cả trang. */
+    :root {
+      color-scheme: light;
+      --app-font: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-foreground: #ffffff;
+      --primary-light: #eff6ff;
+      --background: #f4f4f6;
+      --surface: #ffffff;
+      --foreground: #2c2c2c;
+      --muted: #707070;
+      --border: #f0f0f2;
+      --border-strong: #d4d4d8;
+      --border-focus: var(--primary);
+      --ring-focus: color-mix(in srgb, var(--primary) 15%, transparent);
+      --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+      --item-hover: #e8e8ec;
+      /* Xanh lá đậm: chữ nhỏ trên nền trắng cần từ 4.5:1 (#16a34a chỉ 3.3:1) */
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      /* Màu theo loại tin (chấm trước nhãn) */
+      --cat-sell: #15803d;
+      --cat-buy: #2563eb;
+      --cat-pay: #7c3aed;
     }
-    button, input, select, textarea {
-      font-family: inherit;
-      font-size: 100%;
-      line-height: inherit;
-      color: inherit;
-      margin: 0;
-    }
-    button {
-      background-color: transparent;
-      border: 1px solid transparent;
-      cursor: pointer;
-    }
-    :focus, :focus-visible, button:focus, button:focus-visible, a:focus, a:focus-visible {
-      outline: none !important;
-      box-shadow: none !important;
-    }
-
-    body {
-      font-family: var(--app-font);
-      background-color: var(--background);
-      color: var(--foreground);
-      margin: 0;
-      padding: 0;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Toolbar CSS */
-    .wf-bar { position: relative; z-index: 50; display: flex; align-items: center; gap: 10px; height: 56px;
-      padding: 0 12px; overflow-x: auto; white-space: nowrap; background: #fff; border-bottom: 1px solid #e5e5e5;
-      color: #737373; font: 13px/1 system-ui, -apple-system, sans-serif; }
-    @media (max-width: 1279px) { .wf-bar { mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); } }
-    .wf-bar *, .wf-reason * { box-sizing: border-box; }
-    .wf-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .wf-set { display: flex; align-items: center; gap: 3px; flex-shrink: 0; padding: 2px; border-radius: 8px; background: #f4f4f5; }
-    .wf-set a { position: relative; display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 10px;
-      border-radius: 6px; color: #737373; text-decoration: none; cursor: pointer; }
-    .wf-set a:hover { color: #171717; }
-    .wf-switch { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; color: #737373; text-decoration: none; cursor: pointer; }
-    .wf-switch i { position: relative; width: 34px; height: 18px; border-radius: 9px; background: #e4e4e7; transition: background .15s; }
-    .wf-switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%;
-      background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / .2); transition: translate .15s; }
-    .wf-switch[aria-checked="true"] i { background: #171717; }
-    .wf-switch[aria-checked="true"] i::after { translate: 16px 0; }
-    .wf-set a[aria-current="page"], .wf-flags a[aria-pressed="true"] { background: #fff; color: #171717; font-weight: 600;
-      box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 0 0 1px rgb(0 0 0 / .04); }
-    .wf-flags a::before { content: ""; width: 12px; height: 12px; border: 1.5px solid #a3a3a3; border-radius: 3px; }
-    .wf-flags a[aria-pressed="true"]::before { border-color: #171717; background: #171717 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 10px no-repeat; }
-    body[data-gon="1"] [data-wf-gon], body[data-bolap="1"] [data-wf-lap] { display: none !important; }
-    [data-wf-param="v"] a { justify-content: center; min-width: 32px; padding: 0 10px; }
-    [data-wf-param="v"] a[data-recommended]::after { content: ""; position: absolute; top: 5px; right: 5px;
-      width: 6px; height: 6px; border-radius: 50%; background: #2563eb; }
-    [data-wf-param="nhan"] a { padding: 0 8px; }
-    [data-wf-param="nhan"] i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; }
-    [data-wf-param="nhan"] a[data-value="xanh-duong"] { color: #2563eb; }
-    [data-wf-param="nhan"] a[data-value="xanh-la"] { color: #15803d; }
-    [data-wf-param="nhan"] a[data-value="cam"] { color: #c2410c; }
-    .wf-menu { position: relative; flex-shrink: 0; }
-    .wf-menu summary { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 10px; border-radius: 8px;
-      cursor: pointer; list-style: none; user-select: none; }
-    .wf-menu summary::-webkit-details-marker { display: none; }
-    .wf-menu summary:hover, .wf-menu[open] summary { background: #f4f4f5; }
-    .wf-menu b { color: #171717; font-weight: 600; }
-    .wf-popover { position: fixed; z-index: 60; display: grid; gap: 4px; min-width: 170px; padding: 6px; background: #fff;
-      border: 1px solid #e5e5e5; border-radius: 10px; box-shadow: 0 8px 24px rgb(0 0 0 / .08); }
-    .wf-popover a { display: flex; align-items: center; height: 32px; padding: 0 10px; border-radius: 6px; color: #404040; text-decoration: none; cursor: pointer; }
-    .wf-popover a:hover, .wf-popover a[aria-current="page"] { background: #f4f4f5; color: #171717; font-weight: 500; }
-    .wf-popover-set + .wf-popover-set { margin-top: 4px; padding-top: 4px; border-top: 1px solid #f0f0f0; }
-    .wf-popover h4 { margin: 0; padding: 6px 10px 2px; color: #737373; font: 600 11px/1 system-ui, sans-serif; text-transform: uppercase; }
-
-    /* Khung lý do */
-    .wf-reason { border-bottom: 1px solid #e5e5e5; background: #fafafa; color: #404040; font: 13px/1.5 system-ui, -apple-system, sans-serif; }
-    .wf-reason summary { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; padding: 8px 16px;
-      cursor: pointer; list-style: none; }
-    .wf-reason summary::-webkit-details-marker { display: none; }
-    .wf-reason-name { color: #171717; font-weight: 600; }
-    .wf-reason-tag { flex-shrink: 0; height: 20px; padding: 0 8px; border-radius: 10px; background: #eff6ff; color: #1d4ed8;
-      font-size: 12px; font-weight: 500; line-height: 20px; }
-    .wf-reason-why { flex: 1; min-width: 0; overflow: hidden; color: #525252; text-overflow: ellipsis; white-space: nowrap; }
-    .wf-reason[open] .wf-reason-why { white-space: normal; }
-    .wf-reason-toggle { display: inline-flex; flex-shrink: 0; align-items: center; gap: 4px; height: 28px; margin-left: auto;
-      padding: 0 8px; border-radius: 6px; color: #171717; font-weight: 500; }
-    .wf-reason summary:hover .wf-reason-toggle { background: #f0f0f0; }
-    .wf-reason-toggle svg { width: 16px; height: 16px; transition: rotate .15s; }
-    .wf-reason[open] .wf-reason-toggle svg { rotate: 180deg; }
-    .wf-reason-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 6px 16px 16px; }
-    .wf-reason-cols { display: grid; max-width: 1200px; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px 32px; }
-    .wf-reason h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; color: #171717; font-size: 12px; font-weight: 600; }
-    .wf-reason h3 i { width: 6px; height: 6px; border-radius: 50%; background: #a3a3a3; }
-    .wf-reason h3 i[data-tone="uu"] { background: #16a34a; }
-    .wf-reason h3 i[data-tone="nhuoc"] { background: #d97706; }
-    .wf-reason ul { display: grid; gap: 4px; margin: 0; padding-left: 18px; }
-    .wf-reason li::marker { color: #a3a3a3; }
-    .wf-reason p { margin: 0; color: #525252; }
-    .wf-reason-tips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 12px; border-top: 1px solid #ebebeb; }
-    .wf-reason-tips button { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #e5e5e5;
-      border-radius: 8px; background: #fff; color: #262626; font: inherit; font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer; }
-    .wf-reason-tips button:hover { border-color: #d4d4d4; background: #f5f5f5; }
-    .wf-reason-tips button svg { width: 14px; height: 14px; color: #737373; }
-    .wf-reason-tips button [data-icon="da-chep"], .wf-reason-tips button[data-copied] [data-icon="chep"] { display: none; }
-    .wf-reason-tips button[data-copied] [data-icon="da-chep"] { display: block; color: #16a34a; }
-
-    /* Clean production view */
-
-    /* Hide/show based on params */
-    body[data-frame] .wf-bar, body[data-frame] .wf-reason { display: none !important; }
-    body:not([data-v="a"]) .view-a { display: none !important; }
-    body:not([data-v="b"]) .view-b { display: none !important; }
-    body:not([data-v="c"]) .view-c { display: none !important; }
-
-    /* State views */
-    body:not([data-tt="du-lieu"]) .state-data { display: none !important; }
-    body:not([data-tt="dang-tai"]) .state-loading { display: none !important; }
-    body:not([data-tt="rong"]) .state-empty { display: none !important; }
-    body:not([data-tt="loi"]) .state-error { display: none !important; }
-
-    /* Modals */
-    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; backdrop-filter: blur(2px); place-items: center; padding: 16px; }
-    .modal-backdrop.is-open { display: grid; }
-    .modal-backdrop > div { box-shadow: var(--elevation-modal); }
-
-    /* Logo SVGs */
-    .logo-mark-1, .logo-mark-2, .logo-mark-3 { display: none; }
-    :root[data-logo="1"] .logo-mark-1 { display: block; }
-    :root[data-logo="2"] .logo-mark-2 { display: block; }
-    :root[data-logo="3"] .logo-mark-3 { display: block; }
+    body { font-family: var(--app-font); background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    /* Tailwind v3: class display (grid, flex) đè thuộc tính hidden; giữ hidden luôn thắng. */
+    [hidden] { display: none !important; }
+    /* Thanh cuộn mảnh */
+    * { scrollbar-width: thin; scrollbar-color: #c4c4c8 transparent; }
+    .scrollbar-none { scrollbar-width: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    /* Hàng tab cuộn ngang trên điện thoại: mép phải mờ báo còn mục */
+    .fade-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+    @media (min-width: 1024px) { .fade-right { -webkit-mask-image: none; mask-image: none; } }
+    /* Hàng tab: điện thoại 4 tab chia đều (không cuộn); 640–1023px cuộn ngang thì mới mờ mép phải */
+    @media (min-width: 640px) and (max-width: 1023px) { .sm\:fade-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); } }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .dot { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
   </style>
+  <!-- Hiệu ứng chuyển trang (page-transitions.css), bản dự phòng cho trình duyệt cũ (page-transitions.js) -->
+  <link rel="stylesheet" href="page-transitions.css" />
+  <script src="page-transitions.js"></script>
+  <script src="/live.js"></script>
 </head>
-<body data-v="a" data-gon="0" data-bolap="0" data-mau="xam" data-kieu="soft" data-sac="neutral" data-nhan="xanh-duong" data-logo="2" data-kho="desktop" data-tt="du-lieu" data-uu="0">
+<body>
+  <div id="app"></div>
 
-  <!-- MAIN DESIGN CANVAS -->
-  <main id="wf-design">
+<script>
+// ---------------------------------------------------------------- icons (SVG nội tuyến, không CDN — CSP)
+const ICONS = {
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  "arrow-right-left": '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+  "chevron-right": '<path d="m9 18 6-6-6-6"/>',
+  "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  wallet: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+  "arrow-up-down": '<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  "badge-check": '<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  "search-x": '<path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  "wifi-off": '<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
+  "triangle-alert": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  "message-circle": '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  "rotate-cw": '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+};
+const icon = (name, cls = "h-4 w-4") =>
+  `<svg class="${cls} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
 
-    <!-- KHỐI 1: HEADER TRANG CHỦ -->
-    <header data-wf-block="1" data-wf-block-out class="bg-[var(--surface)] border-b border-[var(--border)] sticky top-0 z-30 transition-colors">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
-        
-        <!-- Logo -->
-        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center shrink-0 shadow-sm">
-            <!-- Dấu 1: Chữ Đ khối -->
-            <svg class="logo-mark-1 w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M4 6h7a6 6 0 0 1 0 12H4V6zm3 3v6h4a3 3 0 0 0 0-6H7zM2 11h9v2H2v-2z"/>
-            </svg>
-            <!-- Dấu 2: Mũi tên đảo chiều P2P (Khuyên dùng) -->
-            <svg class="logo-mark-2 w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m17 2 4 4-4 4"/>
-              <path d="M3 6h18"/>
-              <path d="m7 22-4-4 4-4"/>
-              <path d="M21 18H3"/>
-            </svg>
-            <!-- Dấu 3: Hai vòng tròn giao thoa -->
-            <svg class="logo-mark-3 w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="9" cy="12" r="6" fill-opacity="0.8"/>
-              <circle cx="15" cy="12" r="6" fill-opacity="0.8"/>
-            </svg>
-          </div>
-          <div class="min-w-0">
-            <div class="font-bold text-base sm:text-lg tracking-tight flex items-center gap-1.5 text-[var(--foreground)]">
-              <span>doite<b class="text-[var(--primary)] font-extrabold">.vn</b></span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-800 font-semibold shrink-0">P2P</span>
-            </div>
-            <p class="text-[11px] text-[var(--muted)] leading-none hidden sm:block" data-wf-lap>Sàn đổi tệ &amp; thanh toán hộ an toàn</p>
-          </div>
-        </div>
+// ---------------------------------------------------------------- dữ liệu mẫu (thay bằng API)
+const fmt = (n) => n.toLocaleString("vi-VN");
+const REFERENCE = { buy: 3520, sell: 3545, mid: 3530, updated: "1 phút trước" };
+const TYPES = {
+  sell: { label: "Cần bán CNY", cat: "var(--cat-sell)" },
+  buy: { label: "Cần mua CNY", cat: "var(--cat-buy)" },
+  pay: { label: "Nạp Alipay / 1688", cat: "var(--cat-pay)" },
+};
+// Bảng tin: đọc từ server Rust (GET /api/posts, MySQL). channels: khoá dùng cho bộ lọc Kênh.
+let POSTS = [];
+let COUNTS = { all: 0, buy: 0, sell: 0, pay: 0 };
+let postsState = "dang-tai"; // "dang-tai" | "xong" | "loi"
+let CURRENT_USER = null; // { username, displayName } khi đã đăng nhập (GET /api/auth/me)
+let UNREAD_MESSAGES = 0; // số tin nhắn chưa đọc (GET /api/messages/unread), chấm đỏ trên nút tin nhắn
 
-        <!-- Tỷ giá thị trường cập nhật trực tiếp (Market Rates Ticker) -->
-        <div class="hidden lg:flex items-center gap-6 px-4 py-1.5 rounded-full bg-[var(--background)] border border-[var(--border)] text-xs">
-          <div class="flex items-center gap-2">
-            <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[var(--muted)]">Tỷ giá CNY/VND hôm nay:</span>
-          </div>
-          <div class="flex items-center gap-4 font-semibold text-[var(--foreground)]">
-            <span>Mua vào: <b class="text-[var(--foreground)] font-bold whitespace-nowrap">3.520&nbsp;₫</b></span>
-            <span class="text-neutral-600">|</span>
-            <span>Bán ra: <b class="text-[var(--foreground)] font-bold whitespace-nowrap">3.545&nbsp;₫</b></span>
-          </div>
-          <span class="text-[11px] text-[var(--muted)]" data-wf-gon>Cập nhật 1 phút trước</span>
-        </div>
+function agoText(seconds) {
+  if (seconds < 60) return "Vừa xong";
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} phút trước`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)} giờ trước`;
+  return `${Math.floor(seconds / 86400)} ngày trước`;
+}
+function initialsOf(name) {
+  const words = name.trim().split(/\s+/);
+  const letters = words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0].slice(0, 2);
+  return letters.toUpperCase();
+}
+function escrowText(vnd) {
+  return vnd >= 1e9 ? `${(vnd / 1e9).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} tỷ` : `${(vnd / 1e6).toLocaleString("vi-VN", { maximumFractionDigits: 0 })}tr`;
+}
+function toPost(row) {
+  const escrow = row.escrowVnd > 0;
+  const verified = !escrow && row.businessVerified;
+  const success = row.successPermille == null ? "" : ` · ${(row.successPermille / 10).toLocaleString("vi-VN", { maximumFractionDigits: 1 })}%`;
+  const trust = escrow ? `Ký quỹ ${escrowText(row.escrowVnd)}`
+    : verified ? "Doanh nghiệp đã xác thực"
+    : row.tradesCount > 0 ? `${fmt(row.tradesCount)} giao dịch${success}`
+    : "Thành viên mới";
+  return {
+    id: row.id, type: row.kind, amount: row.amountCny, rate: row.rateVnd,
+    channel: row.channelLabel, channels: row.channels.split(",").filter(Boolean), limit: row.limitLabel,
+    ago: agoText(row.ageSeconds), user: row.displayName, initials: initialsOf(row.displayName),
+    trust, escrow, verified, avatarUrl: row.avatarUrl || null, mine: row.mine === true, username: row.username,
+    // Hạn nhận chào giá thật (tin đăng mới); còn dưới 1 giờ thì báo màu cam
+    urgent: row.urgentLabel || (row.expiresInSeconds != null && row.expiresInSeconds < 3600
+      ? `Hết hạn chào giá sau ${Math.max(1, Math.ceil(row.expiresInSeconds / 60))} phút` : ""),
+  };
+}
+const escHtml = (text) => String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-        <!-- Actions -->
-        <div class="flex items-center gap-2 shrink-0">
-          <button type="button" onclick="openModal('modal-post')" class="inline-flex items-center justify-center gap-1.5 px-3 h-9 sm:h-10 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-hover)] text-xs sm:text-sm font-semibold transition-all shadow-sm shrink-0">
-            <i data-lucide="plus-circle" class="w-4 h-4 shrink-0"></i>
-            <span class="hidden sm:inline whitespace-nowrap">Đăng tin đổi tệ</span>
-            <span class="sm:hidden whitespace-nowrap">Đăng tin</span>
-          </button>
-          <button type="button" onclick="openModal('modal-auth')" class="inline-flex items-center justify-center gap-1 px-2.5 sm:px-3 h-9 sm:h-10 rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] hover:bg-[var(--item-hover)] text-xs sm:text-sm font-medium text-[var(--foreground)] transition-colors shrink-0">
-            <i data-lucide="user" class="w-4 h-4 text-[var(--muted)] shrink-0"></i>
-            <span class="hidden sm:inline whitespace-nowrap">Đăng nhập</span>
-          </button>
-        </div>
+async function loadPosts() {
+  postsState = "dang-tai";
+  if (document.getElementById("list")) refreshList();
+  try {
+    const response = await fetch("/api/posts", { credentials: "same-origin" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.reason || response.status);
+    // Chữ do người dùng nhập (tên, kênh, hạn mức) được escape trước khi vào HTML
+    POSTS = data.posts.map((row) => {
+      const post = toPost(row);
+      for (const key of ["channel", "limit", "user", "urgent", "initials"]) post[key] = escHtml(post[key]);
+      return post;
+    });
+    COUNTS = { all: POSTS.length, buy: 0, sell: 0, pay: 0 };
+    for (const post of POSTS) COUNTS[post.type] = (COUNTS[post.type] || 0) + 1;
+    postsState = "xong";
+  } catch {
+    postsState = "loi";
+  }
+  refreshFilters();
+  refreshList();
+  highlightNewPost();
+}
+
+// Vừa đăng tin (index.html?moi=<id>): báo đã đăng, tô sáng tin đó, cuộn tới; bỏ ?moi khỏi địa chỉ.
+function highlightNewPost() {
+  const id = new URLSearchParams(location.search).get("moi");
+  if (!id || postsState !== "xong") return;
+  history.replaceState(null, "", location.pathname);
+  const row = document.querySelector(`[data-post-id="${CSS.escape(id)}"]`);
+  const status = document.getElementById("post-status");
+  status.innerHTML = `${icon("check", "h-4 w-4")}<span>Đã đăng tin. Thương nhân sẽ chào giá cho bạn tại đây.</span>`;
+  status.hidden = false;
+  if (!row) return;
+  row.classList.add("ring-2", "ring-inset", "ring-[color:var(--primary)]");
+  row.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(() => row.classList.remove("ring-2", "ring-inset", "ring-[color:var(--primary)]"), 6000);
+}
+
+async function loadCurrentUser() {
+  try {
+    const response = await fetch("/api/auth/me", { credentials: "same-origin" });
+    const data = await response.json();
+    CURRENT_USER = response.ok && data.ok ? data.user : null;
+    if (CURRENT_USER) {
+      const unread = await fetch("/api/messages/unread", { credentials: "same-origin" }).then((r) => r.json()).catch(() => ({}));
+      UNREAD_MESSAGES = unread.count || 0;
+      // Có tin mới thì chấm đỏ tự cập nhật (SSE /api/events qua live.js)
+      doiteLive.watchUnread((count) => { UNREAD_MESSAGES = count; doiteLive.paintBadge(count); });
+    }
+  } catch {
+    CURRENT_USER = null;
+  }
+  document.getElementById("header-account").innerHTML = accountButtons();
+}
+// [khoá, nhãn đầy đủ, nhãn ngắn cho điện thoại: 4 tab chia đều một hàng, không phải vuốt ngang]
+const TABS = [["all", "Tất cả", "Tất cả"], ["buy", "Cần mua CNY", "Mua tệ"], ["sell", "Cần bán CNY", "Bán tệ"], ["pay", "Nạp Alipay / WeChat", "Thanh toán"]];
+const CHANNELS = [["all", "Mọi kênh"], ["alipay", "Alipay"], ["wechat", "WeChat Pay"], ["bank", "Chuyển khoản ngân hàng"], ["taobao", "Quét QR Taobao / 1688"]];
+const SORTS = [["new", "Mới nhất"], ["rate", "Tỷ giá cao nhất"], ["amount", "Số lượng lớn nhất"], ["expiring", "Sắp hết hạn"]];
+const MERCHANTS = [
+  { name: "Hà Tệ Chợ Cửa Khẩu", initials: "HT", orders: "1.240 lệnh", escrow: "Ký quỹ 100tr", rating: "5.0" },
+  { name: "Tiểu Thương Bằng Tường", initials: "TN", orders: "890 lệnh", escrow: "Ký quỹ 50tr", rating: "4.9" },
+];
+const STEPS = [
+  "Đăng tin nhu cầu hoặc chọn bài đăng có tỷ giá tốt nhất.",
+  "Thương nhân gửi chào giá cạnh tranh. Bạn chọn chào giá tốt nhất.",
+  "Kiểm tra tài khoản nhận tiền thật trước khi bấm xác nhận hoàn tất.",
+];
+
+// Chỗ nối API / router. Đang để trống có chủ đích.
+window.DoiteHandlers = {
+  // prefill: { cny } khi bấm "Tạo tin theo giá này". Trang đăng tin tự đưa qua đăng nhập nếu cần.
+  onCreatePost: (prefill) => { location.href = prefill?.cny ? `dang-tin.html?cny=${prefill.cny}` : "dang-tin.html"; },
+  onLogin: () => { location.href = "dang-nhap.html"; },
+  // Chưa đăng nhập thì sang trang đăng nhập, xong quay về đây. Đã đăng nhập: luồng chào giá chưa làm.
+  // Đã đăng nhập: luồng chào giá chưa làm, nên mở tin nhắn với người đăng, soạn sẵn câu chào giá cho tin đó.
+  onBid: (postId) => {
+    const post = POSTS.find((p) => p.id === postId);
+    const tin = post ? `${TYPES[post.type].label} ${fmt(post.amount)} ¥` : "";
+    if (CURRENT_USER && post) {
+      location.href = `tin-nhan.html?${new URLSearchParams({ u: post.username, tin })}`;
+      return;
+    }
+    location.href = `dang-nhap.html?${new URLSearchParams({ tin, tiep: "index.html" })}`;
+  },
+  onLogout: async () => {
+    try { await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" }); } catch {}
+    CURRENT_USER = null;
+    document.getElementById("header-account").innerHTML = accountButtons();
+    loadPosts(); // bỏ đánh dấu "Tin của bạn"
+  },
+  onLoadMore: () => {},
+  onFiltersChange: (filters) => {},   // gọi API lọc phía máy chủ khi có
+};
+
+// Trạng thái xem thử: ?tt=dang-tai | rong | loi
+const previewState = new URLSearchParams(location.search).get("tt");
+const filters = { tab: "all", amount: 0, channel: "all", sort: "new" };
+
+// ---------------------------------------------------------------- lớp dùng chung (chép từ wireframe A)
+const ring = "outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring-focus)]";
+const btnPrimary = `inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover ${ring}`;
+const btnOutline = `inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-border-strong bg-surface px-4 text-sm font-medium text-foreground transition-colors hover:bg-item-hover ${ring}`;
+const btnSmall = `inline-flex h-9 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover ${ring}`;
+const card = "rounded-2xl border border-border bg-surface";
+const field = "border border-border-strong bg-surface text-foreground outline-none focus:border-[color:var(--border-focus)] focus:ring-2 focus:ring-[color:var(--ring-focus)]";
+
+function typeBadge(p) {
+  return `<span class="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium" style="color:${TYPES[p.type].cat}"><span class="dot"></span>${TYPES[p.type].label}</span>`;
+}
+function avatar(initials, size = "h-8 w-8", url = null) {
+  if (url) return `<img src="${escHtml(url)}" alt="" class="${size} shrink-0 rounded-full bg-[#ececef] object-cover">`;
+  return `<span class="${size} inline-flex shrink-0 items-center justify-center rounded-full bg-[#ececef] text-xs font-semibold text-foreground" aria-hidden="true">${initials}</span>`;
+}
+function trustLine(p) {
+  if (p.escrow) return `<span class="inline-flex items-center gap-1 text-xs font-medium text-success">${icon("shield-check", "h-3.5 w-3.5")}${p.trust}</span>`;
+  if (p.verified) return `<span class="inline-flex items-center gap-1 text-xs text-muted">${icon("badge-check", "h-3.5 w-3.5")}${p.trust}</span>`;
+  return `<span class="text-xs text-muted">${p.trust}</span>`;
+}
+function rateHtml(p, size = "text-base") {
+  return `<span class="${size} whitespace-nowrap font-semibold text-foreground tabular">${fmt(p.rate)}<span class="text-xs font-normal text-muted"> ₫/¥</span></span>`;
+}
+function urgentLine(p) {
+  // max-lg:basis-full: trên điện thoại cảnh báo luôn đứng riêng một hàng (có chủ đích, không lẻ loi)
+  return p.urgent ? `<span class="inline-flex items-center gap-1 text-xs font-medium text-warning max-lg:basis-full">${icon("clock", "h-3.5 w-3.5")}${p.urgent}</span>` : "";
+}
+
+// ---------------------------------------------------------------- khối 1: header
+// Chưa đăng nhập: nút "Đăng nhập" (điện thoại vẫn ghi chữ, không chỉ icon).
+// Đã đăng nhập: tên hiển thị (ẩn trên điện thoại cho đủ chỗ) + "Đăng xuất".
+function accountButtons() {
+  if (!CURRENT_USER) {
+    return `<button type="button" data-action="login" class="${btnOutline} max-sm:h-9 max-sm:px-3">${icon("user", "h-4 w-4 max-sm:hidden")}Đăng nhập</button>`;
+  }
+  // Bấm tên → trang cá nhân (tai-khoan.html: thông tin tài khoản + lịch sử đăng nhập).
+  // Dưới 768px header không đủ chỗ cho tên + Đăng xuất: chỉ còn ảnh đại diện tròn dẫn tới trang cá nhân
+  // (Đăng xuất nằm trên header trang cá nhân).
+  const initials = escHtml(initialsOf(CURRENT_USER.displayName));
+  const photo = CURRENT_USER.avatarUrl;
+  const unread = UNREAD_MESSAGES ? `<span class="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[var(--danger)] px-1 text-[10px] font-semibold text-white tabular">${UNREAD_MESSAGES > 99 ? "99+" : UNREAD_MESSAGES}</span>` : "";
+  return `<a href="tin-nhan.html" aria-label="Tin nhắn${UNREAD_MESSAGES ? `, ${UNREAD_MESSAGES} chưa đọc` : ""}" class="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-item-hover md:h-10 md:w-10 ${ring}">${icon("message-circle", "h-5 w-5")}${unread}</a>
+    <a href="tai-khoan.html" aria-label="Trang cá nhân của ${escHtml(CURRENT_USER.displayName)}" class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border-strong bg-[#ececef] text-xs font-semibold text-foreground transition-colors hover:bg-item-hover md:hidden ${ring}">${photo ? `<img src="${escHtml(photo)}" alt="" class="h-full w-full object-cover">` : initials}</a>
+    <a href="tai-khoan.html" class="hidden h-10 max-w-[14rem] items-center gap-2 rounded-xl px-2 pr-3 text-sm font-medium text-foreground transition-colors hover:bg-item-hover md:inline-flex ${ring}" title="Trang cá nhân">${avatar(initials, "h-8 w-8", photo)}<span class="truncate">${escHtml(CURRENT_USER.displayName)}</span></a>
+    <button type="button" data-action="logout" class="${btnOutline} hidden md:inline-flex">Đăng xuất</button>`;
+}
+
+function header() {
+  return `
+  <header class="sticky top-0 z-30 border-b border-border-strong bg-surface">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+      <a href="/" class="flex min-w-0 items-center gap-2.5 rounded-lg ${ring}" aria-label="doite.vn — trang chủ">
+        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:h-9 sm:w-9">
+          <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 6h18"/><path d="m7 22-4-4 4-4"/><path d="M21 18H3"/></svg>
+        </span>
+        <span class="text-base font-bold tracking-tight text-foreground sm:text-lg">doite<b class="font-extrabold text-primary">.vn</b></span>
+      </a>
+      <div class="hidden items-center gap-3 text-sm text-muted lg:flex">
+        <span class="inline-flex items-center gap-1.5"><span class="dot text-success"></span>Tỷ giá hôm nay</span>
+        <span>Mua <b class="font-semibold text-foreground tabular">${fmt(REFERENCE.buy)} ₫</b></span>
+        <span>Bán <b class="font-semibold text-foreground tabular">${fmt(REFERENCE.sell)} ₫</b></span>
       </div>
-    </header>
-
-    <!-- ========================================== -->
-    <!-- PHƯƠNG ÁN A: LƯỚI CARD + TỶ GIÁ TRỰC TIẾP -->
-    <!-- ========================================== -->
-    <div class="view-a max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-
-      <!-- KHỐI 2: TỶ GIÁ & MÁY TÍNH QUY ĐỔI NHANH (HERO WIDGET) -->
-      <section data-wf-block="2" class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 sm:p-6 shadow-[var(--elevation-card)]">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-5 space-y-2">
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold">
-              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-              Giao dịch P2P bảo chứng uy tín
-            </div>
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)]">
-              Đổi tệ Nhân Dân Tệ (CNY) & Nạp Alipay siêu tốc
-            </h1>
-            <p class="text-xs sm:text-sm text-[var(--muted)]" data-wf-gon>
-              Kết nối trực tiếp giữa người cần đổi tiền và hàng chục thương nhân uy tín đã xác thực ký quỹ. Nhận tiền sau 3–5 phút.
-            </p>
-          </div>
-
-          <!-- Bộ tính quy đổi nhanh -->
-          <div class="lg:col-span-7 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] space-y-3">
-            <div class="text-xs font-semibold text-[var(--muted)] flex items-center justify-between">
-              <span>Tính nhanh số tiền cần đổi:</span>
-              <span class="text-emerald-800 font-medium whitespace-nowrap">Tỷ giá tham chiếu: 1&nbsp;¥ = 3.530&nbsp;₫</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 items-center">
-              <div class="sm:col-span-2 relative">
-                <label class="text-[11px] text-[var(--muted)] block mb-1">Số tiền Nhân dân tệ (¥)</label>
-                <div class="relative">
-                  <input type="number" id="calc-cny" value="5000" class="w-full h-10 pl-3 pr-8 rounded-lg bg-[var(--surface)] border border-[var(--border-strong)] text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--ring-focus)] focus:border-[var(--border-focus)]" />
-                  <span class="absolute right-3 top-2.5 text-xs font-bold text-[var(--muted)]">CNY</span>
-                </div>
-              </div>
-              <div class="sm:col-span-1 flex justify-center pt-2 sm:pt-4">
-                <div class="w-8 h-8 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] shrink-0">
-                  <i data-lucide="arrow-right-left" class="w-4 h-4"></i>
-                </div>
-              </div>
-              <div class="sm:col-span-2 relative">
-                <label class="text-[11px] text-[var(--muted)] block mb-1">Ước tính Việt Nam Đồng (₫)</label>
-                <div class="relative">
-                  <input type="text" id="calc-vnd" readonly value="17.650.000" class="w-full h-10 pl-3 pr-8 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-sm font-bold text-emerald-800 focus:outline-none" />
-                  <span class="absolute right-3 top-2.5 text-xs font-bold text-[var(--muted)]">VND</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-between pt-1 text-xs">
-              <span class="text-[var(--muted)]">Không phụ phí sàn</span>
-              <button type="button" onclick="openModal('modal-post')" class="text-[var(--primary)] font-semibold hover:underline flex items-center gap-1 h-8 px-2">
-                <span class="whitespace-nowrap">Tạo tin theo giá này</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- KHỐI 3: THANH LỌC & TAB NHU CẦU -->
-      <section data-wf-block="3" class="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3">
-        <!-- Tabs chiều giao dịch -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 w-full md:w-auto [mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)] [-webkit-mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)]">
-          <button type="button" class="h-9 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold shrink-0 flex items-center justify-center">
-            Tất cả bài mới (48)
-          </button>
-          <button type="button" class="h-9 px-3.5 rounded-lg bg-[var(--background)] hover:bg-[var(--item-hover)] text-[var(--foreground)] text-xs font-medium shrink-0 border border-[var(--border)] flex items-center justify-center">
-            Cần mua CNY (28)
-          </button>
-          <button type="button" class="h-9 px-3.5 rounded-lg bg-[var(--background)] hover:bg-[var(--item-hover)] text-[var(--foreground)] text-xs font-medium shrink-0 border border-[var(--border)] flex items-center justify-center">
-            Cần bán CNY (14)
-          </button>
-          <button type="button" class="h-9 px-3.5 rounded-lg bg-[var(--background)] hover:bg-[var(--item-hover)] text-[var(--foreground)] text-xs font-medium shrink-0 border border-[var(--border)] flex items-center justify-center">
-            Nạp Alipay / WeChat (6)
-          </button>
-        </div>
-
-        <!-- Filters phụ -->
-        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
-          <div class="relative flex-1 sm:w-48">
-            <input type="text" placeholder="Tìm kiếm..." class="w-full h-9 pl-8 pr-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs text-[var(--foreground)] placeholder:text-neutral-600 focus:outline-none focus:ring-1 focus:ring-[var(--border-focus)]" />
-            <i data-lucide="search" class="w-3.5 h-3.5 text-[var(--muted)] absolute left-2.5 top-3"></i>
-          </div>
-          <select class="h-9 px-2.5 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs text-[var(--foreground)] focus:outline-none">
-            <option>Mọi phương thức</option>
-            <option>Chuyển khoản Vietcombank</option>
-            <option>Chuyển khoản Techcombank</option>
-            <option>Alipay QR</option>
-            <option>WeChat Pay</option>
-          </select>
-        </div>
-      </section>
-
-      <!-- KHỐI 4: LƯỚI BÀI ĐĂNG P2P (GRID) -->
-      <section data-wf-block="4">
-        
-        <!-- TRẠNG THÁI: CÓ DỮ LIỆU -->
-        <div class="state-data grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-          <!-- Card 1: Cần bán CNY (Khách mua Taobao) -->
-          <div class="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl p-4.5 space-y-3.5 transition-all shadow-[var(--elevation-card)]">
-            <div class="flex items-start justify-between gap-2">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cần bán CNY
-              </span>
-              <span class="text-[11px] text-[var(--muted)]">2 phút trước</span>
-            </div>
-
-            <div class="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
-              <div>
-                <p class="text-xs text-[var(--muted)]">Số lượng cần đổi</p>
-                <div class="text-xl font-bold text-[var(--foreground)]">12.500 <span class="text-sm font-semibold">¥</span></div>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--muted)]">Tỷ giá mong muốn</p>
-                <div class="text-base font-bold text-blue-600 whitespace-nowrap">3.535&nbsp;₫/¥</div>
-              </div>
-            </div>
-
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Ước tính quy đổi:</span>
-                <span class="font-semibold text-[var(--foreground)] whitespace-nowrap">44.187.500&nbsp;₫</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Nhận tiền qua:</span>
-                <span class="font-medium text-[var(--foreground)] flex items-center gap-1">
-                  <span class="w-2 h-2 rounded-full bg-green-500"></span> Vietcombank · Alipay
-                </span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]" data-wf-gon>
-                <span>Hạn mức chào giá:</span>
-                <span class="text-[var(--foreground)]">Tối thiểu 3.000 ¥</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0">
-                  MC
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-[var(--foreground)] truncate">Nguyễn Hoàng Minh Châu</p>
-                  <p class="text-[10px] text-[var(--muted)]" data-wf-lap>42 giao dịch · 100%</p>
-                </div>
-              </div>
-              <button type="button" onclick="openModal('modal-quote', '12.500 ¥', 'Nguyễn Hoàng Minh Châu')" class="h-8 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)] shrink-0 transition-colors flex items-center justify-center">
-                Chào giá
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 2: Cần mua CNY (Nạp ví Alipay thanh toán 1688) -->
-          <div class="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl p-4.5 space-y-3.5 transition-all shadow-[var(--elevation-card)]">
-            <div class="flex items-start justify-between gap-2">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Cần mua CNY
-              </span>
-              <span class="text-[11px] text-[var(--muted)]">8 phút trước</span>
-            </div>
-
-            <div class="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
-              <div>
-                <p class="text-xs text-[var(--muted)]">Số lượng cần mua</p>
-                <div class="text-xl font-bold text-[var(--foreground)]">30.000 <span class="text-sm font-semibold">¥</span></div>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--muted)]">Tỷ giá đề xuất</p>
-                <div class="text-base font-bold text-blue-600 whitespace-nowrap">3.520&nbsp;₫/¥</div>
-              </div>
-            </div>
-
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Ước tính thanh toán:</span>
-                <span class="font-semibold text-[var(--foreground)] whitespace-nowrap">105.600.000&nbsp;₫</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Kênh nhận CNY:</span>
-                <span class="font-medium text-[var(--foreground)] flex items-center gap-1">
-                  <span class="w-2 h-2 rounded-full bg-blue-500"></span> Ví Alipay cá nhân
-                </span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]" data-wf-gon>
-                <span>Hạn mức chào giá:</span>
-                <span class="text-[var(--foreground)]">Từ 5.000 ¥ đến hết</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold text-xs flex items-center justify-center shrink-0">
-                  DL
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-[var(--foreground)] truncate">Đại Lý Đổi Tệ Hà Khẩu</p>
-                  <p class="text-[10px] text-amber-700 font-medium" data-wf-lap>★ Bảo chứng ký quỹ 50tr</p>
-                </div>
-              </div>
-              <button type="button" onclick="openModal('modal-quote', '30.000 ¥', 'Đại Lý Đổi Tệ Hà Khẩu')" class="h-8 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)] shrink-0 transition-colors flex items-center justify-center">
-                Chào giá
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 3: Nạp Alipay hộ / Thanh toán QR -->
-          <div class="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl p-4.5 space-y-3.5 transition-all shadow-[var(--elevation-card)]">
-            <div class="flex items-start justify-between gap-2">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Quét mã Alipay / 1688
-              </span>
-              <span class="text-[11px] text-[var(--muted)]">15 phút trước</span>
-            </div>
-
-            <div class="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
-              <div>
-                <p class="text-xs text-[var(--muted)]">Số lượng đơn hàng</p>
-                <div class="text-xl font-bold text-[var(--foreground)]">4.200 <span class="text-sm font-semibold">¥</span></div>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--muted)]">Tỷ giá trần</p>
-                <div class="text-base font-bold text-blue-600 whitespace-nowrap">3.540&nbsp;₫/¥</div>
-              </div>
-            </div>
-
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Ước tính thanh toán:</span>
-                <span class="font-semibold text-[var(--foreground)] whitespace-nowrap">14.868.000&nbsp;₫</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Thanh toán:</span>
-                <span class="font-medium text-[var(--foreground)]">Quét QR đơn hàng Taobao</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]" data-wf-gon>
-                <span>Yêu cầu:</span>
-                <span class="text-[var(--foreground)]">Chụp bill xác nhận ngay</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-neutral-200 text-neutral-700 font-bold text-xs flex items-center justify-center shrink-0">
-                  TV
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-[var(--foreground)] truncate">Trần Văn Long</p>
-                  <p class="text-[10px] text-[var(--muted)]" data-wf-lap>18 giao dịch · 98%</p>
-                </div>
-              </div>
-              <button type="button" onclick="openModal('modal-quote', '4.200 ¥', 'Trần Văn Long')" class="h-8 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)] shrink-0 transition-colors flex items-center justify-center">
-                Chào giá
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 4: Số tiền lớn (Stress test) -->
-          <div class="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl p-4.5 space-y-3.5 transition-all shadow-[var(--elevation-card)]">
-            <div class="flex items-start justify-between gap-2">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cần bán CNY
-              </span>
-              <span class="text-[11px] text-[var(--muted)]">24 phút trước</span>
-            </div>
-
-            <div class="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
-              <div>
-                <p class="text-xs text-[var(--muted)]">Số lượng lớn</p>
-                <div class="text-xl font-bold text-[var(--foreground)]">150.000 <span class="text-sm font-semibold">¥</span></div>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--muted)]">Tỷ giá</p>
-                <div class="text-base font-bold text-blue-600 whitespace-nowrap">3.538&nbsp;₫/¥</div>
-              </div>
-            </div>
-
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Tổng giá trị:</span>
-                <span class="font-bold text-[var(--foreground)] whitespace-nowrap">530.700.000&nbsp;₫</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Hình thức:</span>
-                <span class="font-medium text-[var(--foreground)]">Chia nhỏ hoặc nhận trọn gói</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]" data-wf-gon>
-                <span>Hạn mức chia nhỏ:</span>
-                <span class="text-[var(--foreground)]">Từ 20.000 ¥/lệnh</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center shrink-0">
-                  VN
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-[var(--foreground)] truncate">Logistics Vận Chuyển</p>
-                  <p class="text-[10px] text-emerald-700 font-medium" data-wf-lap>Xác thực doanh nghiệp</p>
-                </div>
-              </div>
-              <button type="button" onclick="openModal('modal-quote', '150.000 ¥', 'Logistics Vận Chuyển')" class="h-8 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)] shrink-0 transition-colors flex items-center justify-center">
-                Chào giá
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 5: Cần mua CNY hạn mức nhỏ (Du học sinh) -->
-          <div class="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl p-4.5 space-y-3.5 transition-all shadow-[var(--elevation-card)]">
-            <div class="flex items-start justify-between gap-2">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Cần mua CNY
-              </span>
-              <span class="text-[11px] text-[var(--muted)]">35 phút trước</span>
-            </div>
-
-            <div class="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
-              <div>
-                <p class="text-xs text-[var(--muted)]">Số lượng sinh hoạt</p>
-                <div class="text-xl font-bold text-[var(--foreground)]">1.500 <span class="text-sm font-semibold">¥</span></div>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--muted)]">Tỷ giá</p>
-                <div class="text-base font-bold text-blue-600 whitespace-nowrap">3.525&nbsp;₫/¥</div>
-              </div>
-            </div>
-
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Ước tính thanh toán:</span>
-                <span class="font-semibold text-[var(--foreground)] whitespace-nowrap">5.287.500&nbsp;₫</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Kênh nhận:</span>
-                <span class="font-medium text-[var(--foreground)]">WeChat Pay Hồng Bao</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]" data-wf-gon>
-                <span>Tốc độ:</span>
-                <span class="text-emerald-800 font-medium">Cần gấp trong 15 phút</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-pink-100 text-pink-700 font-bold text-xs flex items-center justify-center shrink-0">
-                  LH
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-[var(--foreground)] truncate">Lê Hoàng Yến Nhi</p>
-                  <p class="text-[10px] text-[var(--muted)]" data-wf-lap>Thành viên mới</p>
-                </div>
-              </div>
-              <button type="button" onclick="openModal('modal-quote', '1.500 ¥', 'Lê Hoàng Yến Nhi')" class="h-8 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)] shrink-0 transition-colors flex items-center justify-center">
-                Chào giá
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 6: Đang có chào giá cạnh tranh -->
-          <div class="bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl p-4.5 space-y-3.5 transition-all shadow-[var(--elevation-card)]">
-            <div class="flex items-start justify-between gap-2">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cần bán CNY
-              </span>
-              <span class="text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Đã có 4 chào giá</span>
-            </div>
-
-            <div class="flex items-baseline justify-between border-b border-[var(--border)] pb-3">
-              <div>
-                <p class="text-xs text-[var(--muted)]">Số lượng</p>
-                <div class="text-xl font-bold text-[var(--foreground)]">8.000 <span class="text-sm font-semibold">¥</span></div>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-[var(--muted)]">Giá chào cao nhất</p>
-                <div class="text-base font-bold text-emerald-800 whitespace-nowrap">3.542&nbsp;₫/¥</div>
-              </div>
-            </div>
-
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Thu về ước tính:</span>
-                <span class="font-semibold text-[var(--foreground)] whitespace-nowrap">28.336.000&nbsp;₫</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]">
-                <span>Nhận tiền qua:</span>
-                <span class="font-medium text-[var(--foreground)]">Techcombank QR 24/7</span>
-              </div>
-              <div class="flex justify-between text-[var(--muted)]" data-wf-gon>
-                <span>Hết hạn chào giá:</span>
-                <span class="text-red-600 font-medium">Còn 12 phút</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--border)] flex items-center justify-between gap-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0">
-                  PQ
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-[var(--foreground)] truncate">Phạm Quốc Bảo</p>
-                  <p class="text-[10px] text-[var(--muted)]" data-wf-lap>85 giao dịch · 99,2%</p>
-                </div>
-              </div>
-              <button type="button" onclick="openModal('modal-quote', '8.000 ¥', 'Phạm Quốc Bảo')" class="h-8 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)] shrink-0 transition-colors flex items-center justify-center">
-                Chào giá
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- TRẠNG THÁI: ĐANG TẢI (SKELETON) -->
-        <div class="state-loading grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4.5 space-y-4 animate-pulse">
-            <div class="flex justify-between"><div class="h-5 w-24 bg-neutral-200 rounded"></div><div class="h-4 w-16 bg-neutral-200 rounded"></div></div>
-            <div class="flex justify-between"><div class="h-8 w-28 bg-neutral-200 rounded"></div><div class="h-8 w-20 bg-neutral-200 rounded"></div></div>
-            <div class="space-y-2"><div class="h-4 w-full bg-neutral-200 rounded"></div><div class="h-4 w-3/4 bg-neutral-200 rounded"></div></div>
-            <div class="pt-2 border-t border-[var(--border)] flex justify-between"><div class="h-7 w-32 bg-neutral-200 rounded"></div><div class="h-7 w-20 bg-neutral-200 rounded"></div></div>
-          </div>
-          <div class="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4.5 space-y-4 animate-pulse">
-            <div class="flex justify-between"><div class="h-5 w-24 bg-neutral-200 rounded"></div><div class="h-4 w-16 bg-neutral-200 rounded"></div></div>
-            <div class="flex justify-between"><div class="h-8 w-28 bg-neutral-200 rounded"></div><div class="h-8 w-20 bg-neutral-200 rounded"></div></div>
-            <div class="space-y-2"><div class="h-4 w-full bg-neutral-200 rounded"></div><div class="h-4 w-3/4 bg-neutral-200 rounded"></div></div>
-            <div class="pt-2 border-t border-[var(--border)] flex justify-between"><div class="h-7 w-32 bg-neutral-200 rounded"></div><div class="h-7 w-20 bg-neutral-200 rounded"></div></div>
-          </div>
-          <div class="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4.5 space-y-4 animate-pulse">
-            <div class="flex justify-between"><div class="h-5 w-24 bg-neutral-200 rounded"></div><div class="h-4 w-16 bg-neutral-200 rounded"></div></div>
-            <div class="flex justify-between"><div class="h-8 w-28 bg-neutral-200 rounded"></div><div class="h-8 w-20 bg-neutral-200 rounded"></div></div>
-            <div class="space-y-2"><div class="h-4 w-full bg-neutral-200 rounded"></div><div class="h-4 w-3/4 bg-neutral-200 rounded"></div></div>
-            <div class="pt-2 border-t border-[var(--border)] flex justify-between"><div class="h-7 w-32 bg-neutral-200 rounded"></div><div class="h-7 w-20 bg-neutral-200 rounded"></div></div>
-          </div>
-        </div>
-
-        <!-- TRẠNG THÁI: RỖNG (EMPTY STATE) -->
-        <div class="state-empty bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-12 text-center max-w-lg mx-auto space-y-4 my-8">
-          <div class="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mx-auto text-neutral-400 shrink-0">
-            <i data-lucide="inbox" class="w-6 h-6"></i>
-          </div>
-          <div class="space-y-1">
-            <h3 class="text-base font-semibold text-[var(--foreground)]">Chưa có bài đăng đổi tệ nào</h3>
-            <p class="text-xs text-[var(--muted)]">Không tìm thấy bài đăng phù hợp với bộ lọc hiện tại của bạn.</p>
-          </div>
-          <div class="flex items-center justify-center gap-3 pt-2">
-            <button type="button" class="h-9 px-3.5 rounded-lg border border-[var(--border-strong)] text-xs font-medium text-[var(--foreground)] hover:bg-[var(--item-hover)]">
-              Xoá bộ lọc
-            </button>
-            <button type="button" onclick="openModal('modal-post')" class="h-9 px-3.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)]">
-              Đăng tin đầu tiên
-            </button>
-          </div>
-        </div>
-
-        <!-- TRẠNG THÁI: LỖI (ERROR STATE) -->
-        <div class="state-error bg-[var(--surface)] border border-red-200 rounded-2xl p-10 text-center max-w-lg mx-auto space-y-3 my-8">
-          <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto shrink-0">
-            <i data-lucide="alert-circle" class="w-5 h-5"></i>
-          </div>
-          <h3 class="text-sm font-semibold text-red-900">Không tải được dữ liệu bảng tin</h3>
-          <p class="text-xs text-[var(--muted)]">Mất kết nối máy chủ thời gian thực. Vui lòng kiểm tra lại đường truyền.</p>
-          <button type="button" onclick="location.reload()" class="h-9 px-4 rounded-lg bg-red-600 text-white text-xs font-semibold hover:bg-red-700">
-            Thử tải lại
-          </button>
-        </div>
-
-      </section>
-
-      <!-- KHỐI 5: TOP THƯƠNG NHÂN UY TÍN & QUY TRÌNH GIAO DỊCH AN TOÀN -->
-      <section data-wf-block="5" class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
-        <div class="lg:col-span-2 bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-[var(--foreground)] flex items-center gap-2">
-              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-800"></i>
-              Thương nhân bảo chứng uy tín (Ký quỹ sàn)
-            </h3>
-            <span class="text-xs text-[var(--muted)]">Được xác minh danh tính 100%</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                  HT
-                </div>
-                <div>
-                  <p class="text-xs font-bold text-[var(--foreground)]">Hà Tệ Chợ Cửa Khẩu</p>
-                  <p class="text-[11px] text-[var(--muted)]">1.240 lệnh · Ký quỹ: 100tr</p>
-                </div>
-              </div>
-              <span class="text-xs font-bold text-emerald-800">★ 5.0</span>
-            </div>
-            <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                  TN
-                </div>
-                <div>
-                  <p class="text-xs font-bold text-[var(--foreground)]">Tiểu Thương Bằng Tường</p>
-                  <p class="text-[11px] text-[var(--muted)]">890 lệnh · Ký quỹ: 50tr</p>
-                </div>
-              </div>
-              <span class="text-xs font-bold text-emerald-800">★ 4.9</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 space-y-3">
-          <h3 class="text-sm font-bold text-[var(--foreground)] flex items-center gap-2">
-            <i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>
-            3 bước giao dịch P2P an toàn
-          </h3>
-          <ul class="text-xs space-y-2.5 text-[var(--muted)]">
-            <li class="flex items-start gap-2">
-              <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
-              <span>Đăng tin nhu cầu hoặc chọn bài đăng có tỷ giá tốt nhất.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
-              <span>Thương nhân gửi chào giá cạnh tranh. Bạn chọn chào giá tốt nhất.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">3</span>
-              <span>Kiểm tra tài khoản nhận tiền thật trước khi bấm xác nhận hoàn tất.</span>
-            </li>
-          </ul>
-        </div>
-      </section>
-
+      <div class="flex shrink-0 items-center gap-2">
+        <button type="button" data-action="create" class="${btnPrimary} max-sm:h-9 max-sm:px-3">${icon("plus")}<span class="sm:hidden">Đăng tin</span><span class="max-sm:hidden">Đăng tin đổi tệ</span></button>
+        <div id="header-account" class="flex items-center gap-2">${accountButtons()}</div>
+      </div>
     </div>
+  </header>`;
+}
 
-    <!-- ========================================== -->
-    <!-- PHƯƠNG ÁN B: BẢNG LỆNH P2P TẬP TRUNG (ORDERBOOK) -->
-    <!-- ========================================== -->
-    <div class="view-b max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-
-      <!-- KHỐI 7: THANH CHUYỂN TAB MUA / BÁN TO -->
-      <section data-wf-block="7" class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-1.5 sm:gap-2 bg-[var(--background)] p-1 rounded-xl border border-[var(--border)] shrink-0">
-          <button type="button" class="h-10 px-3 sm:px-6 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs sm:text-sm font-bold shadow-sm flex items-center justify-center shrink-0">
-            <span class="sm:hidden">Mua CNY</span>
-            <span class="hidden sm:inline">Mua Nhân Dân Tệ (CNY)</span>
-          </button>
-          <button type="button" class="h-10 px-3 sm:px-6 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] text-xs sm:text-sm font-semibold flex items-center justify-center shrink-0">
-            <span class="sm:hidden">Bán CNY</span>
-            <span class="hidden sm:inline">Bán Nhân Dân Tệ (CNY)</span>
-          </button>
-        </div>
-
-        <div class="flex items-center gap-6 text-xs font-medium">
-          <div>Giá tham chiếu tự do: <b class="text-base font-bold text-[var(--foreground)] ml-1 whitespace-nowrap">3.530&nbsp;₫</b></div>
-          <div class="text-[var(--muted)]">Biên độ ngày: <span class="text-emerald-800 font-semibold">+0,4%</span></div>
-        </div>
-      </section>
-
-      <!-- KHỐI 8: BỘ LỌC DÒNG TABLE -->
-      <section data-wf-block="8" class="flex flex-wrap items-center gap-3 text-xs">
-        <div class="relative w-48">
-          <input type="text" placeholder="Nhập số tiền..." class="w-full h-9 pl-3 pr-8 rounded-lg bg-[var(--surface)] border border-[var(--border-strong)] text-xs text-[var(--foreground)] placeholder:text-neutral-600 focus:outline-none" />
-          <span class="absolute right-3 top-2.5 text-[var(--muted)] font-semibold">¥</span>
-        </div>
-        <select class="h-9 px-3 rounded-lg bg-[var(--surface)] border border-[var(--border-strong)] text-xs focus:outline-none">
-          <option>Tất cả ngân hàng thanh toán</option>
-          <option>Vietcombank</option>
-          <option>Techcombank</option>
-          <option>MB Bank</option>
-        </select>
-        <label class="flex items-center gap-2 ml-auto cursor-pointer text-[var(--muted)] min-h-[32px]">
-          <input type="checkbox" checked class="w-4 h-4 rounded border-neutral-300 text-[var(--primary)] focus:ring-0" />
-          Chỉ hiện thương nhân đã ký quỹ
-        </label>
-      </section>
-
-      <!-- KHỐI 9: BẢNG DỮ LIỆU ĐỔI TỆ (DATA TABLE) -->
-      <div data-wf-block="9" data-wf-block-out class="relative">
-        <section class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-[var(--elevation-card)]">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs whitespace-nowrap min-w-[640px]">
-            <thead class="bg-[var(--background)] border-b border-[var(--border)] text-[var(--muted)] font-semibold">
-              <tr>
-                <th class="py-3 px-4">Người bán / Thương nhân</th>
-                <th class="py-3 px-4">Tỷ giá</th>
-                <th class="py-3 px-4">Khả dụng &amp; Hạn mức</th>
-                <th class="py-3 px-4">Kênh thanh toán</th>
-                <th class="py-3 px-4 text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-[var(--border)]">
-              <tr class="hover:bg-[var(--item-hover)] transition-colors">
-                <td class="py-3.5 px-4">
-                  <div class="font-bold text-sm text-[var(--foreground)] flex items-center gap-1.5">
-                    Hà Tệ Chợ Cửa Khẩu
-                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i>
-                  </div>
-                  <div class="text-[11px] text-[var(--muted)]">1.240 lệnh · 99,8% thành công</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="text-base font-bold text-emerald-800">3.525&nbsp;₫</div>
-                  <div class="text-[10px] text-[var(--muted)]">Tỷ giá tốt nhất</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="font-semibold text-[var(--foreground)]">Khả dụng: 45.000 ¥</div>
-                  <div class="text-[11px] text-[var(--muted)]">Hạn mức: 2.000 ¥ – 20.000 ¥</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-neutral-100 text-[11px] font-medium">
-                    Vietcombank · Techcombank
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 text-right">
-                  <button type="button" onclick="openModal('modal-quote', 'Khả dụng 45.000 ¥', 'Hà Tệ Chợ Cửa Khẩu')" class="h-8 px-4 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold hover:bg-[var(--primary-hover)] transition-colors inline-flex items-center justify-center">
-                    Mua CNY
-                  </button>
-                </td>
-              </tr>
-              <tr class="hover:bg-[var(--item-hover)] transition-colors">
-                <td class="py-3.5 px-4">
-                  <div class="font-bold text-sm text-[var(--foreground)] flex items-center gap-1.5">
-                    Tiểu Thương Bằng Tường
-                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i>
-                  </div>
-                  <div class="text-[11px] text-[var(--muted)]">890 lệnh · 99,5% thành công</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="text-base font-bold text-[var(--foreground)]">3.528&nbsp;₫</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="font-semibold text-[var(--foreground)]">Khả dụng: 80.000 ¥</div>
-                  <div class="text-[11px] text-[var(--muted)]">Hạn mức: 5.000 ¥ – 50.000 ¥</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-neutral-100 text-[11px] font-medium">
-                    MB Bank · Alipay QR
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 text-right">
-                  <button type="button" onclick="openModal('modal-quote', 'Khả dụng 80.000 ¥', 'Tiểu Thương Bằng Tường')" class="h-8 px-4 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold hover:bg-[var(--primary-hover)] transition-colors inline-flex items-center justify-center">
-                    Mua CNY
-                  </button>
-                </td>
-              </tr>
-              <tr class="hover:bg-[var(--item-hover)] transition-colors">
-                <td class="py-3.5 px-4">
-                  <div class="font-bold text-sm text-[var(--foreground)]">
-                    Lê Hải Yến (Du học sinh Thượng Hải)
-                  </div>
-                  <div class="text-[11px] text-[var(--muted)]">35 lệnh · 100% thành công</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="text-base font-bold text-[var(--foreground)]">3.530&nbsp;₫</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="font-semibold text-[var(--foreground)]">Khả dụng: 6.500 ¥</div>
-                  <div class="text-[11px] text-[var(--muted)]">Hạn mức: 1.000 ¥ – 6.500 ¥</div>
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-neutral-100 text-[11px] font-medium">
-                    WeChat Pay · Vietcombank
-                  </div>
-                </td>
-                <td class="py-3.5 px-4 text-right">
-                  <button type="button" onclick="openModal('modal-quote', 'Khả dụng 6.500 ¥', 'Lê Hải Yến')" class="h-8 px-4 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold hover:bg-[var(--primary-hover)] transition-colors inline-flex items-center justify-center">
-                    Mua CNY
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </div>
-
-      <!-- KHỐI 10: PHÂN TRANG -->
-      <section data-wf-block="10" class="flex items-center justify-between text-xs text-[var(--muted)] pt-2">
-        <span>Hiển thị 1–10 trên 48 bài đăng</span>
-        <div class="flex items-center gap-1">
-          <button type="button" class="w-8 h-8 rounded-lg border border-[var(--border)] flex items-center justify-center hover:bg-[var(--item-hover)]">‹</button>
-          <button type="button" class="w-8 h-8 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold flex items-center justify-center">1</button>
-          <button type="button" class="w-8 h-8 rounded-lg border border-[var(--border)] flex items-center justify-center hover:bg-[var(--item-hover)]">2</button>
-          <button type="button" class="w-8 h-8 rounded-lg border border-[var(--border)] flex items-center justify-center hover:bg-[var(--item-hover)]">3</button>
-          <button type="button" class="w-8 h-8 rounded-lg border border-[var(--border)] flex items-center justify-center hover:bg-[var(--item-hover)]">›</button>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- ========================================== -->
-    <!-- PHƯƠNG ÁN C: HAI CỘT (SPLIT VIEW) -->
-    <!-- ========================================== -->
-    <div class="view-c max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-      
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- KHỐI 11: CỘT TRÁI - FORM ĐĂNG TIN NHANH CỐ ĐỊNH -->
-        <aside data-wf-block="11" data-wf-block-out class="lg:col-span-4 bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 space-y-4 shadow-[var(--elevation-card)] sticky top-20">
-          <div class="border-b border-[var(--border)] pb-3">
-            <h2 class="text-base font-bold text-[var(--foreground)]">Đăng tin đổi tệ tức thì</h2>
-            <p class="text-xs text-[var(--muted)]">Nhận chào giá từ thương nhân trong 5 phút</p>
-          </div>
-
-          <form class="space-y-3.5" onsubmit="event.preventDefault(); alert('Đã gửi yêu cầu đăng bài!');">
-            <div>
-              <label class="text-xs font-semibold text-[var(--muted)] block mb-1.5">Bạn đang muốn:</label>
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" class="h-9 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold text-center flex items-center justify-center">
-                  Mua Nhân Dân Tệ
-                </button>
-                <button type="button" class="h-9 rounded-lg bg-[var(--background)] border border-[var(--border)] text-xs font-semibold text-center text-[var(--foreground)] flex items-center justify-center">
-                  Bán Nhân Dân Tệ
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Số lượng CNY cần mua</label>
-              <div class="relative">
-                <input type="number" value="10000" class="w-full h-10 pl-3 pr-8 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm font-bold focus:outline-none" />
-                <span class="absolute right-3 top-2.5 font-bold text-xs text-[var(--muted)]">¥</span>
-              </div>
-            </div>
-
-            <div>
-              <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Tỷ giá mong muốn tối đa</label>
-              <div class="relative">
-                <input type="number" value="3525" class="w-full h-10 pl-3 pr-8 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm font-bold focus:outline-none" />
-                <span class="absolute right-3 top-2.5 font-semibold text-xs text-[var(--muted)]">₫/¥</span>
-              </div>
-            </div>
-
-            <div class="p-3 rounded-lg bg-blue-50/50 border border-blue-100 text-xs space-y-1">
-              <div class="flex justify-between text-blue-900">
-                <span>Ước tính thanh toán:</span>
-                <span class="font-bold text-sm text-blue-700 whitespace-nowrap">35.250.000&nbsp;₫</span>
-              </div>
-            </div>
-
-            <div>
-              <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Phương thức nhận tiền</label>
-              <select class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs focus:outline-none">
-                <option>Ví Alipay cá nhân (Quét QR)</option>
-                <option>WeChat Pay</option>
-                <option>Chuyển khoản ngân hàng Trung Quốc</option>
-              </select>
-            </div>
-
-            <button type="submit" class="w-full h-10 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold hover:bg-[var(--primary-hover)] transition-colors shadow-sm flex items-center justify-center">
-              Đăng tin tìm thương nhân
-            </button>
-          </form>
-        </aside>
-
-        <!-- KHỐI 12: CỘT PHẢI - FEED BÀI ĐĂNG THỜI GIAN THỰC -->
-        <div data-wf-block="12" class="lg:col-span-8 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-[var(--foreground)] flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-              Bảng tin bài đăng mới (Live Feed)
-            </h3>
-            <span class="text-xs text-[var(--muted)]">Tự động cập nhật mỗi 10 giây</span>
-          </div>
-
-          <div class="space-y-3">
-            <div class="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 shadow-sm hover:border-[var(--border-strong)] transition-all">
-              <div class="space-y-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700">CẦN MUA</span>
-                  <span class="text-sm font-bold text-[var(--foreground)]">18.000 ¥</span>
-                  <span class="text-xs text-[var(--muted)] whitespace-nowrap">⇄ 63.450.000&nbsp;₫</span>
-                </div>
-                <p class="text-xs text-[var(--muted)]">Người đăng: <b class="text-[var(--foreground)]">Vũ Đức Trọng</b> (12 giao dịch) · Kênh: Alipay QR</p>
-              </div>
-              <div class="flex items-center gap-3 shrink-0">
-                <div class="text-right">
-                  <span class="text-xs text-[var(--muted)] block">Tỷ giá</span>
-                  <span class="text-sm font-bold text-blue-600 whitespace-nowrap">3.525&nbsp;₫</span>
-                </div>
-                <button type="button" onclick="openModal('modal-quote', '18.000 ¥', 'Vũ Đức Trọng')" class="h-8 px-3 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold flex items-center justify-center">
-                  Chào giá
-                </button>
-              </div>
-            </div>
-
-            <div class="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 shadow-sm hover:border-[var(--border-strong)] transition-all">
-              <div class="space-y-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700">CẦN BÁN</span>
-                  <span class="text-sm font-bold text-[var(--foreground)]">5.000 ¥</span>
-                  <span class="text-xs text-[var(--muted)] whitespace-nowrap">⇄ 17.675.000&nbsp;₫</span>
-                </div>
-                <p class="text-xs text-[var(--muted)]">Người đăng: <b class="text-[var(--foreground)]">Phan Thanh Tùng</b> (48 giao dịch) · Kênh: Vietcombank</p>
-              </div>
-              <div class="flex items-center gap-3 shrink-0">
-                <div class="text-right">
-                  <span class="text-xs text-[var(--muted)] block">Tỷ giá</span>
-                  <span class="text-sm font-bold text-emerald-800 whitespace-nowrap">3.535&nbsp;₫</span>
-                </div>
-                <button type="button" onclick="openModal('modal-quote', '5.000 ¥', 'Phan Thanh Tùng')" class="h-8 px-3 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold flex items-center justify-center">
-                  Chào giá
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- KHỐI 6: CHÂN TRANG FOOTER -->
-    <footer data-wf-block="6" class="border-t border-[var(--border)] bg-[var(--surface)] mt-12 py-8 text-xs text-[var(--muted)]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-[var(--foreground)]">doite.vn</span>
-          <span>© 2026 Nền tảng kết nối giao dịch tiền tệ P2P Việt — Trung.</span>
-        </div>
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs">
-          <a href="#" class="h-8 inline-flex items-center hover:underline whitespace-nowrap">Quy định giao dịch an toàn</a>
-          <a href="#" class="h-8 inline-flex items-center hover:underline whitespace-nowrap">Điều khoản thương nhân</a>
-          <a href="#" class="h-8 inline-flex items-center hover:underline whitespace-nowrap">Hỗ trợ khiếu nại</a>
+// ---------------------------------------------------------------- khối 2: tỷ giá + quy đổi
+function rateStrip() {
+  return `
+  <section aria-label="Tỷ giá và quy đổi" class="mx-auto mt-4 max-w-6xl px-4 sm:px-6">
+    <div class="${card} flex flex-col gap-3 p-4 sm:p-5 md:flex-row md:items-center md:gap-6">
+      <div>
+        <p class="flex items-center gap-1.5 text-xs text-muted"><span class="dot text-success"></span>Tỷ giá tham chiếu · ${REFERENCE.updated}</p>
+        <div class="mt-1 flex items-baseline gap-4">
+          <span class="text-sm text-muted">Mua <b class="text-xl font-bold text-foreground tabular">${fmt(REFERENCE.buy)}</b></span>
+          <span class="text-sm text-muted">Bán <b class="text-xl font-bold text-foreground tabular">${fmt(REFERENCE.sell)}</b></span>
         </div>
       </div>
-    </footer>
-
-  </main>
-
-  <!-- ========================================== -->
-  <!-- MODAL 1: ĐĂNG TIN ĐỔI TỆ MỚI (POPUP FORM) -->
-  <!-- ========================================== -->
-  <div id="modal-post" class="modal-backdrop" onclick="if(event.target===this) closeModal('modal-post')">
-    <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-lg shadow-[var(--elevation-modal)] space-y-4">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
-        <h3 class="text-base font-bold text-[var(--foreground)] flex items-center gap-2">
-          <i data-lucide="plus-circle" class="w-5 h-5 text-[var(--primary)]"></i>
-          Đăng bài đổi tệ Nhân Dân Tệ (CNY)
-        </h3>
-        <button type="button" onclick="closeModal('modal-post')" class="text-[var(--muted)] hover:text-[var(--foreground)] p-1 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <form class="space-y-3.5" onsubmit="event.preventDefault(); alert('Đăng tin thành công! Tin của bạn đã hiển thị đầu danh sách.'); closeModal('modal-post');">
-        <div>
-          <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Loại nhu cầu giao dịch</label>
-          <div class="grid grid-cols-3 gap-2">
-            <label class="flex items-center justify-center gap-1.5 p-2 rounded-lg border border-[var(--border)] bg-[var(--background)] cursor-pointer text-xs font-semibold text-[var(--foreground)]">
-              <input type="radio" name="post-type" checked class="hidden" />
-              Cần mua CNY
-            </label>
-            <label class="flex items-center justify-center gap-1.5 p-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] cursor-pointer text-xs font-medium text-[var(--muted)]">
-              <input type="radio" name="post-type" class="hidden" />
-              Cần bán CNY
-            </label>
-            <label class="flex items-center justify-center gap-1.5 p-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] cursor-pointer text-xs font-medium text-[var(--muted)]">
-              <input type="radio" name="post-type" class="hidden" />
-              Nạp Alipay
-            </label>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Số lượng tệ (¥)</label>
-            <input type="number" placeholder="VD: 5000" required class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm font-bold focus:outline-none" />
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Tỷ giá mong muốn (₫/¥)</label>
-            <input type="number" placeholder="VD: 3520" required class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm font-bold focus:outline-none" />
-          </div>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Phương thức nhận / gửi tiền</label>
-          <select class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs focus:outline-none">
-            <option>Chuyển khoản Ngân hàng (Vietcombank / Techcombank / MB)</option>
-            <option>Quét mã QR Alipay</option>
-            <option>WeChat Pay</option>
-            <option>Tiền mặt trực tiếp (Hà Nội / TP.HCM)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Ghi chú thêm (không bắt buộc)</label>
-          <input type="text" placeholder="VD: Cần gấp thanh toán Taobao..." class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs focus:outline-none" />
-        </div>
-
-        <div class="pt-3 border-t border-[var(--border)] flex items-center justify-end gap-3">
-          <button type="button" onclick="closeModal('modal-post')" class="h-9 px-4 rounded-lg border border-[var(--border)] text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)]">
-            Huỷ bỏ
-          </button>
-          <button type="submit" class="h-9 px-5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)]">
-            Đăng bài ngay
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- MODAL 2: ĐĂNG NHẬP / ĐĂNG KÝ NHANH -->
-  <!-- ========================================== -->
-  <div id="modal-auth" class="modal-backdrop" onclick="if(event.target===this) closeModal('modal-auth')">
-    <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-sm shadow-[var(--elevation-modal)] space-y-4">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
-        <h3 class="text-base font-bold text-[var(--foreground)]">Tài khoản doite.vn</h3>
-        <button type="button" onclick="closeModal('modal-auth')" class="text-[var(--muted)] hover:text-[var(--foreground)] p-1 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <div class="flex gap-2 p-1 bg-[var(--background)] rounded-xl border border-[var(--border)] text-xs font-semibold">
-        <button type="button" class="flex-1 h-8 rounded-lg bg-[var(--surface)] text-[var(--foreground)] shadow-sm flex items-center justify-center">Đăng nhập</button>
-        <button type="button" class="flex-1 h-8 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] flex items-center justify-center">Đăng ký mới</button>
-      </div>
-
-      <form class="space-y-3" onsubmit="event.preventDefault(); alert('Đăng nhập thành công!'); closeModal('modal-auth');">
-        <div>
-          <label class="text-xs font-medium text-[var(--muted)] block mb-1">Số điện thoại hoặc Email</label>
-          <input type="text" placeholder="0912 345 678" required class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm focus:outline-none" />
-        </div>
-        <div>
-          <label class="text-xs font-medium text-[var(--muted)] block mb-1">Mật khẩu</label>
-          <input type="password" placeholder="••••••••" required class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm focus:outline-none" />
-        </div>
-        <div class="flex items-center justify-between text-xs">
-          <label class="flex items-center gap-1.5 text-[var(--muted)] cursor-pointer">
-            <input type="checkbox" checked class="rounded text-[var(--primary)]" /> Ghi nhớ
+      <div class="hidden h-10 w-px bg-border md:block"></div>
+      <div class="flex min-w-0 flex-1 flex-col gap-1.5 md:flex-row md:items-center md:gap-4">
+        <div class="flex min-w-0 flex-wrap items-center gap-2">
+          <label class="relative min-w-0 flex-1 basis-32">
+            <span class="sr-only">Số tiền Nhân dân tệ</span>
+            <input id="convert-cny" value="5.000" inputmode="numeric" autocomplete="off" class="h-10 w-full rounded-xl pl-3 pr-10 text-sm font-semibold tabular ${field}" />
+            <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs font-medium text-muted">¥</span>
           </label>
-          <a href="#" class="text-[var(--primary)] hover:underline font-medium">Quên mật khẩu?</a>
+          ${icon("arrow-right-left", "h-4 w-4 text-muted")}
+          <div class="flex h-10 min-w-0 flex-1 basis-36 items-center justify-between rounded-xl bg-background px-3 text-sm font-semibold text-foreground tabular" aria-live="polite">
+            <span class="sr-only">Ước tính Việt Nam đồng</span><span id="convert-vnd" class="truncate">${fmt(5000 * REFERENCE.mid)}</span><span class="text-xs font-medium text-muted">₫</span>
+          </div>
         </div>
-        <button type="submit" class="w-full h-10 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold hover:bg-[var(--primary-hover)] transition-colors flex items-center justify-center">
-          Đăng nhập ngay
-        </button>
-      </form>
-
-      <div class="relative text-center my-3">
-        <span class="text-[11px] text-[var(--muted)] bg-[var(--surface)] px-2 relative z-10">hoặc tiếp tục với</span>
-        <div class="absolute inset-0 top-2.5 border-t border-[var(--border)]"></div>
+        <a href="#" data-action="create-at-rate" class="inline-flex h-8 shrink-0 items-center gap-1 rounded-md text-sm font-medium text-primary underline-offset-4 hover:underline ${ring}">Tạo tin theo giá này${icon("chevron-right")}</a>
       </div>
-
-      <button type="button" onclick="alert('Đăng nhập bằng Google'); closeModal('modal-auth');" class="w-full h-10 rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] hover:bg-[var(--item-hover)] text-xs font-semibold text-[var(--foreground)] flex items-center justify-center gap-2">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-        Đăng nhập với Google
-      </button>
     </div>
-  </div>
+  </section>`;
+}
 
-  <!-- ========================================== -->
-  <!-- MODAL 3: THƯƠNG NHÂN GỬI CHÀO GIÁ -->
-  <!-- ========================================== -->
-  <div id="modal-quote" class="modal-backdrop" onclick="if(event.target===this) closeModal('modal-quote')">
-    <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-md shadow-[var(--elevation-modal)] space-y-4">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
-        <div>
-          <h3 class="text-base font-bold text-[var(--foreground)]">Gửi chào giá giao dịch</h3>
-          <p class="text-xs text-[var(--muted)]" id="quote-target">Chào giá cho bài đăng</p>
-        </div>
-        <button type="button" onclick="closeModal('modal-quote')" class="text-[var(--muted)] hover:text-[var(--foreground)] p-1 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+// ---------------------------------------------------------------- khối 3: lọc (dính đầu trang)
+function tabs() {
+  return `
+  <div class="min-w-0 sm:fade-right sm:overflow-x-auto sm:scrollbar-none">
+    <div role="tablist" aria-label="Loại tin" class="flex w-full items-center gap-0.5 rounded-xl bg-[#ececef] p-1 sm:w-max sm:gap-1">
+      ${TABS.map(([key, label, short]) => `<button type="button" role="tab" data-tab="${key}" aria-selected="${key === filters.tab}" class="inline-flex h-8 flex-auto shrink-0 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-lg px-1 text-[13px] sm:flex-none sm:gap-1.5 sm:px-3 sm:text-sm font-medium transition-colors ${ring} ${key === filters.tab ? "bg-surface text-foreground shadow-[0_1px_2px_rgb(0_0_0/0.08)]" : "text-[#5c5c5c] hover:text-foreground"}"><span class="sm:hidden">${short}</span><span class="max-sm:hidden">${label}</span><span class="text-xs tabular max-[359px]:hidden ${key === filters.tab ? "text-muted" : ""}">${COUNTS[key]}</span></button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function dropdown(id, items, current, iconName) {
+  const label = items.find(([k]) => k === current)[1];
+  return `
+  <div class="relative shrink-0" data-dd="${id}">
+    <button type="button" data-dd-btn aria-haspopup="listbox" aria-expanded="false" class="inline-flex h-10 cursor-pointer items-center gap-2 whitespace-nowrap rounded-xl border border-border-strong bg-surface px-3 text-sm text-foreground hover:bg-item-hover ${ring}">
+      ${icon(iconName, "h-4 w-4 text-muted")}<span data-dd-label>${label}</span>${icon("chevron-down", "h-4 w-4 text-muted")}
+    </button>
+    <div data-dd-menu role="listbox" hidden class="absolute right-0 top-full z-40 mt-1.5 grid w-56 gap-1 rounded-2xl border border-border bg-surface p-1.5 shadow-popover">
+      ${items.map(([key, text]) => `<button type="button" role="option" data-value="${key}" aria-selected="${key === current}" class="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl px-3 text-left text-sm text-foreground outline-none hover:bg-item-hover focus-visible:bg-item-hover ${key === current ? "bg-item-hover font-medium" : ""}">${text}${key === current ? icon("check") : ""}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function filterBar() {
+  return `
+  <section aria-label="Bộ lọc tin" class="sticky top-16 z-20 mt-4 border-b border-border-strong bg-[color-mix(in_srgb,var(--background)_92%,transparent)]">
+    <!-- Tab và ô lọc chỉ chung một hàng từ 1280px; hẹp hơn thì xếp hai hàng để chữ nút không gãy -->
+    <div class="mx-auto flex max-w-6xl flex-col gap-2.5 px-4 py-3 sm:px-6 xl:flex-row xl:items-center xl:justify-between">
+      <div id="tabs">${tabs()}</div>
+      <div class="flex min-w-0 items-center gap-2">
+        <label class="relative min-w-0 flex-1 sm:w-44 sm:flex-none">
+          <span class="sr-only">Số tệ cần đổi</span>
+          ${icon("search", "pointer-events-none absolute inset-y-0 left-3 my-auto h-4 w-4 text-muted")}
+          <input id="filter-amount" placeholder="Số tệ cần đổi" inputmode="numeric" autocomplete="off" class="h-10 w-full rounded-xl pl-9 pr-3 text-sm placeholder:text-muted ${field}" />
+        </label>
+        <div id="dd-channel">${dropdown("channel", CHANNELS, filters.channel, "wallet")}</div>
+        <div id="dd-sort" class="max-sm:hidden">${dropdown("sort", SORTS, filters.sort, "arrow-up-down")}</div>
       </div>
-
-      <form class="space-y-3.5" onsubmit="event.preventDefault(); alert('Đã gửi báo giá tới người đăng bài! Hệ thống sẽ thông báo khi khách duyệt.'); closeModal('modal-quote');">
-        <div>
-          <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Tỷ giá bạn chào (₫/¥)</label>
-          <input type="number" value="3528" required class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-sm font-bold text-emerald-800 focus:outline-none" />
-          <p class="text-[11px] text-[var(--muted)] mt-1">Chào giá càng cạnh tranh, tỷ lệ khớp lệnh càng cao.</p>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Thời gian giữ giá cam kết</label>
-          <select class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs focus:outline-none">
-            <option>15 phút</option>
-            <option>30 phút</option>
-            <option>1 tiếng</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-[var(--muted)] block mb-1">Ghi chú cho khách hàng</label>
-          <input type="text" value="Có sẵn tài khoản Vietcombank, quét Alipay nhận tiền sau 2 phút." class="w-full h-10 px-3 rounded-lg bg-[var(--background)] border border-[var(--border-strong)] text-xs focus:outline-none" />
-        </div>
-
-        <div class="pt-3 border-t border-[var(--border)] flex items-center justify-end gap-3">
-          <button type="button" onclick="closeModal('modal-quote')" class="h-9 px-4 rounded-lg border border-[var(--border)] text-xs font-medium text-[var(--muted)]">Huỷ</button>
-          <button type="submit" class="h-9 px-5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold hover:bg-[var(--primary-hover)]">Gửi báo giá</button>
-        </div>
-      </form>
     </div>
-  </div>
+  </section>`;
+}
 
-  <!-- SCRIPT ĐIỀU KHIỂN WIREFRAME -->
-  <script>
-    new MutationObserver(() => {
-      if (document.querySelector("i[data-lucide]")) lucide.createIcons();
-    }).observe(document.body, { childList: true, subtree: true });
+// ---------------------------------------------------------------- khối 4: danh sách
+// Tin của chính mình: nền xanh rất nhạt + vạch xanh mép trái + nhãn "Tin của bạn", không có nút Chào giá
+// (không tự chào giá tin mình); máy tính ghi "Chờ chào giá" ở cột nút, điện thoại chỉ giữ nhãn để tên không bị cắt. Sắp xếp Mới nhất thì đứng đầu (visiblePosts).
+const MINE_ROW = "border-[#bfdbfe] bg-[#f5f8ff] shadow-[inset_3px_0_0_var(--primary)] lg:bg-[#f5f8ff]";
+const MINE_BADGE = `<span class="inline-flex h-5 shrink-0 items-center rounded-full bg-primary px-2 text-[11px] font-semibold text-primary-foreground">Tin của bạn</span>`;
+function rows(posts) {
+  return `
+  <!-- Dưới lg: mỗi tin một thẻ riêng, cách nhau 12px trên nền trang (tách tin rõ khi lướt). Từ lg: một bảng chung. -->
+  <div class="flex flex-col gap-3 lg:gap-0 lg:overflow-hidden lg:rounded-2xl lg:border lg:border-border lg:bg-surface">
+    <div class="hidden grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1.1fr)_auto] gap-4 border-b border-border px-5 py-2.5 text-xs font-medium text-muted lg:grid">
+      <span>Người đăng</span><span>Nhu cầu</span><span>Tỷ giá</span><span>Kênh · hạn mức</span><span class="w-24"></span>
+    </div>
+    <ul class="flex flex-col gap-3 lg:gap-0 lg:divide-y lg:divide-[#e8e8ec]">
+      ${posts.map((p) => `
+      <li data-post-id="${p.id}" ${p.mine ? 'data-mine="true"' : ""} class="grid grid-cols-1 gap-3 rounded-2xl border px-4 py-4 transition-colors sm:px-5 lg:gap-2 lg:rounded-none lg:border-0 lg:py-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1.1fr)_auto] lg:items-center lg:gap-4 ${p.mine ? MINE_ROW : "border-border bg-surface hover:bg-[#fafafb] lg:bg-transparent lg:hover:bg-[#fafafb]"}">
+        <div class="order-3 flex min-w-0 items-center gap-2.5 lg:order-none">
+          <!-- Bấm tên hoặc ảnh người đăng → trang công khai của họ (uy tín, tin khác, đánh giá) -->
+          <a href="/nguoi-dung/${encodeURIComponent(p.username)}" class="group -m-1 flex min-w-0 items-center gap-2.5 rounded-lg p-1 outline-none focus-visible:bg-item-hover">
+            ${avatar(p.initials, "h-8 w-8", p.avatarUrl)}
+            <div class="min-w-0"><p class="flex min-w-0 items-center gap-2 text-sm font-medium text-foreground"><span class="truncate underline-offset-2 group-hover:underline">${p.user}</span>${p.mine ? MINE_BADGE : ""}</p><div class="flex flex-wrap items-center gap-x-2">${trustLine(p)}</div></div>
+          </a>
+          ${p.mine ? "" : `<button type="button" data-bid="${p.id}" class="${btnSmall} ml-auto lg:hidden">Chào giá</button>`}
+        </div>
+        <div class="order-1 flex min-w-0 items-center justify-between gap-3 lg:order-none lg:block">
+          <div class="min-w-0">
+            <!-- Điện thoại: thời gian đứng cạnh nhãn loại tin (không rơi xuống đầu dòng dưới tên) -->
+            <div class="flex items-center gap-2">${typeBadge(p)}<span class="text-xs text-muted lg:hidden">${p.ago}</span></div>
+            <p class="mt-0.5 text-lg font-bold text-foreground tabular lg:text-base">${fmt(p.amount)} <span class="text-sm font-medium text-muted">¥</span></p>
+          </div>
+          <div class="text-right lg:hidden">${rateHtml(p, "text-lg")}<p class="text-xs text-muted tabular">≈ ${fmt(p.amount * p.rate)} ₫</p></div>
+        </div>
+        <div class="hidden lg:block">${rateHtml(p)}<p class="text-xs text-muted tabular">≈ ${fmt(p.amount * p.rate)} ₫</p></div>
+        <div class="order-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-sm text-foreground lg:order-none lg:block">
+          <p class="truncate">${p.channel}</p>
+          <p class="truncate text-xs text-muted">${p.limit}</p>
+          ${urgentLine(p)}
+        </div>
+        <div class="hidden w-24 flex-col items-end gap-1 lg:flex">
+          ${p.mine ? `<span class="whitespace-nowrap text-right text-xs font-medium text-primary">Chờ chào giá</span>` : `<button type="button" data-bid="${p.id}" class="${btnSmall} w-full">Chào giá</button>`}
+          <span class="text-xs text-muted">${p.ago}</span>
+        </div>
+      </li>`).join("")}
+    </ul>
+    <!-- Chưa phân trang: server trả tối đa 200 tin mới nhất (src/posts.rs). Có phân trang thì thêm lại nút "Xem thêm N tin" ở đây. -->
+  </div>`;
+}
 
-    const params = new URLSearchParams(location.search);
-    const state = {
-      v: "a",
-      gon: "0",
-      bolap: "0",
-      mau: "mau",
-      kieu: "soft",
-      sac: "neutral",
-      nhan: "xanh-duong",
-      logo: "2",
-      kho: "desktop",
-      tt: "du-lieu",
-      uu: "0"
-    };
-    for (const key of Object.keys(state)) state[key] = params.get(key) || state[key];
+function loadingState() {
+  return `<div class="flex flex-col gap-3 lg:gap-0 lg:divide-y lg:divide-[#e8e8ec] lg:overflow-hidden lg:rounded-2xl lg:border lg:border-border lg:bg-surface" aria-busy="true" aria-label="Đang tải tin đổi tệ">
+    ${[1, 2, 3, 4].map(() => `<div class="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 lg:rounded-none lg:border-0"><div class="h-8 w-8 animate-pulse rounded-full bg-[#ececef]"></div><div class="flex-1 space-y-2"><div class="h-3.5 w-40 animate-pulse rounded bg-[#ececef]"></div><div class="h-3 w-24 animate-pulse rounded bg-[#ececef]"></div></div><div class="h-5 w-20 animate-pulse rounded bg-[#ececef]"></div><div class="h-9 w-20 animate-pulse rounded-lg bg-[#ececef]"></div></div>`).join("")}
+  </div>`;
+}
+function emptyState() {
+  return `<div class="${card} flex flex-col items-center px-4 py-12 text-center">
+    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-background text-muted">${icon("search-x", "h-6 w-6")}</span>
+    <h3 class="mt-4 text-base font-semibold text-foreground">Chưa có tin hợp bộ lọc này</h3>
+    <p class="mt-1 max-w-sm text-sm text-muted">Thử bỏ lọc kênh thanh toán, hoặc đăng tin để thương nhân chào giá cho bạn.</p>
+    <div class="mt-5 flex flex-wrap justify-center gap-2"><button type="button" data-action="clear-filters" class="${btnOutline}">Xoá bộ lọc</button><button type="button" data-action="create" class="${btnPrimary}">${icon("plus")}Đăng tin đổi tệ</button></div>
+  </div>`;
+}
+function errorState() {
+  return `<div class="flex flex-col items-center rounded-2xl border border-[#fecaca] bg-danger-bg px-4 py-10 text-center" role="alert">
+    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-surface text-danger">${icon("wifi-off", "h-5 w-5")}</span>
+    <h3 class="mt-3 text-base font-semibold text-foreground">Chưa tải được danh sách tin</h3>
+    <p class="mt-1 max-w-sm text-sm text-muted">Mạng bị gián đoạn. Tỷ giá ở trên có thể chưa mới nhất.</p>
+    <button type="button" data-action="retry" class="${btnPrimary} mt-4">${icon("rotate-cw")}Thử tải lại</button>
+  </div>`;
+}
 
-    Object.assign(document.body.dataset, state);
-    Object.assign(document.documentElement.dataset, {
-      mau: state.mau,
-      kieu: state.kieu,
-      sac: state.sac,
-      nhan: state.nhan,
-      logo: state.logo
-    });
+function visiblePosts() {
+  let list = POSTS.filter((p) =>
+    (filters.tab === "all" || p.type === filters.tab) &&
+    (!filters.amount || p.amount >= filters.amount) &&
+    (filters.channel === "all" || p.channels.includes(filters.channel)));
+  if (filters.sort === "rate") list = [...list].sort((a, b) => b.rate - a.rate);
+  if (filters.sort === "amount") list = [...list].sort((a, b) => b.amount - a.amount);
+  if (filters.sort === "expiring") list = [...list].sort((a, b) => Boolean(b.urgent) - Boolean(a.urgent));
+  // Mới nhất: tin của mình lên đầu (sort ổn định, phần còn lại giữ thứ tự mới nhất)
+  if (filters.sort === "new") list = [...list].sort((a, b) => Number(b.mine) - Number(a.mine));
+  return list;
+}
 
-    if (params.has("frame")) document.body.dataset.frame = "1";
+function listBody() {
+  if (previewState === "dang-tai") return loadingState();
+  if (previewState === "loi") return errorState();
+  if (previewState === "rong") return emptyState();
+  if (postsState === "dang-tai") return loadingState();
+  if (postsState === "loi") return errorState();
+  const posts = visiblePosts();
+  return posts.length ? rows(posts) : emptyState();
+}
 
-    const linkTo = (changes) => `?${new URLSearchParams({ ...state, ...changes })}`;
+function listSection() {
+  return `
+  <section aria-labelledby="list-title" class="mx-auto mt-4 max-w-6xl px-4 sm:px-6">
+    <div class="mb-3">
+      <h1 id="list-title" class="text-lg font-semibold text-foreground sm:text-xl">Bảng tin</h1>
+      <!-- Cảnh báo an toàn (người dùng dặn 11/2026): màu hổ phách --warning trên nền --warning-bg, chữ 4.9:1 -->
+      <p class="mt-1.5 inline-flex items-start gap-2 rounded-lg border border-[#fde68a] bg-warning-bg px-3 py-2 text-sm font-medium text-warning">${icon("triangle-alert", "mt-0.5 h-4 w-4")}<span>Hãy cẩn thận khi giao dịch với các tài khoản mới</span></p>
+      <p id="post-status" role="status" hidden class="mt-2 flex items-start gap-2 rounded-lg border border-[#bbf7d0] bg-success-bg px-3 py-2 text-sm font-medium text-success"></p>
+    </div>
+    <div id="list">${listBody()}</div>
+  </section>`;
+}
 
-    function updateLinks() {
-      for (const set of document.querySelectorAll("[data-wf-param]")) {
-        const paramName = set.dataset.wfParam;
-        for (const link of set.querySelectorAll("a")) {
-          const val = link.dataset.value;
-          link.href = linkTo({ [paramName]: val });
-          if (state[paramName] === val) {
-            link.setAttribute("aria-current", "page");
-            const currentLabel = document.querySelector(`[data-wf-current="${paramName}"]`);
-            if (currentLabel) currentLabel.textContent = link.textContent.trim().split(" ")[0];
-          } else {
-            link.removeAttribute("aria-current");
-          }
-        }
-      }
+// ---------------------------------------------------------------- khối 5: thương nhân ký quỹ + 3 bước
+function trustSection() {
+  return `
+  <section aria-label="An toàn giao dịch" class="mx-auto mt-8 grid max-w-6xl grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-2">
+    <div class="${card} p-4 sm:p-5">
+      <h2 class="text-base font-semibold text-foreground">Thương nhân ký quỹ với sàn</h2>
+      <p class="mt-0.5 text-sm text-muted">Đã xác minh danh tính, tiền ký quỹ đứng ra bảo đảm giao dịch.</p>
+      <ul class="mt-3 divide-y divide-border">
+        ${MERCHANTS.map((m) => `<li class="flex items-center gap-3 py-3">${avatar(m.initials, "h-9 w-9")}<div class="min-w-0 flex-1"><p class="truncate text-sm font-medium text-foreground">${m.name}</p><p class="text-xs text-muted">${m.orders} · <span class="text-success">${m.escrow}</span></p></div><span class="inline-flex items-center gap-1 text-sm font-medium tabular">${icon("star", "h-3.5 w-3.5 text-warning")}${m.rating}</span></li>`).join("")}
+      </ul>
+    </div>
+    <div class="${card} p-4 sm:p-5">
+      <h2 class="text-base font-semibold text-foreground">3 bước giao dịch an toàn</h2>
+      <ol class="mt-3 grid gap-3">
+        ${STEPS.map((s, i) => `<li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-background text-xs font-semibold tabular">${i + 1}</span><span class="text-sm text-foreground">${s}</span></li>`).join("")}
+      </ol>
+    </div>
+  </section>`;
+}
 
-      for (const toggle of document.querySelectorAll("[data-wf-toggle]")) {
-        const param = toggle.dataset.wfToggle;
-        const isOn = state[param] === toggle.dataset.on;
-        toggle.setAttribute(toggle.getAttribute("role") === "switch" ? "aria-checked" : "aria-pressed", String(isOn));
-        toggle.href = linkTo({ [param]: isOn ? toggle.dataset.off : toggle.dataset.on });
-      }
-    }
-    updateLinks();
+// ---------------------------------------------------------------- khối 6: footer
+function footer() {
+  const link = `inline-flex min-h-8 items-center rounded-md hover:text-foreground hover:underline underline-offset-4 ${ring}`;
+  return `
+  <footer class="mt-10 border-t border-border-strong bg-surface">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-muted sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+      <p><b class="text-foreground">doite.vn</b> · © 2026 Nền tảng kết nối giao dịch tiền tệ P2P Việt – Trung</p>
+      <nav aria-label="Chính sách" class="flex flex-col gap-x-5 sm:flex-row sm:flex-wrap"><a href="#" class="${link}">Quy định giao dịch an toàn</a><a href="#" class="${link}">Điều khoản thương nhân</a><a href="#" class="${link}">Hỗ trợ khiếu nại</a></nav>
+    </div>
+  </footer>`;
+}
 
-    const reasonBox = document.querySelector("[data-wf-reason]");
-    if (reasonBox) {
-      reasonBox.open = state.uu === "1";
-      reasonBox.addEventListener("toggle", () => {
-        state.uu = reasonBox.open ? "1" : "0";
-        history.replaceState(null, "", linkTo({}));
-        updateLinks();
-      });
-    }
+// ---------------------------------------------------------------- render + tương tác
+function render() {
+  document.getElementById("app").innerHTML = `${header()}<main>${rateStrip()}${filterBar()}${listSection()}${trustSection()}</main>${footer()}`;
+}
+function refreshList() {
+  document.getElementById("list").innerHTML = listBody();
+  window.DoiteHandlers.onFiltersChange({ ...filters });
+}
+function refreshFilters() {
+  document.getElementById("tabs").innerHTML = tabs();
+  document.getElementById("dd-channel").innerHTML = dropdown("channel", CHANNELS, filters.channel, "wallet");
+  document.getElementById("dd-sort").innerHTML = dropdown("sort", SORTS, filters.sort, "arrow-up-down");
+}
+const digits = (s) => Number(String(s).replace(/\D/g, "")) || 0;
 
-    const barMenus = [...document.querySelectorAll(".wf-menu")];
-    for (const barMenu of barMenus) {
-      barMenu.addEventListener("toggle", () => {
-        if (!barMenu.open) return;
-        const summaryRect = barMenu.querySelector("summary").getBoundingClientRect();
-        Object.assign(barMenu.querySelector(".wf-popover").style, {
-          top: `${summaryRect.bottom + 6}px`,
-          left: `${summaryRect.left}px`
-        });
-      });
-    }
-    document.addEventListener("click", (event) => {
-      for (const barMenu of barMenus) if (!barMenu.contains(event.target)) barMenu.open = false;
-    });
+function closeMenus(except) {
+  document.querySelectorAll("[data-dd-menu]:not([hidden])").forEach((m) => {
+    if (m === except) return;
+    m.hidden = true;
+    m.parentElement.querySelector("[data-dd-btn]").setAttribute("aria-expanded", "false");
+  });
+}
 
-    if (state.kho === "mobile" && !params.has("frame")) {
-      const frameSource = `?${new URLSearchParams({ ...state, kho: "desktop", frame: "1" })}`;
-      document.getElementById("wf-design").innerHTML =
-        `<div style="display:grid;place-items:center;padding:24px"><iframe src="${frameSource}" title="Mobile Preview" style="width:375px;max-width:100%;height:812px;border:1px solid #ddd;border-radius:24px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,0.12)"></iframe></div>`;
-    }
+document.addEventListener("click", (event) => {
+  const t = event.target;
+  const tab = t.closest("[data-tab]");
+  if (tab) { filters.tab = tab.dataset.tab; refreshFilters(); refreshList(); document.querySelector(`[data-tab="${filters.tab}"]`).focus(); return; }
 
-    window.openModal = function(id, extra1, extra2) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (id === 'modal-quote' && extra1 && extra2) {
-        document.getElementById('quote-target').textContent = `Chào giá cho: ${extra1} — Người đăng: ${extra2}`;
-      }
-      el.classList.add('is-open');
-    };
-    window.closeModal = function(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('is-open');
-    };
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('is-open'));
-        for (const barMenu of barMenus) barMenu.open = false;
-      }
-    });
+  const ddBtn = t.closest("[data-dd-btn]");
+  if (ddBtn) {
+    const menu = ddBtn.parentElement.querySelector("[data-dd-menu]");
+    const open = menu.hidden;
+    closeMenus();
+    menu.hidden = !open;
+    ddBtn.setAttribute("aria-expanded", String(open));
+    if (open) menu.querySelector('[aria-selected="true"]')?.focus();
+    return;
+  }
+  const option = t.closest("[data-dd-menu] [role=option]");
+  if (option) {
+    const id = option.closest("[data-dd]").dataset.dd;
+    filters[id] = option.dataset.value;
+    refreshFilters(); refreshList();
+    document.querySelector(`[data-dd="${id}"] [data-dd-btn]`).focus();
+    return;
+  }
+  closeMenus();
 
-    for (const button of document.querySelectorAll("[data-copy]")) {
-      button.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(button.dataset.copy);
-        button.setAttribute("data-copied", "");
-        setTimeout(() => button.removeAttribute("data-copied"), 1500);
-      });
-    }
+  if (t.closest("[data-bid]")) { window.DoiteHandlers.onBid(Number(t.closest("[data-bid]").dataset.bid)); return; }
+  const action = t.closest("[data-action]")?.dataset.action;
+  if (action === "create") window.DoiteHandlers.onCreatePost();
+  if (action === "create-at-rate") { event.preventDefault(); window.DoiteHandlers.onCreatePost({ cny: digits(document.getElementById("convert-cny").value) }); }
+  if (action === "login") window.DoiteHandlers.onLogin();
+  if (action === "logout") window.DoiteHandlers.onLogout();
+  if (action === "load-more") window.DoiteHandlers.onLoadMore();
+  if (action === "retry") { if (previewState) location.search = ""; else loadPosts(); }
+  if (action === "clear-filters") {
+    Object.assign(filters, { tab: "all", amount: 0, channel: "all", sort: "new" });
+    document.getElementById("filter-amount").value = "";
+    refreshFilters(); refreshList();
+  }
+});
 
-    const calcCny = document.getElementById("calc-cny");
-    const calcVnd = document.getElementById("calc-vnd");
-    if (calcCny && calcVnd) {
-      calcCny.addEventListener("input", () => {
-        const val = parseFloat(calcCny.value) || 0;
-        calcVnd.value = (val * 3530).toLocaleString("vi-VN");
-      });
-    }
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    const open = document.querySelector("[data-dd-menu]:not([hidden])");
+    if (open) { closeMenus(); open.parentElement.querySelector("[data-dd-btn]").focus(); }
+    return;
+  }
+  // Mũi tên lên/xuống trong menu thả
+  const menu = event.target.closest?.("[data-dd-menu]");
+  if (menu && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+    event.preventDefault();
+    const items = [...menu.querySelectorAll("[role=option]")];
+    const i = items.indexOf(document.activeElement);
+    items[(i + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
+  }
+});
 
-    function placeBlockNumbers() {
-      const isOverlap = (first, second) => first.left < second.right && first.right > second.left && first.top < second.bottom && first.bottom > second.top;
-      for (const block of document.querySelectorAll("[data-wf-block]")) {
-        const blockRect = block.getBoundingClientRect();
-        if (!blockRect.width) continue;
-        const scale = blockRect.width / block.offsetWidth;
-        const numberRect = { left: blockRect.left + 4 * scale, top: blockRect.top + 4 * scale, right: blockRect.left + 22 * scale, bottom: blockRect.top + 22 * scale };
-        const contentRects = [...block.querySelectorAll("svg, img")].map((node) => node.getBoundingClientRect());
-        const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-          if (!node.textContent.trim()) continue;
-          const range = document.createRange();
-          range.selectNodeContents(node);
-          contentRects.push(...range.getClientRects());
-        }
-        block.toggleAttribute("data-wf-block-out", contentRects.some((rect) => rect.width > 0 && isOverlap(rect, numberRect)));
-      }
-    }
-    requestAnimationFrame(() => requestAnimationFrame(placeBlockNumbers));
-    window.addEventListener("resize", placeBlockNumbers);
-    lucide.createIcons();
-  </script>
+document.addEventListener("input", (event) => {
+  if (event.target.id === "convert-cny") {
+    const cny = digits(event.target.value);
+    event.target.value = cny ? fmt(cny) : "";
+    document.getElementById("convert-vnd").textContent = fmt(cny * REFERENCE.mid);
+  }
+  if (event.target.id === "filter-amount") {
+    filters.amount = digits(event.target.value);
+    event.target.value = filters.amount ? fmt(filters.amount) : "";
+    refreshList();
+  }
+});
+
+render();
+if (!previewState) loadPosts();
+loadCurrentUser();
+</script>
 </body>
 </html>

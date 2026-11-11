@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Người dùng — doite.vn</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' transform='translate(4.8 4.8) scale(.6)'%3E%3Cpath d='m17 2 4 4-4 4'/%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='m7 22-4-4 4-4'/%3E%3Cpath d='M21 18H3'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Bộ mặt Soft: font Be Vietnam Pro (DESIGN.md) -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Allowlisted Tailwind Script (Tailwind v3 play CDN) -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script>
+    // Cùng cấu hình với index.html: Tailwind chỉ trỏ tên lớp vào biến ở :root.
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["var(--app-font)"] },
+          colors: {
+            background: "var(--background)",
+            surface: "var(--surface)",
+            foreground: "var(--foreground)",
+            muted: "var(--muted)",
+            border: "var(--border)",
+            "border-strong": "var(--border-strong)",
+            primary: { DEFAULT: "var(--primary)", hover: "var(--primary-hover)", foreground: "var(--primary-foreground)", light: "var(--primary-light)" },
+            "item-hover": "var(--item-hover)",
+            success: { DEFAULT: "var(--success)", bg: "var(--success-bg)" },
+            warning: { DEFAULT: "var(--warning)", bg: "var(--warning-bg)" },
+            danger: { DEFAULT: "var(--danger)", bg: "var(--danger-bg)" },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* Token của doite.vn — giữ khớp khối :root trong index.html */
+    :root {
+      color-scheme: light;
+      --app-font: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-foreground: #ffffff;
+      --primary-light: #eff6ff;
+      --background: #f4f4f6;
+      --surface: #ffffff;
+      --foreground: #2c2c2c;
+      --muted: #707070;
+      --border: #f0f0f2;
+      --border-strong: #d4d4d8;
+      --border-focus: var(--primary);
+      --ring-focus: color-mix(in srgb, var(--primary) 15%, transparent);
+      --item-hover: #e8e8ec;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --danger: #dc2626;
+      --danger-border: #ef4444;
+      --danger-bg: #fef2f2;
+      /* Màu theo loại giao dịch (chấm trước nhãn), như loại tin ở trang chủ */
+      --cat-sell: #15803d;
+      --cat-buy: #2563eb;
+      --cat-pay: #7c3aed;
+    }
+    body { font-family: var(--app-font); background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    [hidden] { display: none !important; }
+    * { scrollbar-width: thin; scrollbar-color: #c4c4c8 transparent; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .pretty { text-wrap: pretty; }
+    /* Hàng tab cuộn ngang trên màn hẹp: mép phải mờ báo còn tab (như trang chủ) */
+    .scrollbar-none { scrollbar-width: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .fade-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+    @media (min-width: 768px) { .fade-right { -webkit-mask-image: none; mask-image: none; } }
+    .dot { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
+    /* Thanh trượt phóng to trong hộp chỉnh ảnh: rãnh 4px, tay cầm 20px viền 2px, vùng chạm cả dải h-11 */
+    .zoom-range { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+    .zoom-range::-webkit-slider-runnable-track { height: 4px; border-radius: 9999px; background: linear-gradient(to right, var(--primary) var(--fill, 0%), #e4e4e7 var(--fill, 0%)); }
+    .zoom-range::-moz-range-track { height: 4px; border-radius: 9999px; background: #e4e4e7; }
+    .zoom-range::-moz-range-progress { height: 4px; border-radius: 9999px; background: var(--primary); }
+    .zoom-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 9999px; border: 2px solid var(--primary); background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.15); }
+    .zoom-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 9999px; border: 2px solid var(--primary); background: #fff; }
+    .zoom-range:focus-visible { outline: none; }
+    .zoom-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--ring-focus); }
+    .zoom-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--ring-focus); }
+    @keyframes overlay-in { from { opacity: 0; } }
+    @keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+    .overlay-in { animation: overlay-in 150ms ease-out; }
+    .dialog-in { animation: dialog-in 180ms ease-out; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+  <!-- Hiệu ứng chuyển trang (page-transitions.css), bản dự phòng cho trình duyệt cũ (page-transitions.js) -->
+  <link rel="stylesheet" href="/page-transitions.css" />
+  <script src="/page-transitions.js"></script>
+  <script src="/live.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="dialog-root"></div>
+
+<script>
+// doite.vn — Trang cá nhân công khai /nguoi-dung/<tên đăng nhập> (dựng luôn theo brief đã duyệt; DESIGN.md)
+// GET /api/users/<tên> (src/users.rs): uy tín, tin đang mở, đánh giá. Không có số điện thoại, lịch sử riêng.
+// Đánh giá: chỉ người đã hoàn tất giao dịch với người này; mỗi giao dịch hoàn tất một lần.
+// Trang nằm dưới /nguoi-dung/ nên mọi đường dẫn đều tuyệt đối (/index.html…).
+
+// ---------------------------------------------------------------- icon (SVG nội tuyến, không CDN — CSP)
+const ICONS = {
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  "message-circle": '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  "shield-check": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  "badge-check": '<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/>',
+  "triangle-alert": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  "circle-alert": '<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  "wifi-off": '<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
+  "rotate-cw": '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+  "user-x": '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="8" y2="13"/><line x1="22" x2="17" y1="8" y2="13"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+};
+const icon = (name, cls = "h-4 w-4", fill = false) =>
+  `<svg class="lucide lucide-${name} ${cls} shrink-0" viewBox="0 0 24 24" fill="${fill ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+const SPINNER = `<svg class="h-4 w-4 shrink-0 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>`;
+const LOGO = `<svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 6h18"/><path d="m7 22-4-4 4-4"/><path d="M21 18H3"/></svg>`;
+
+const esc = (text) => String(text ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const fmt = (n) => Number(n).toLocaleString("vi-VN");
+const initialsOf = (name) => {
+  const words = String(name).trim().split(/\s+/);
+  return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0].slice(0, 2)).toUpperCase();
+};
+const TZ = "Asia/Ho_Chi_Minh";
+const dateText = (iso) => new Intl.DateTimeFormat("vi-VN", { timeZone: TZ, day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(iso));
+const monthText = (iso) => new Intl.DateTimeFormat("vi-VN", { timeZone: TZ, month: "2-digit", year: "numeric" }).format(new Date(iso));
+function agoText(seconds) {
+  if (seconds < 60) return "Vừa xong";
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} phút trước`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)} giờ trước`;
+  return `${Math.floor(seconds / 86400)} ngày trước`;
+}
+const escrowText = (vnd) => vnd >= 1e9 ? `${(vnd / 1e9).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} tỷ` : `${(vnd / 1e6).toLocaleString("vi-VN", { maximumFractionDigits: 0 })}tr`;
+const TYPES = {
+  sell: { label: "Cần bán CNY", color: "var(--cat-sell)" },
+  buy: { label: "Cần mua CNY", color: "var(--cat-buy)" },
+  pay: { label: "Thanh toán hộ", color: "var(--cat-pay)" },
+};
+// Loại giao dịch nhìn từ phía người được đánh giá / người xem
+const sideLabel = (kind, owned) => ({ sell: owned ? "Bán CNY" : "Mua CNY", buy: owned ? "Mua CNY" : "Bán CNY", pay: owned ? "Thanh toán" : "Thanh toán hộ" })[kind] || "Giao dịch";
+const STAR_WORDS = ["", "Rất tệ", "Tệ", "Bình thường", "Tốt", "Rất tốt"];
+
+// ---------------------------------------------------------------- class dùng chung
+const ring = "outline-none focus-visible:bg-item-hover";
+const card = "rounded-2xl border border-border bg-surface";
+const btnPrimary = "relative inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover outline-none focus-visible:bg-primary-hover";
+const btnOutline = `inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-border-strong bg-surface px-4 text-sm font-medium text-foreground transition-colors hover:bg-item-hover ${ring}`;
+const btnSmall = "inline-flex h-9 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover outline-none focus-visible:bg-primary-hover";
+const btnSecondary = "inline-flex h-11 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#ececef] px-4 text-sm font-medium text-foreground transition-colors hover:bg-item-hover outline-none focus-visible:bg-item-hover md:h-10";
+
+function avatarOf(name, url, size = "h-8 w-8", text = "text-xs") {
+  if (url) return `<img src="${esc(url)}" alt="" class="${size} shrink-0 rounded-full bg-[#ececef] object-cover">`;
+  return `<span class="${size} inline-flex shrink-0 items-center justify-center rounded-full bg-[#ececef] ${text} font-semibold text-foreground" aria-hidden="true">${esc(initialsOf(name))}</span>`;
+}
+function stars(value, size = "h-4 w-4") {
+  return `<span class="inline-flex items-center gap-0.5 text-[#f59e0b]" aria-label="${value} trên 5 sao">${[1, 2, 3, 4, 5].map((n) => `<span class="${n <= Math.round(value) ? "" : "text-[#d4d4d8]"}">${icon("star", size, true)}</span>`).join("")}</span>`;
+}
+
+// ---------------------------------------------------------------- trạng thái
+const username = decodeURIComponent(location.pathname.split("/")[2] || "");
+const here = location.pathname;
+const view = { load: "dang-tai", data: null, me: null, unread: 0, note: "", status: "" };
+const review = { open: false, tradeId: null, stars: 0, comment: "", errors: {}, formError: "", sending: false };
+
+// ---------------------------------------------------------------- header
+function header() {
+  const me = view.me;
+  const badge = view.unread ? `<span class="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[var(--danger)] px-1 text-[10px] font-semibold text-white tabular">${view.unread > 99 ? "99+" : view.unread}</span>` : "";
+  return `<header class="sticky top-0 z-30 border-b border-border-strong bg-surface">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+      <a href="/" class="flex min-w-0 items-center gap-2.5 rounded-lg ${ring}" aria-label="doite.vn — trang chủ">
+        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:h-9 sm:w-9">${LOGO}</span>
+        <span class="text-base font-bold tracking-tight text-foreground sm:text-lg">doite<b class="font-extrabold text-primary">.vn</b></span>
+      </a>
+      <div class="flex shrink-0 items-center gap-2">
+        <a href="/dang-tin.html" class="${btnPrimary} max-sm:h-9 max-sm:px-3">${icon("plus")}<span class="sm:hidden">Đăng tin</span><span class="max-sm:hidden">Đăng tin đổi tệ</span></a>
+        ${me ? `<a href="/tin-nhan.html" aria-label="Tin nhắn${view.unread ? `, ${view.unread} chưa đọc` : ""}" class="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-item-hover md:h-10 md:w-10 ${ring}">${icon("message-circle", "h-5 w-5")}${badge}</a>
+          <a href="/tai-khoan.html" aria-label="Trang cá nhân của ${esc(me.displayName)}" class="inline-flex h-10 max-w-[14rem] items-center gap-2 rounded-xl px-0.5 text-sm font-medium text-foreground transition-colors hover:bg-item-hover md:px-2 md:pr-3 ${ring}">${avatarOf(me.displayName, me.avatarUrl, "h-8 w-8")}<span class="hidden truncate md:inline">${esc(me.displayName)}</span></a>`
+        : `<a href="/dang-nhap.html?tiep=${encodeURIComponent(here.slice(1))}" class="${btnOutline} max-sm:h-9 max-sm:px-3">Đăng nhập</a>`}
+      </div>
+    </div>
+  </header>`;
+}
+
+// ---------------------------------------------------------------- khối 1: hồ sơ + uy tín
+function profileCard() {
+  const { user, viewer } = view.data;
+  const isNew = user.completedTrades === 0 && !user.escrowVnd && !user.businessVerified;
+  const badges = [
+    user.escrowVnd ? `<span class="inline-flex h-6 items-center gap-1 rounded-full bg-success-bg px-2 text-xs font-medium text-success">${icon("shield-check", "h-3.5 w-3.5")}Ký quỹ ${escrowText(user.escrowVnd)}</span>` : "",
+    user.businessVerified ? `<span class="inline-flex h-6 items-center gap-1 rounded-full bg-primary-light px-2 text-xs font-medium text-primary">${icon("badge-check", "h-3.5 w-3.5")}Doanh nghiệp đã xác thực</span>` : "",
+    isNew ? `<span class="inline-flex h-6 items-center rounded-full bg-warning-bg px-2 text-xs font-medium text-warning">Thành viên mới</span>` : "",
+  ].join("");
+  const success = user.successPermille == null ? "—" : `${(user.successPermille / 10).toLocaleString("vi-VN", { maximumFractionDigits: 1 })}%`;
+  const rating = user.reviewCount ? `<span class="inline-flex items-center gap-1">${(Math.round(user.reviewAverage * 10) / 10).toLocaleString("vi-VN")}${icon("star", "h-4 w-4 text-[#f59e0b]", true)}</span>` : "—";
+  const stats = [
+    ["Giao dịch hoàn tất", fmt(user.completedTrades)],
+    ["Tỷ lệ thành công", success],
+    ["Đánh giá", `${rating}<span class="ml-1 text-xs font-normal text-muted">${user.reviewCount ? `${fmt(user.reviewCount)} lượt` : "chưa có"}</span>`],
+    ["Ký quỹ với sàn", user.escrowVnd ? escrowText(user.escrowVnd) : "Không"],
+  ];
+  let actions;
+  if (viewer.isSelf) {
+    actions = `<p class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">${icon("info")}Đây là trang công khai của bạn. <a href="/tai-khoan.html" class="font-medium text-foreground underline-offset-2 hover:underline focus-visible:underline outline-none">Sửa ở trang cá nhân</a></p>`;
+  } else {
+    actions = `<div class="flex flex-wrap gap-2">
+      <button type="button" data-action="message" class="${btnPrimary}">${icon("message-circle")}Nhắn tin</button>
+      <button type="button" data-action="review" aria-expanded="${view.note ? "true" : "false"}" class="${btnOutline}">${icon("star")}Đánh giá</button>
+    </div>`;
+  }
+  return `<section class="${card} p-5 sm:p-6" aria-labelledby="profile-name">
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+      <div class="flex min-w-0 items-center gap-4">
+        ${avatarOf(user.displayName, user.avatarUrl, "h-16 w-16", "text-lg")}
+        <div class="min-w-0">
+          <h1 id="profile-name" class="truncate text-2xl font-semibold tracking-tight text-foreground">${esc(user.displayName)}</h1>
+          <p class="truncate text-sm text-muted">@${esc(user.username)} · Tham gia ${monthText(user.joined)}</p>
+          ${badges ? `<div class="mt-2 flex flex-wrap gap-1.5">${badges}</div>` : ""}
+        </div>
+      </div>
+      ${actions}
+    </div>
+    ${view.note ? `<p role="status" class="mt-4 flex items-start gap-2 rounded-lg bg-background px-3 py-2.5 text-sm text-foreground">${icon("info", "mt-0.5 h-4 w-4 text-muted")}<span class="pretty">${view.note}</span></p>` : ""}
+    ${view.status ? `<p role="status" class="mt-4 flex items-start gap-2 rounded-lg border border-[#bbf7d0] bg-success-bg px-3 py-2.5 text-sm font-medium text-success">${icon("check", "mt-0.5 h-4 w-4")}<span>${esc(view.status)}</span></p>` : ""}
+    <dl class="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-5 lg:grid-cols-4">
+      ${stats.map(([k, v]) => `<div class="rounded-xl bg-background px-4 py-3"><dt class="text-xs text-muted">${k}</dt><dd class="mt-1 text-lg font-semibold text-foreground tabular">${v}</dd></div>`).join("")}
+    </dl>
+    ${isNew && !viewer.isSelf ? `<p class="mt-4 flex items-start gap-2 rounded-lg border border-[#fde68a] bg-warning-bg px-3 py-2 text-sm font-medium text-warning">${icon("triangle-alert", "mt-0.5 h-4 w-4")}<span class="pretty">Thành viên mới, chưa có giao dịch hoàn tất. Nên giao dịch số nhỏ trước.</span></p>` : ""}
+  </section>`;
+}
+
+// ---------------------------------------------------------------- khối 2: tin đang mở
+function postsCard() {
+  const { posts, viewer, user } = view.data;
+  const rows = posts.map((p) => {
+    const type = TYPES[p.kind] || TYPES.sell;
+    const urgent = p.expiresInSeconds != null && p.expiresInSeconds < 3600 ? `<span class="text-xs font-medium text-warning">Hết hạn chào giá sau ${Math.max(1, Math.ceil(p.expiresInSeconds / 60))} phút</span>` : "";
+    return `<li class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-4 sm:px-5">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2"><span class="inline-flex items-center gap-1.5 text-xs font-medium" style="color:${type.color}"><span class="dot"></span>${type.label}</span><span class="text-xs text-muted">${agoText(p.ageSeconds)}</span></div>
+        <p class="mt-0.5 text-sm text-foreground tabular"><b class="text-base font-bold">${fmt(p.amountCny)} ¥</b><span class="text-muted"> × ${fmt(p.rateVnd)} ₫/¥ ≈ </span><b class="font-semibold">${fmt(p.amountCny * p.rateVnd)} ₫</b></p>
+        <p class="truncate text-xs text-muted">${esc(p.channelLabel)}${p.limitLabel ? ` · ${esc(p.limitLabel)}` : ""}</p>
+        ${urgent}
+      </div>
+      ${viewer.isSelf ? `<span class="text-xs font-medium text-primary">Tin của bạn</span>` : `<button type="button" data-bid="${p.id}" class="${btnSmall}">Chào giá</button>`}
+    </li>`;
+  }).join("");
+  return `<section class="${card} overflow-hidden" aria-labelledby="posts-title">
+    <div class="flex items-center justify-between gap-3 px-4 pt-4 pb-3 sm:px-5"><h2 id="posts-title" class="text-base font-semibold text-foreground">Tin đang mở <span class="text-sm font-normal text-muted tabular">${posts.length}</span></h2></div>
+    <div class="border-t border-border">${posts.length ? `<ul class="divide-y divide-[#e8e8ec]">${rows}</ul>` : `<p class="px-4 py-6 text-sm text-muted sm:px-5">${esc(user.displayName)} chưa có tin nào đang mở.</p>`}</div>
+  </section>`;
+}
+
+// ---------------------------------------------------------------- khối 3: đánh giá
+function reviewsCard() {
+  const { reviews, user } = view.data;
+  const summary = user.reviewCount ? `<div class="flex items-center gap-2 text-sm"><b class="text-lg font-semibold tabular">${(Math.round(user.reviewAverage * 10) / 10).toLocaleString("vi-VN")}</b>${stars(user.reviewAverage)}<span class="text-muted">${fmt(user.reviewCount)} đánh giá</span></div>` : "";
+  const items = reviews.map((r) => `<li class="flex gap-3 px-4 py-4 sm:px-5">
+      <a href="/nguoi-dung/${encodeURIComponent(r.reviewerUsername)}" class="shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)]">${avatarOf(r.reviewerName, r.reviewerAvatar, "h-9 w-9")}</a>
+      <div class="min-w-0 flex-1">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5"><a href="/nguoi-dung/${encodeURIComponent(r.reviewerUsername)}" class="truncate text-sm font-medium text-foreground underline-offset-2 outline-none hover:underline focus-visible:underline">${esc(r.reviewerName)}</a>${stars(r.stars, "h-3.5 w-3.5")}<span class="text-xs text-muted">${dateText(r.at)}</span></div>
+        <p class="mt-0.5 text-xs text-muted">Đã giao dịch: ${sideLabel(r.tradeKind, r.revieweeOwned)} ${fmt(r.tradeAmountCny)} ¥</p>
+        ${r.comment ? `<p class="pretty mt-1.5 whitespace-pre-line text-sm text-foreground">${esc(r.comment)}</p>` : ""}
+      </div>
+    </li>`).join("");
+  return `<section class="${card} overflow-hidden" aria-labelledby="reviews-title">
+    <div class="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-3 sm:px-5"><h2 id="reviews-title" class="text-base font-semibold text-foreground">Đánh giá</h2>${summary}</div>
+    <div class="border-t border-border">${reviews.length ? `<ul class="divide-y divide-[#e8e8ec]">${items}</ul>` : `<p class="px-4 py-6 text-sm text-muted sm:px-5">Chưa có đánh giá nào. Người đã hoàn tất giao dịch với ${esc(user.displayName)} sẽ đánh giá được.</p>`}</div>
+  </section>`;
+}
+
+// ---------------------------------------------------------------- hộp viết đánh giá
+function tradeLabel(t) {
+  return `${sideLabel(t.kind, t.mine)} ${fmt(t.amountCny)} ¥ · ${fmt(t.rateVnd)} ₫/¥ · ${dateText(t.at)}`;
+}
+function reviewDialog() {
+  const trades = view.data.viewer.reviewableTrades || [];
+  const name = esc(view.data.user.displayName);
+  const err = (key) => review.errors[key] ? `<p class="mt-1.5 text-xs text-danger">${esc(review.errors[key])}</p>` : "";
+  const length = [...review.comment].length;
+  return `<div class="overlay-in fixed inset-0 z-50 flex items-end justify-center bg-black/30 sm:items-center sm:p-4">
+    <form id="review-form" role="dialog" aria-modal="true" aria-labelledby="review-title" novalidate class="dialog-in relative flex max-h-full w-full flex-col overflow-y-auto rounded-t-2xl border border-border bg-surface p-5 shadow-[0_20px_40px_-12px_rgb(0_0_0/0.25)] sm:max-w-lg sm:rounded-2xl sm:p-6">
+      <div class="pr-10"><h2 id="review-title" class="text-lg font-semibold text-foreground">Đánh giá ${name}</h2><p class="pretty mt-1 text-sm text-muted">Đánh giá hiện công khai trên trang này, kèm giao dịch bạn chọn.</p></div>
+      <button type="button" data-review="close" aria-label="Đóng" class="absolute right-3 top-3 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl text-muted transition-colors hover:bg-item-hover hover:text-foreground outline-none focus-visible:bg-item-hover sm:right-4 sm:top-4">${icon("x")}</button>
+      <fieldset class="mt-5"><legend class="mb-2 text-sm font-medium text-foreground">Giao dịch</legend>
+        <div class="flex flex-col gap-2" role="radiogroup">${trades.map((t) => {
+          const on = review.tradeId === t.id;
+          return `<button type="button" role="radio" aria-checked="${on}" data-trade="${t.id}" class="flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-left text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] ${on ? "border-primary bg-primary-light" : "border-border-strong bg-surface hover:bg-[#fafafb]"}"><span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px] ${on ? "border-primary bg-primary text-primary-foreground" : "border-border-strong"}">${on ? icon("check", "h-3 w-3") : ""}</span><span class="tabular text-foreground">${tradeLabel(t)}</span></button>`;
+        }).join("")}</div>${err("trade")}
+      </fieldset>
+      <fieldset class="mt-5"><legend class="mb-2 text-sm font-medium text-foreground">Chấm điểm</legend>
+        <div class="flex items-center gap-3"><div role="radiogroup" aria-label="Số sao" class="flex items-center gap-1">${[1, 2, 3, 4, 5].map((n) => `<button type="button" role="radio" aria-checked="${review.stars === n}" aria-label="${n} sao, ${STAR_WORDS[n]}" data-stars="${n}" class="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg transition-colors outline-none hover:bg-[#fff7e6] focus-visible:bg-[#fff7e6] ${n <= review.stars ? "text-[#f59e0b]" : "text-[#d4d4d8]"}">${icon("star", "h-7 w-7", true)}</button>`).join("")}</div>
+        <span class="text-sm font-medium text-foreground">${STAR_WORDS[review.stars] || ""}</span></div>${err("stars")}
+      </fieldset>
+      <div class="mt-5 flex flex-col gap-1.5">
+        <label for="review-comment" class="w-fit text-sm font-medium text-foreground">Bình luận <span class="font-normal text-muted">· không bắt buộc</span></label>
+        <textarea id="review-comment" rows="4" placeholder="Giao dịch có nhanh, đúng tỷ giá, dễ trao đổi không?" class="w-full resize-y rounded-xl border bg-surface px-4 py-3 text-base text-foreground placeholder:text-muted outline-none transition-colors md:text-sm ${review.errors.comment ? "border-[var(--danger-border)]" : "border-border-strong focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--ring-focus)]"}">${esc(review.comment)}</textarea>
+        <div class="flex justify-between gap-3"><span class="text-xs text-danger">${esc(review.errors.comment || "")}</span><span id="comment-count" class="shrink-0 text-xs tabular ${length > 500 ? "text-danger" : "text-muted"} ${length >= 400 ? "" : "invisible"}">${length}/500</span></div>
+      </div>
+      ${review.formError ? `<p role="alert" class="mt-3 flex items-start gap-2 text-sm text-danger">${icon("circle-alert", "mt-0.5 h-4 w-4")}<span>${esc(review.formError)}</span></p>` : ""}
+      <div class="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" data-review="close" class="${btnSecondary}">Huỷ</button>
+        <button type="submit" ${review.sending ? 'aria-busy="true" aria-disabled="true"' : ""} class="${btnPrimary} h-11 md:h-10"><span class="${review.sending ? "invisible" : ""}">Gửi đánh giá</span>${review.sending ? `<span class="absolute inset-0 flex items-center justify-center">${SPINNER}</span>` : ""}</button>
+      </div>
+    </form>
+  </div>`;
+}
+
+function renderDialog(focus) {
+  const root = document.getElementById("dialog-root");
+  if (!review.open) { root.innerHTML = ""; document.body.style.overflow = ""; return; }
+  root.innerHTML = reviewDialog();
+  document.body.style.overflow = "hidden";
+  if (focus) root.querySelector(focus)?.focus();
+}
+
+function openReview() {
+  const { viewer, user } = view.data;
+  if (!viewer.signedIn) { location.href = `/dang-nhap.html?tiep=${encodeURIComponent(here.slice(1))}`; return; }
+  const trades = viewer.reviewableTrades || [];
+  if (!trades.length) {
+    // Không đủ điều kiện: nói lý do ngay dưới nút, không mở hộp
+    view.note = `Chỉ người đã <b class="font-medium">hoàn tất giao dịch</b> với ${esc(user.displayName)} mới đánh giá được, mỗi giao dịch hoàn tất một lần. Bạn chưa có giao dịch hoàn tất nào với ${esc(user.displayName)} chưa đánh giá.`;
+    render();
+    return;
+  }
+  Object.assign(review, { open: true, tradeId: trades.length === 1 ? trades[0].id : null, stars: 0, comment: "", errors: {}, formError: "", sending: false });
+  renderDialog(trades.length === 1 ? '[data-stars="1"]' : "[data-trade]");
+}
+function closeReview() {
+  if (review.sending) return;
+  review.open = false;
+  renderDialog();
+  document.querySelector('[data-action="review"]')?.focus();
+}
+
+async function submitReview() {
+  if (review.sending) return;
+  review.errors = {};
+  if (!review.tradeId) review.errors.trade = "Chọn giao dịch bạn muốn đánh giá";
+  if (!review.stars) review.errors.stars = "Chọn số sao";
+  if ([...review.comment.trim()].length > 500) review.errors.comment = "Bình luận tối đa 500 ký tự";
+  review.formError = "";
+  if (Object.keys(review.errors).length) {
+    return renderDialog(review.errors.trade ? "[data-trade]" : review.errors.stars ? '[data-stars="1"]' : "#review-comment");
+  }
+  review.sending = true;
+  renderDialog();
+  let result;
+  try {
+    const response = await fetch(`/api/users/${encodeURIComponent(username)}/reviews`, {
+      method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tradeId: review.tradeId, stars: review.stars, comment: review.comment.trim() }),
+    });
+    result = await response.json().catch(() => ({}));
+  } catch {
+    result = { reason: "mat-mang" };
+  }
+  review.sending = false;
+  if (result.ok) {
+    review.open = false;
+    renderDialog();
+    view.note = "";
+    view.status = "Đã gửi đánh giá. Cảm ơn bạn!";
+    await load();
+    document.getElementById("reviews-title")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  review.formError = {
+    "khong-du-dieu-kien": "Giao dịch này không còn đánh giá được (có thể bạn đã đánh giá rồi).",
+    "da-danh-gia": "Bạn đã đánh giá giao dịch này rồi.",
+    "binh-luan-dai": "Bình luận tối đa 500 ký tự.",
+    "mat-mang": "Chưa kết nối được máy chủ, kiểm tra mạng rồi thử lại.",
+  }[result.reason] || "Chưa gửi được đánh giá, thử lại sau ít phút.";
+  renderDialog('button[type="submit"]');
+}
+
+// ---------------------------------------------------------------- trang
+function render() {
+  let body;
+  if (view.load === "dang-tai") {
+    body = `<section class="${card} p-5 sm:p-6" aria-busy="true"><div class="flex items-center gap-4"><div class="h-16 w-16 animate-pulse rounded-full bg-[#ececef]"></div><div class="flex-1 space-y-2"><div class="h-6 w-48 animate-pulse rounded bg-[#ececef]"></div><div class="h-4 w-32 animate-pulse rounded bg-[#ececef]"></div></div></div><div class="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">${[1, 2, 3, 4].map(() => `<div class="h-[4.5rem] animate-pulse rounded-xl bg-[#ececef]"></div>`).join("")}</div></section>`;
+  } else if (view.load === "khong-co") {
+    body = `<section class="${card} flex flex-col items-center px-4 py-14 text-center"><span class="flex h-12 w-12 items-center justify-center rounded-full bg-background text-muted">${icon("user-x", "h-6 w-6")}</span><h1 class="mt-4 text-lg font-semibold text-foreground">Không tìm thấy người dùng</h1><p class="mt-1 max-w-sm text-sm text-muted">Không có ai tên @${esc(username)} trên doite.vn, hoặc tài khoản chưa xác minh.</p><a href="/" class="${btnPrimary} mt-5">Về Bảng tin</a></section>`;
+  } else if (view.load === "loi") {
+    body = `<section role="alert" class="${card} flex flex-col items-center px-4 py-14 text-center"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-danger-bg text-danger">${icon("wifi-off", "h-5 w-5")}</span><h1 class="mt-3 text-base font-semibold text-foreground">Chưa tải được trang này</h1><p class="mt-1 text-sm text-muted">Kiểm tra mạng rồi thử lại.</p><button type="button" data-action="retry" class="${btnPrimary} mt-4">${icon("rotate-cw")}Thử tải lại</button></section>`;
+  } else {
+    body = `${profileCard()}${postsCard()}${reviewsCard()}`;
+  }
+  document.getElementById("app").innerHTML = `${header()}<main class="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-6 sm:px-6">${body}</main>`;
+  if (view.data) document.title = `${view.data.user.displayName} (@${view.data.user.username}) — doite.vn`;
+}
+
+async function load() {
+  if (!view.data) { view.load = "dang-tai"; render(); }
+  try {
+    const response = await fetch(`/api/users/${encodeURIComponent(username)}`, { credentials: "same-origin" });
+    if (response.status === 404) { view.load = "khong-co"; return render(); }
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.reason);
+    view.data = data;
+    view.load = "xong";
+  } catch {
+    if (!view.data) view.load = "loi";
+  }
+  render();
+}
+
+async function loadMe() {
+  try {
+    const response = await fetch("/api/auth/me", { credentials: "same-origin" });
+    const data = await response.json();
+    view.me = response.ok && data.ok ? data.user : null;
+    if (view.me) {
+      const unread = await fetch("/api/messages/unread", { credentials: "same-origin" }).then((r) => r.json()).catch(() => ({}));
+      view.unread = unread.count || 0;
+      // Có tin mới thì chấm đỏ tự cập nhật (SSE /api/events qua live.js)
+      doiteLive.watchUnread((count) => { view.unread = count; doiteLive.paintBadge(count); });
+    }
+  } catch {
+    view.me = null;
+  }
+  render();
+}
+
+// ---------------------------------------------------------------- sự kiện
+document.addEventListener("click", (event) => {
+  const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "retry") load();
+  if (action === "message") {
+    location.href = `/tin-nhan.html?u=${encodeURIComponent(view.data.user.username)}`;
+  }
+  if (action === "review") openReview();
+  const bid = event.target.closest("[data-bid]");
+  if (bid) {
+    // Luồng chào giá chưa làm: mở tin nhắn với người đăng, soạn sẵn câu nói về tin này
+    const post = view.data.posts.find((p) => String(p.id) === bid.dataset.bid);
+    const tin = post ? `${(TYPES[post.kind] || TYPES.sell).label} ${fmt(post.amountCny)} ¥` : "";
+    location.href = `/tin-nhan.html?${new URLSearchParams({ u: view.data.user.username, tin })}`;
+  }
+  // Hộp đánh giá
+  if (event.target.closest('[data-review="close"]')) return closeReview();
+  const trade = event.target.closest("[data-trade]");
+  if (trade) { review.tradeId = Number(trade.dataset.trade); delete review.errors.trade; return renderDialog(`[data-trade="${trade.dataset.trade}"]`); }
+  const star = event.target.closest("[data-stars]");
+  if (star) { review.stars = Number(star.dataset.stars); delete review.errors.stars; return renderDialog(`[data-stars="${star.dataset.stars}"]`); }
+});
+document.addEventListener("submit", (event) => {
+  if (event.target.id === "review-form") { event.preventDefault(); submitReview(); }
+});
+document.addEventListener("input", (event) => {
+  if (event.target.id !== "review-comment") return;
+  review.comment = event.target.value;
+  const length = [...review.comment].length;
+  const counter = document.getElementById("comment-count");
+  counter.textContent = `${length}/500`;
+  counter.classList.toggle("invisible", length < 400);
+  counter.classList.toggle("text-danger", length > 500);
+  counter.classList.toggle("text-muted", length <= 500);
+});
+document.addEventListener("keydown", (event) => {
+  if (!review.open) return;
+  if (event.key === "Escape") { event.preventDefault(); return closeReview(); }
+  // Phím mũi tên trong nhóm sao / giao dịch
+  const radio = event.target.closest?.('[role="radio"]');
+  if (radio && ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
+    event.preventDefault();
+    const items = [...radio.parentElement.querySelectorAll('[role="radio"]')];
+    items[(items.indexOf(radio) + (["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : items.length - 1)) % items.length].click();
+  }
+  if (event.key === "Tab") {
+    const items = [...document.querySelectorAll("#review-form button, #review-form textarea")];
+    const index = items.indexOf(document.activeElement);
+    event.preventDefault();
+    items[event.shiftKey ? (index <= 0 ? items.length - 1 : index - 1) : (index + 1) % items.length].focus();
+  }
+});
+
+load();
+loadMe();
+</script>
+</body>
+</html>

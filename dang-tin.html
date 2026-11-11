@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng tin đổi tệ — doite.vn</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' transform='translate(4.8 4.8) scale(.6)'%3E%3Cpath d='m17 2 4 4-4 4'/%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='m7 22-4-4 4-4'/%3E%3Cpath d='M21 18H3'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Bộ mặt Soft: font Be Vietnam Pro (DESIGN.md) -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Allowlisted Tailwind Script (Tailwind v3 play CDN) -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script>
+    // Cùng cấu hình với index.html: Tailwind chỉ trỏ tên lớp vào biến ở :root.
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["var(--app-font)"] },
+          colors: {
+            background: "var(--background)",
+            surface: "var(--surface)",
+            foreground: "var(--foreground)",
+            muted: "var(--muted)",
+            border: "var(--border)",
+            "border-strong": "var(--border-strong)",
+            primary: { DEFAULT: "var(--primary)", hover: "var(--primary-hover)", foreground: "var(--primary-foreground)", light: "var(--primary-light)" },
+            "item-hover": "var(--item-hover)",
+            success: { DEFAULT: "var(--success)", bg: "var(--success-bg)" },
+            warning: { DEFAULT: "var(--warning)", bg: "var(--warning-bg)" },
+            danger: { DEFAULT: "var(--danger)", bg: "var(--danger-bg)" },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* Token của doite.vn — giữ khớp khối :root trong index.html */
+    :root {
+      color-scheme: light;
+      --app-font: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-foreground: #ffffff;
+      --primary-light: #eff6ff;
+      --background: #f4f4f6;
+      --surface: #ffffff;
+      --foreground: #2c2c2c;
+      --muted: #707070;
+      --border: #f0f0f2;
+      --border-strong: #d4d4d8;
+      --border-focus: var(--primary);
+      --ring-focus: color-mix(in srgb, var(--primary) 15%, transparent);
+      --item-hover: #e8e8ec;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --danger: #dc2626;
+      --danger-border: #ef4444;
+      --danger-bg: #fef2f2;
+      /* Màu theo loại giao dịch (chấm trước nhãn), như loại tin ở trang chủ */
+      --cat-sell: #15803d;
+      --cat-buy: #2563eb;
+      --cat-pay: #7c3aed;
+    }
+    body { font-family: var(--app-font); background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    [hidden] { display: none !important; }
+    * { scrollbar-width: thin; scrollbar-color: #c4c4c8 transparent; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .pretty { text-wrap: pretty; }
+    /* Hàng tab cuộn ngang trên màn hẹp: mép phải mờ báo còn tab (như trang chủ) */
+    .scrollbar-none { scrollbar-width: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .fade-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+    @media (min-width: 768px) { .fade-right { -webkit-mask-image: none; mask-image: none; } }
+    .dot { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
+    /* Thanh trượt phóng to trong hộp chỉnh ảnh: rãnh 4px, tay cầm 20px viền 2px, vùng chạm cả dải h-11 */
+    .zoom-range { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+    .zoom-range::-webkit-slider-runnable-track { height: 4px; border-radius: 9999px; background: linear-gradient(to right, var(--primary) var(--fill, 0%), #e4e4e7 var(--fill, 0%)); }
+    .zoom-range::-moz-range-track { height: 4px; border-radius: 9999px; background: #e4e4e7; }
+    .zoom-range::-moz-range-progress { height: 4px; border-radius: 9999px; background: var(--primary); }
+    .zoom-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 9999px; border: 2px solid var(--primary); background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.15); }
+    .zoom-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 9999px; border: 2px solid var(--primary); background: #fff; }
+    .zoom-range:focus-visible { outline: none; }
+    .zoom-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--ring-focus); }
+    .zoom-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--ring-focus); }
+    @keyframes overlay-in { from { opacity: 0; } }
+    @keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+    .overlay-in { animation: overlay-in 150ms ease-out; }
+    .dialog-in { animation: dialog-in 180ms ease-out; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+  <!-- Hiệu ứng chuyển trang (page-transitions.css), bản dự phòng cho trình duyệt cũ (page-transitions.js) -->
+  <link rel="stylesheet" href="page-transitions.css" />
+  <script src="page-transitions.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+<script>
+// doite.vn — Đăng tin đổi tệ (dựng luôn theo brief đã duyệt; DESIGN.md)
+// Gửi: POST /api/posts (src/posts.rs). ?cny=5000 điền sẵn số tệ (từ "Tạo tin theo giá này" ở trang chủ).
+// Tỷ giá người dùng tự nhập; server chỉ nhận trong khoảng ±10% tỷ giá tham chiếu.
+
+// ---------------------------------------------------------------- icon (SVG nội tuyến, không CDN — CSP)
+const ICONS = {
+  "arrow-left": '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  "circle-alert": '<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  "trending-up": '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+  "trending-down": '<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>',
+  wallet: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+};
+const icon = (name, cls = "h-4 w-4") =>
+  `<svg class="lucide lucide-${name} ${cls} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+const SPINNER = `<svg class="h-4 w-4 shrink-0 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>`;
+const LOGO = `<svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 6h18"/><path d="m7 22-4-4 4-4"/><path d="M21 18H3"/></svg>`;
+
+const esc = (text) => String(text ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const fmt = (n) => Number(n).toLocaleString("vi-VN");
+const digits = (s) => Number(String(s).replace(/\D/g, "")) || 0;
+const initialsOf = (name) => {
+  const words = String(name).trim().split(/\s+/);
+  return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0].slice(0, 2)).toUpperCase();
+};
+
+// ---------------------------------------------------------------- dữ liệu cố định (khớp src/posts.rs và trang chủ)
+const REFERENCE = { buy: 3520, sell: 3545, mid: 3530 };
+const RATE_MIN = Math.round(REFERENCE.mid * 0.9);   // 3177 (server: mid − 10%, làm tròn xuống)
+const RATE_MAX = Math.floor(REFERENCE.mid * 1.1);   // 3883
+const AMOUNT_MIN = 100, AMOUNT_MAX = 1000000, NOTE_MAX = 120;
+const KINDS = [
+  { key: "sell", title: "Cần bán CNY", desc: "Bạn có tệ, muốn đổi ra VND", icon: "trending-down", color: "var(--cat-sell)" },
+  { key: "buy", title: "Cần mua CNY", desc: "Bạn cần tệ, trả bằng VND", icon: "trending-up", color: "var(--cat-buy)" },
+  { key: "pay", title: "Thanh toán hộ", desc: "Nạp Alipay, trả đơn Taobao/1688", icon: "wallet", color: "var(--cat-pay)" },
+];
+const CHANNELS = [["alipay", "Alipay"], ["wechat", "WeChat Pay"], ["bank", "Ngân hàng"], ["taobao", "QR Taobao / 1688"]];
+const DURATIONS = [[30, "30 phút"], [120, "2 giờ"], [1440, "24 giờ"]];
+
+// ---------------------------------------------------------------- class dùng chung
+const ring = "outline-none focus-visible:bg-item-hover";
+const btnPrimary = "relative inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover outline-none focus-visible:bg-primary-hover md:h-10";
+const btnSecondary = "inline-flex h-11 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#ececef] px-4 text-sm font-medium text-foreground transition-colors hover:bg-item-hover outline-none focus-visible:bg-item-hover md:h-10";
+const inputBase = "h-11 w-full rounded-xl border bg-surface px-4 text-base text-foreground placeholder:text-muted outline-none transition-colors md:h-10 md:text-sm";
+const inputOk = "border-border-strong focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--ring-focus)]";
+const inputErr = "border-[var(--danger-border)] focus:ring-2 focus:ring-[rgb(239_68_68/0.1)]";
+
+// ---------------------------------------------------------------- trạng thái
+const query = new URLSearchParams(location.search);
+const form = {
+  kind: "",
+  amount: digits(query.get("cny")) ? fmt(Math.min(digits(query.get("cny")), AMOUNT_MAX)) : "",
+  rate: "",
+  channels: [],
+  note: "",
+  minutes: 1440,
+};
+const view = { user: null, errors: {}, formError: "", sending: false };
+
+// ---------------------------------------------------------------- header
+function header() {
+  const user = view.user;
+  const photo = user?.avatarUrl;
+  const initials = esc(initialsOf(user?.displayName || "?"));
+  const avatar = (size) => photo ? `<img src="${esc(photo)}" alt="" class="${size} shrink-0 rounded-full bg-[#ececef] object-cover">` : `<span class="${size} inline-flex shrink-0 items-center justify-center rounded-full bg-[#ececef] text-xs font-semibold text-foreground" aria-hidden="true">${initials}</span>`;
+  return `<header class="sticky top-0 z-30 border-b border-border-strong bg-surface">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+      <a href="index.html" class="flex min-w-0 items-center gap-2.5 rounded-lg ${ring}" aria-label="doite.vn — trang chủ">
+        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:h-9 sm:w-9">${LOGO}</span>
+        <span class="text-base font-bold tracking-tight text-foreground sm:text-lg">doite<b class="font-extrabold text-primary">.vn</b></span>
+      </a>
+      ${user ? `<a href="tai-khoan.html" aria-label="Trang cá nhân của ${esc(user.displayName)}" class="inline-flex h-10 max-w-[14rem] items-center gap-2 rounded-xl px-1 text-sm font-medium text-foreground transition-colors hover:bg-item-hover md:px-2 md:pr-3 ${ring}">${avatar("h-8 w-8")}<span class="hidden truncate md:inline">${esc(user.displayName)}</span></a>` : ""}
+    </div>
+  </header>`;
+}
+
+// ---------------------------------------------------------------- mảnh form
+function message(id, hint = "") {
+  const error = view.errors[id];
+  return `<p id="${id}-msg" class="pretty min-h-[1rem] text-xs ${error ? "text-danger" : "text-muted"}">${esc(error || hint)}</p>`;
+}
+
+function kindPicker() {
+  const error = view.errors.kind;
+  return `<fieldset class="flex flex-col gap-2">
+    <legend class="mb-2 text-sm font-medium text-foreground">Loại tin</legend>
+    <div role="radiogroup" aria-describedby="kind-msg" class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      ${KINDS.map((k) => {
+        const on = form.kind === k.key;
+        return `<button type="button" role="radio" aria-checked="${on}" data-kind="${k.key}" tabindex="${on || (!form.kind && k.key === "sell") ? 0 : -1}"
+          class="flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] ${on ? "border-primary bg-primary-light" : error ? "border-[var(--danger-border)] bg-surface hover:bg-[#fafafb]" : "border-border-strong bg-surface hover:bg-[#fafafb]"}">
+          <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-background" style="color:${k.color}">${icon(k.icon)}</span>
+          <span class="min-w-0"><span class="block text-sm font-semibold text-foreground">${k.title}</span><span class="pretty mt-0.5 block text-xs text-muted">${k.desc}</span></span>
+          <span class="ml-auto mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px] ${on ? "border-primary bg-primary text-primary-foreground" : "border-border-strong bg-surface"}">${on ? icon("check", "h-3 w-3") : ""}</span>
+        </button>`;
+      }).join("")}
+    </div>
+    ${message("kind")}
+  </fieldset>`;
+}
+
+function numberField(id, label, value, suffix, placeholder, hint) {
+  const error = view.errors[id];
+  return `<div class="flex flex-col gap-1.5">
+    <label for="${id}" class="w-fit cursor-pointer text-sm font-medium text-foreground">${label}</label>
+    <div class="relative">
+      <input id="${id}" data-key="${id}" inputmode="numeric" autocomplete="off" placeholder="${placeholder}" value="${esc(value)}" ${error ? 'aria-invalid="true"' : ""} aria-describedby="${id}-msg" ${view.sending ? "readonly" : ""} class="${inputBase} ${error ? inputErr : inputOk} pr-14 tabular">
+      <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-muted">${suffix}</span>
+    </div>
+    ${message(id, hint)}
+  </div>`;
+}
+
+function estimate() {
+  const amount = digits(form.amount), rate = digits(form.rate);
+  const ready = amount >= AMOUNT_MIN && rate >= RATE_MIN && rate <= RATE_MAX;
+  const verb = form.kind === "sell" ? "Bạn nhận về" : form.kind ? "Bạn trả" : "Quy đổi";
+  return `<p id="estimate" aria-live="polite" class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 rounded-xl bg-background px-4 py-3 text-sm ${ready ? "text-foreground" : "text-muted"}">
+    ${ready ? `<span>${verb} khoảng</span><b class="text-lg font-semibold tabular">${fmt(amount * rate)} ₫</b>` : `<span>Nhập số tệ và tỷ giá để xem số tiền quy đổi</span>`}
+  </p>`;
+}
+
+function channelPicker() {
+  const error = view.errors.channels;
+  return `<fieldset class="flex flex-col gap-2">
+    <legend class="mb-2 text-sm font-medium text-foreground">Kênh nhận / chuyển tiền <span class="font-normal text-muted">· chọn một hay nhiều</span></legend>
+    <div class="flex flex-wrap gap-2" aria-describedby="channels-msg">
+      ${CHANNELS.map(([key, label]) => {
+        const on = form.channels.includes(key);
+        return `<button type="button" data-channel="${key}" aria-pressed="${on}" class="inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring-focus)] ${on ? "border-primary bg-primary-light text-primary" : error ? "border-[var(--danger-border)] bg-surface text-foreground hover:bg-[#fafafb]" : "border-border-strong bg-surface text-foreground hover:bg-[#fafafb]"}">${on ? icon("check", "h-3.5 w-3.5") : ""}${label}</button>`;
+      }).join("")}
+    </div>
+    ${message("channels")}
+  </fieldset>`;
+}
+
+function noteField() {
+  const error = view.errors.note;
+  const length = [...form.note].length;
+  const showCount = length >= NOTE_MAX * 0.8;
+  return `<div class="flex flex-col gap-1.5">
+    <label for="note" class="w-fit cursor-pointer text-sm font-medium text-foreground">Ghi chú, hạn mức <span class="font-normal text-muted">· không bắt buộc</span></label>
+    <input id="note" data-key="note" autocomplete="off" placeholder="Ví dụ: Tối thiểu 3.000 ¥" value="${esc(form.note)}" ${error ? 'aria-invalid="true"' : ""} aria-describedby="note-msg note-count" ${view.sending ? "readonly" : ""} class="${inputBase} ${error ? inputErr : inputOk}">
+    <div class="flex justify-between gap-3">${message("note", "Hiện ngay dưới kênh trên tin của bạn")}<span id="note-count" aria-live="polite" class="shrink-0 text-xs tabular ${length > NOTE_MAX ? "text-danger" : "text-muted"} ${showCount ? "" : "invisible"}">${length}/${NOTE_MAX}</span></div>
+  </div>`;
+}
+
+function durationPicker() {
+  return `<fieldset class="flex flex-col gap-2">
+    <legend class="mb-2 text-sm font-medium text-foreground">Nhận chào giá trong</legend>
+    <div role="radiogroup" class="flex w-full items-center gap-1 rounded-xl bg-[#ececef] p-1 sm:w-max">
+      ${DURATIONS.map(([minutes, label]) => {
+        const on = form.minutes === minutes;
+        return `<button type="button" role="radio" aria-checked="${on}" tabindex="${on ? 0 : -1}" data-minutes="${minutes}" class="inline-flex h-9 flex-1 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg px-4 text-sm font-medium outline-none transition-colors focus-visible:bg-item-hover sm:flex-none ${on ? "bg-surface text-foreground shadow-[0_1px_2px_rgb(0_0_0/0.08)]" : "text-[#5c5c5c] hover:text-foreground"}">${label}</button>`;
+      }).join("")}
+    </div>
+    <p class="text-xs text-muted">Hết hạn, tin tự rời Bảng tin.</p>
+  </fieldset>`;
+}
+
+// Dòng báo trên nút: lỗi chung (mất mạng, quá 5 tin) hoặc số mục còn sai ở trên
+function errorSummary() {
+  const count = Object.keys(view.errors).length;
+  if (view.formError) {
+    return `<p role="alert" class="flex items-start gap-2 text-sm text-danger">${icon("circle-alert", "mt-0.5 h-4 w-4")}<span>${esc(view.formError)}</span></p>`;
+  }
+  if (!count) return "";
+  return `<p role="alert" class="flex items-center gap-2 text-sm text-danger">${icon("circle-alert", "h-4 w-4")}<button type="button" data-goto-error class="-my-1 cursor-pointer rounded py-1 text-left underline underline-offset-2 outline-none hover:no-underline focus-visible:no-underline">Còn ${count} mục chưa đúng ở trên, bấm để xem</button></p>`;
+}
+
+function render(focusId) {
+  document.getElementById("app").innerHTML = `${header()}
+  <main class="mx-auto max-w-2xl px-4 py-6 sm:px-6">
+    <a href="index.html" class="-ml-2 inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-sm text-muted hover:text-foreground ${ring}">${icon("arrow-left")}Bảng tin</a>
+    <section class="mt-2 rounded-2xl border border-border bg-surface p-5 sm:p-6" aria-labelledby="page-title">
+      <h1 id="page-title" class="text-xl font-semibold tracking-tight text-foreground">Đăng tin đổi tệ</h1>
+      <p class="pretty mt-1 text-sm text-muted">Thương nhân đã ký quỹ với sàn sẽ gửi chào giá cho tin của bạn. Không phụ phí sàn.</p>
+      <form id="post-form" class="mt-6 flex flex-col gap-5" novalidate>
+        ${kindPicker()}
+        <div class="flex flex-col gap-3">
+          <div class="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+            ${numberField("amount", "Số tệ", form.amount, "¥", "Ví dụ: 5.000", "Từ 100 đến 1.000.000 ¥")}
+            ${numberField("rate", "Tỷ giá mong muốn", form.rate, "₫/¥", "Nhập tỷ giá", `Tham chiếu hôm nay: mua ${fmt(REFERENCE.buy)} · bán ${fmt(REFERENCE.sell)} ₫/¥`)}
+          </div>
+          ${estimate()}
+        </div>
+        ${channelPicker()}
+        ${noteField()}
+        ${durationPicker()}
+        <!-- Thanh nút dính đáy màn hình: form dài, trên điện thoại nút "Đăng tin" luôn trong tầm tay.
+             Còn mục sai thì báo số mục ngay trên nút, bấm vào là nhảy tới mục đầu tiên. -->
+        <div class="sticky bottom-0 z-10 -mx-5 -mb-5 flex flex-col gap-3 rounded-b-2xl border-t border-border bg-surface px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:-mx-6 sm:-mb-6 sm:px-6">
+          <div id="error-summary" class="empty:hidden">${errorSummary()}</div>
+          <div class="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end">
+            <a href="index.html" class="${btnSecondary}">Huỷ</a>
+            <button type="submit" ${view.sending ? 'aria-disabled="true" aria-busy="true"' : ""} class="${btnPrimary}"><span class="${view.sending ? "invisible" : ""}">Đăng tin</span>${view.sending ? `<span class="absolute inset-0 flex items-center justify-center">${SPINNER}</span>` : ""}</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>`;
+  if (focusId) document.querySelector(focusId)?.focus();
+}
+
+// ---------------------------------------------------------------- kiểm form
+function validate() {
+  const errors = {};
+  const amount = digits(form.amount), rate = digits(form.rate);
+  if (!form.kind) errors.kind = "Chọn loại tin";
+  if (!amount) errors.amount = "Chưa nhập số tệ";
+  else if (amount < AMOUNT_MIN || amount > AMOUNT_MAX) errors.amount = "Số tệ cần từ 100 đến 1.000.000 ¥";
+  if (!rate) errors.rate = "Chưa nhập tỷ giá";
+  else if (rate < RATE_MIN || rate > RATE_MAX) errors.rate = `Tỷ giá lệch xa tham chiếu, nhập trong khoảng ${fmt(RATE_MIN)}–${fmt(RATE_MAX)} ₫/¥`;
+  if (!form.channels.length) errors.channels = "Chọn ít nhất một kênh";
+  if ([...form.note.trim()].length > NOTE_MAX) errors.note = `Ghi chú dài hơn ${NOTE_MAX} ký tự, bớt ${[...form.note.trim()].length - NOTE_MAX} ký tự`;
+  return errors;
+}
+const FIELD_ORDER = [["kind", '[data-kind][tabindex="0"]'], ["amount", "#amount"], ["rate", "#rate"], ["channels", "[data-channel]"], ["note", "#note"]];
+const SERVER_ERRORS = {
+  "loai-sai": ["kind", "Chọn loại tin"],
+  "so-te-sai": ["amount", "Số tệ cần từ 100 đến 1.000.000 ¥"],
+  "ty-gia-lech": ["rate", `Tỷ giá lệch xa tham chiếu, nhập trong khoảng ${fmt(RATE_MIN)}–${fmt(RATE_MAX)} ₫/¥`],
+  "kenh-sai": ["channels", "Chọn ít nhất một kênh"],
+  "ghi-chu-dai": ["note", `Ghi chú tối đa ${NOTE_MAX} ký tự`],
+};
+
+async function submit() {
+  if (view.sending) return;
+  view.errors = validate();
+  view.formError = "";
+  const first = FIELD_ORDER.find(([key]) => view.errors[key]);
+  if (first) return render(first[1]);
+  view.sending = true;
+  render();
+  let result;
+  try {
+    const response = await fetch("/api/posts", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind: form.kind, amountCny: digits(form.amount), rateVnd: digits(form.rate), channels: form.channels, note: form.note.trim(), minutes: form.minutes }),
+    });
+    result = { status: response.status, ...(await response.json().catch(() => ({}))) };
+  } catch {
+    result = { reason: "mat-mang" };
+  }
+  view.sending = false;
+  if (result.ok) {
+    location.href = `index.html?moi=${encodeURIComponent(result.id)}`;
+    return;
+  }
+  if (result.status === 401) {
+    location.href = "dang-nhap.html?tiep=dang-tin.html";
+    return;
+  }
+  const field = SERVER_ERRORS[result.reason];
+  if (field) {
+    view.errors = { [field[0]]: field[1] };
+    return render(FIELD_ORDER.find(([key]) => key === field[0])[1]);
+  }
+  view.formError = result.reason === "qua-so-tin" ? "Bạn đang có 5 tin còn hạn. Đợi tin cũ hết hạn rồi đăng tiếp."
+    : result.reason === "mat-mang" ? "Chưa kết nối được máy chủ, kiểm tra mạng rồi thử lại."
+    : "Máy chủ đang gặp lỗi, thử lại sau ít phút.";
+  render('button[type="submit"]');
+}
+
+function clearError(key) {
+  if (!view.errors[key]) return false;
+  delete view.errors[key];
+  return true;
+}
+
+// ---------------------------------------------------------------- sự kiện
+document.addEventListener("submit", (event) => { event.preventDefault(); submit(); });
+
+document.addEventListener("click", (event) => {
+  if (event.target.closest("[data-goto-error]")) {
+    const first = FIELD_ORDER.find(([key]) => view.errors[key]);
+    const target = first && document.querySelector(first[1]);
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    target?.focus({ preventScroll: true });
+    return;
+  }
+  const kind = event.target.closest("[data-kind]");
+  if (kind && !view.sending) {
+    form.kind = kind.dataset.kind;
+    clearError("kind");
+    render(`[data-kind="${form.kind}"]`);
+    return;
+  }
+  const channel = event.target.closest("[data-channel]");
+  if (channel && !view.sending) {
+    const key = channel.dataset.channel;
+    form.channels = form.channels.includes(key) ? form.channels.filter((c) => c !== key) : CHANNELS.map(([k]) => k).filter((k) => k === key || form.channels.includes(k));
+    if (form.channels.length) clearError("channels");
+    render(`[data-channel="${key}"]`);
+    return;
+  }
+  const minutes = event.target.closest("[data-minutes]");
+  if (minutes && !view.sending) {
+    form.minutes = Number(minutes.dataset.minutes);
+    render(`[data-minutes="${form.minutes}"]`);
+  }
+});
+
+// Phím mũi tên trong nhóm chọn một (loại tin, thời hạn)
+document.addEventListener("keydown", (event) => {
+  const radio = event.target.closest?.('[role="radio"]');
+  if (!radio || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+  event.preventDefault();
+  const items = [...radio.parentElement.querySelectorAll('[role="radio"]')];
+  const next = items[(items.indexOf(radio) + (["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : items.length - 1)) % items.length];
+  next.click();
+});
+
+document.addEventListener("input", (event) => {
+  const key = event.target.dataset.key;
+  if (!key) return;
+  if (key === "amount" || key === "rate") {
+    const value = digits(event.target.value);
+    form[key] = value ? fmt(key === "amount" ? Math.min(value, 9999999) : Math.min(value, 99999)) : "";
+    event.target.value = form[key];
+  } else {
+    form[key] = event.target.value;
+  }
+  if (clearError(key)) {
+    const input = event.target;
+    input.className = input.className.replace(inputErr, inputOk);
+    input.removeAttribute("aria-invalid");
+    const hints = { amount: "Từ 100 đến 1.000.000 ¥", rate: `Tham chiếu hôm nay: mua ${fmt(REFERENCE.buy)} · bán ${fmt(REFERENCE.sell)} ₫/¥`, note: "Hiện ngay dưới kênh trên tin của bạn" };
+    const msg = document.getElementById(`${key}-msg`);
+    msg.textContent = hints[key] || "";
+    msg.className = msg.className.replace("text-danger", "text-muted");
+    document.getElementById("error-summary").innerHTML = errorSummary();
+  }
+  if (key === "amount" || key === "rate") document.getElementById("estimate").outerHTML = estimate();
+  if (key === "note") {
+    const length = [...form.note].length;
+    const counter = document.getElementById("note-count");
+    counter.textContent = `${length}/${NOTE_MAX}`;
+    counter.classList.toggle("invisible", length < NOTE_MAX * 0.8);
+    counter.classList.toggle("text-danger", length > NOTE_MAX);
+    counter.classList.toggle("text-muted", length <= NOTE_MAX);
+  }
+});
+
+// ---------------------------------------------------------------- khởi động
+render();
+fetch("/api/auth/me", { credentials: "same-origin" })
+  .then((r) => (r.ok ? r.json() : null))
+  .then((data) => {
+    if (!data?.ok) { location.href = "dang-nhap.html?tiep=dang-tin.html"; return; }
+    view.user = data.user;
+    document.querySelector("header").outerHTML = header();
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "doite-e2e",
+  "private": true,
+  "description": "Test đầu cuối doite.vn: điều khiển trình duyệt Edge/Chrome thật bằng playwright-core. Xem tests/e2e/README.md",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright-core": "^1.49.1"
+  }
+}

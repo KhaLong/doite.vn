@@ -1,0 +1,54 @@
+/* Hiệu ứng chuyển trang (View Transitions giữa các trang cùng site; Chrome/Edge 126+, Safari 18.2+).
+   Không chặn link, không làm chậm điều hướng: trình duyệt chụp trang cũ, vẽ trang mới rồi chuyển.
+   - Nội dung: trang cũ mờ đi nhanh, trang mới hiện lên và trượt nhẹ từ dưới lên.
+   - Header (logo, nút): đứng yên, không mờ theo, để người dùng thấy vẫn đang ở cùng một site. */
+@view-transition {
+  navigation: auto;
+}
+
+header {
+  view-transition-name: site-header;
+}
+
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  animation: doite-page-out 120ms ease-out both;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: doite-page-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  mix-blend-mode: normal;
+}
+
+/* Header giống nhau ở hai trang: đổi tức thì, không nhoè (tên, ảnh đại diện đổi cũng không chớp). */
+::view-transition-group(site-header) {
+  animation-duration: 0s;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+@keyframes doite-page-out {
+  to { opacity: 0; }
+}
+
+@keyframes doite-page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

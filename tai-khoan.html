@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tài khoản — doite.vn</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' transform='translate(4.8 4.8) scale(.6)'%3E%3Cpath d='m17 2 4 4-4 4'/%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='m7 22-4-4 4-4'/%3E%3Cpath d='M21 18H3'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Bộ mặt Soft: font Be Vietnam Pro (DESIGN.md) -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Allowlisted Tailwind Script (Tailwind v3 play CDN) -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script>
+    // Cùng cấu hình với index.html: Tailwind chỉ trỏ tên lớp vào biến ở :root.
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["var(--app-font)"] },
+          colors: {
+            background: "var(--background)",
+            surface: "var(--surface)",
+            foreground: "var(--foreground)",
+            muted: "var(--muted)",
+            border: "var(--border)",
+            "border-strong": "var(--border-strong)",
+            primary: { DEFAULT: "var(--primary)", hover: "var(--primary-hover)", foreground: "var(--primary-foreground)", light: "var(--primary-light)" },
+            "item-hover": "var(--item-hover)",
+            success: { DEFAULT: "var(--success)", bg: "var(--success-bg)" },
+            warning: { DEFAULT: "var(--warning)", bg: "var(--warning-bg)" },
+            danger: { DEFAULT: "var(--danger)", bg: "var(--danger-bg)" },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* Token của doite.vn — giữ khớp khối :root trong index.html */
+    :root {
+      color-scheme: light;
+      --app-font: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-foreground: #ffffff;
+      --primary-light: #eff6ff;
+      --background: #f4f4f6;
+      --surface: #ffffff;
+      --foreground: #2c2c2c;
+      --muted: #707070;
+      --border: #f0f0f2;
+      --border-strong: #d4d4d8;
+      --border-focus: var(--primary);
+      --ring-focus: color-mix(in srgb, var(--primary) 15%, transparent);
+      --item-hover: #e8e8ec;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --danger: #dc2626;
+      --danger-border: #ef4444;
+      --danger-bg: #fef2f2;
+      /* Màu theo loại giao dịch (chấm trước nhãn), như loại tin ở trang chủ */
+      --cat-sell: #15803d;
+      --cat-buy: #2563eb;
+      --cat-pay: #7c3aed;
+    }
+    body { font-family: var(--app-font); background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    [hidden] { display: none !important; }
+    * { scrollbar-width: thin; scrollbar-color: #c4c4c8 transparent; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .pretty { text-wrap: pretty; }
+    /* Hàng tab cuộn ngang trên màn hẹp: mép phải mờ báo còn tab (như trang chủ) */
+    .scrollbar-none { scrollbar-width: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .fade-right { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); }
+    @media (min-width: 768px) { .fade-right { -webkit-mask-image: none; mask-image: none; } }
+    .dot { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
+    /* Thanh trượt phóng to trong hộp chỉnh ảnh: rãnh 4px, tay cầm 20px viền 2px, vùng chạm cả dải h-11 */
+    .zoom-range { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+    .zoom-range::-webkit-slider-runnable-track { height: 4px; border-radius: 9999px; background: linear-gradient(to right, var(--primary) var(--fill, 0%), #e4e4e7 var(--fill, 0%)); }
+    .zoom-range::-moz-range-track { height: 4px; border-radius: 9999px; background: #e4e4e7; }
+    .zoom-range::-moz-range-progress { height: 4px; border-radius: 9999px; background: var(--primary); }
+    .zoom-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 9999px; border: 2px solid var(--primary); background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.15); }
+    .zoom-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 9999px; border: 2px solid var(--primary); background: #fff; }
+    .zoom-range:focus-visible { outline: none; }
+    .zoom-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--ring-focus); }
+    .zoom-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--ring-focus); }
+    @keyframes overlay-in { from { opacity: 0; } }
+    @keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+    .overlay-in { animation: overlay-in 150ms ease-out; }
+    .dialog-in { animation: dialog-in 180ms ease-out; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+  <!-- Hiệu ứng chuyển trang (page-transitions.css), bản dự phòng cho trình duyệt cũ (page-transitions.js) -->
+  <link rel="stylesheet" href="page-transitions.css" />
+  <script src="page-transitions.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="crop-root"></div>
+
+<script>
+// doite.vn — Trang cá nhân (phương án A · Một cột: tài khoản trên, lịch sử dưới; DESIGN.md)
+// Dữ liệu: GET /api/account (src/account.rs). Xem trạng thái tĩnh: ?tt=dang-tai | rong | loi
+
+// ---------------------------------------------------------------- icon (SVG nội tuyến, không CDN — CSP)
+const ICONS = {
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+  smartphone: '<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+  "triangle-alert": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  "log-out": '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>',
+  "wifi-off": '<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
+  "rotate-cw": '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  "arrow-left-right": '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+  "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  minus: '<path d="M5 12h14"/>',
+  move: '<path d="M12 2v20"/><path d="m15 19-3 3-3-3"/><path d="m19 9 3 3-3 3"/><path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m9 5 3-3 3 3"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+};
+const icon = (name, cls = "h-4 w-4") =>
+  `<svg class="lucide lucide-${name} ${cls} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+const SPINNER = `<svg class="h-4 w-4 shrink-0 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>`;
+const LOGO = `<svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 6h18"/><path d="m7 22-4-4 4-4"/><path d="M21 18H3"/></svg>`;
+
+// ---------------------------------------------------------------- class dùng chung (chép từ wireframe A)
+const ring = "outline-none focus-visible:bg-item-hover";
+const btnPrimary = "inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover outline-none focus-visible:bg-primary-hover";
+const btnOutline = `inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-border-strong bg-surface px-4 text-sm font-medium text-foreground transition-colors hover:bg-item-hover disabled:cursor-default disabled:hover:bg-surface ${ring}`;
+const card = "rounded-2xl border border-border bg-surface";
+
+const esc = (text) => String(text ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const initialsOf = (name) => {
+  const words = String(name).trim().split(/\s+/);
+  return (words.length > 1 ? words[0][0] + words[words.length - 1][0] : words[0].slice(0, 2)).toUpperCase();
+};
+
+// ---------------------------------------------------------------- thời gian theo giờ Việt Nam
+const TZ = "Asia/Ho_Chi_Minh";
+const dayKey = (date) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(date); // 2026-11-11
+function timeParts(iso) {
+  const date = new Date(iso);
+  const time = new Intl.DateTimeFormat("vi-VN", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  const now = new Date();
+  const days = Math.round((new Date(dayKey(now)) - new Date(dayKey(date))) / 86400000);
+  const day = days === 0 ? "Hôm nay" : new Intl.DateTimeFormat("vi-VN", { timeZone: TZ, day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
+  const seconds = Math.max(0, (now - date) / 1000);
+  const ago = seconds < 60 ? "Vừa xong"
+    : seconds < 3600 ? `${Math.floor(seconds / 60)} phút trước`
+    : days === 0 ? `${Math.floor(seconds / 3600)} giờ trước`
+    : days === 1 ? "Hôm qua"
+    : `${days} ngày trước`;
+  return { time, day, ago };
+}
+function joinedText(iso) {
+  return new Intl.DateTimeFormat("vi-VN", { timeZone: TZ, day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(iso));
+}
+
+// ---------------------------------------------------------------- thiết bị từ User-Agent
+function deviceOf(ua) {
+  if (!ua) return { label: "Thiết bị không rõ", icon: "monitor" };
+  const browser = /Edg(e|A|iOS)?\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /coc_coc/i.test(ua) ? "Cốc Cốc"
+    : /Firefox\/|FxiOS/.test(ua) ? "Firefox" : /Chrome\/|CriOS/.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : "Trình duyệt khác";
+  const os = /iPhone/.test(ua) ? "iPhone" : /iPad/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android"
+    : /Windows/.test(ua) ? "Windows" : /Mac OS X/.test(ua) ? "macOS" : /Linux/.test(ua) ? "Linux" : "";
+  const mobile = /iPhone|Android|Mobile/.test(ua) && !/iPad/.test(ua);
+  return { label: os ? `${browser} · ${os}` : browser, icon: mobile ? "smartphone" : "monitor" };
+}
+
+// ---------------------------------------------------------------- trạng thái
+const preview = new URLSearchParams(location.search).get("tt"); // dang-tai | rong | loi — chỉ để xem
+const state = { load: "dang-tai", user: null, logins: [], loggingOut: "idle", avatar: "idle", avatarError: "" }; // loggingOut: idle | busy | done | error; avatar: idle | busy
+
+// ---------------------------------------------------------------- khối 1: header
+function header() {
+  const user = state.user;
+  return `<header class="sticky top-0 z-30 border-b border-border-strong bg-surface">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+      <a href="index.html" class="flex min-w-0 items-center gap-2.5 rounded-lg ${ring}" aria-label="doite.vn — trang chủ">
+        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:h-9 sm:w-9">${LOGO}</span>
+        <span class="text-base font-bold tracking-tight text-foreground sm:text-lg">doite<b class="font-extrabold text-primary">.vn</b></span>
+      </a>
+      <div class="flex shrink-0 items-center gap-2">
+        <a href="index.html" class="${btnPrimary} max-sm:h-9 max-sm:px-3">${icon("plus")}<span class="sm:hidden">Đăng tin</span><span class="max-sm:hidden">Đăng tin đổi tệ</span></a>
+        ${user ? `<a href="tai-khoan.html" aria-current="page" class="hidden h-10 items-center gap-2 rounded-xl bg-item-hover px-2 pr-3 text-sm font-medium text-foreground outline-none focus-visible:bg-[#dcdce1] md:inline-flex">${avatar("h-8 w-8", "text-xs")}<span class="max-w-[10rem] truncate">${esc(user.displayName)}</span></a>` : ""}
+        <button type="button" data-action="logout" class="${btnOutline} max-sm:h-9 max-sm:px-3">Đăng xuất</button>
+      </div>
+    </div>
+  </header>`;
+}
+
+function avatar(size, text) {
+  if (state.user?.avatarUrl) return `<img src="${esc(state.user.avatarUrl)}" alt="" class="${size} shrink-0 rounded-full bg-[#ececef] object-cover">`;
+  return `<span class="${size} inline-flex shrink-0 items-center justify-center rounded-full bg-[#ececef] ${text} font-semibold text-foreground" aria-hidden="true">${esc(initialsOf(state.user?.displayName || "?"))}</span>`;
+}
+
+// ---------------------------------------------------------------- khối 2: thông tin tài khoản
+function accountCard() {
+  const user = state.user;
+  if (!user) {
+    // Khung chờ đúng hình thẻ thật
+    return `<section class="${card} p-4 sm:p-5" aria-busy="true" aria-label="Thông tin tài khoản">
+      <div class="flex items-center gap-3"><div class="h-12 w-12 animate-pulse rounded-full bg-[#ececef]"></div><div class="flex-1 space-y-2"><div class="h-5 w-48 animate-pulse rounded bg-[#ececef]"></div><div class="h-3.5 w-28 animate-pulse rounded bg-[#ececef]"></div></div></div>
+      <div class="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 sm:grid-cols-3 sm:gap-6">${[1, 2, 3].map(() => `<div class="space-y-1.5"><div class="h-3 w-20 animate-pulse rounded bg-[#ececef]"></div><div class="h-4 w-28 animate-pulse rounded bg-[#ececef]"></div></div>`).join("")}</div>
+    </section>`;
+  }
+  const facts = [["Tên đăng nhập", user.username], ["Số điện thoại", user.phone], ["Tham gia", joinedText(user.joined)]];
+  return `<section class="${card} p-4 sm:p-5" aria-label="Thông tin tài khoản">
+    <div class="flex items-center gap-3">${avatarEditor()}<div class="min-w-0"><h1 class="truncate text-xl font-semibold tracking-tight text-foreground">${esc(user.displayName)}</h1><p class="truncate text-sm text-muted">@${esc(user.username)}</p>${avatarActions()}</div></div>
+    <div class="mt-4 border-t border-border pt-4"><dl class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6">${facts.map(([k, v]) => `<div class="min-w-0"><dt class="text-xs text-muted">${k}</dt><dd class="mt-0.5 truncate text-sm font-medium text-foreground tabular">${esc(v)}</dd></div>`).join("")}</dl></div>
+  </section>`;
+}
+
+// ---------------------------------------------------------------- đổi ảnh đại diện
+// Bấm nút máy ảnh hoặc "Đổi ảnh" → chọn ảnh → trình duyệt cắt vuông giữa, thu về 256px → PUT /api/account/avatar.
+// Server giải mã và mã hoá lại thành JPEG (src/avatar.rs), nên EXIF/GPS của ảnh gốc không bị lưu.
+const AVATAR_MAX_BYTES = 10 * 1024 * 1024;
+const AVATAR_ERRORS = {
+  "loai-file": "Chỉ nhận ảnh JPG, PNG hoặc WebP",
+  "qua-lon": "Ảnh lớn hơn 10 MB, chọn ảnh nhỏ hơn",
+  "anh-khong-doc-duoc": "Không đọc được ảnh này, chọn ảnh JPG hoặc PNG khác",
+  "anh-qua-lon": "Ảnh quá lớn, chọn ảnh dưới 8000 điểm ảnh mỗi cạnh",
+  "mat-mang": "Chưa kết nối được máy chủ, thử lại",
+};
+
+function avatarEditor() {
+  const busy = state.avatar === "busy";
+  return `<div class="relative shrink-0">
+    ${avatar("h-12 w-12", "text-base")}
+    ${busy ? `<span class="absolute inset-0 flex items-center justify-center rounded-full bg-[rgb(0_0_0/0.45)] text-white">${SPINNER}</span>` : ""}
+    <button type="button" data-action="pick-avatar" ${busy ? "disabled" : ""} aria-label="Đổi ảnh đại diện" class="absolute -bottom-1 -right-1 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border-2 border-surface bg-foreground text-surface transition-colors after:absolute after:-inset-1.5 after:content-[''] hover:bg-[#404040] outline-none focus-visible:bg-primary disabled:cursor-default">${icon("camera", "h-3.5 w-3.5")}</button>
+    <input type="file" id="avatar-file" accept="image/jpeg,image/png,image/webp" class="hidden" tabindex="-1" aria-hidden="true">
+  </div>`;
+}
+
+function avatarActions() {
+  const busy = state.avatar === "busy";
+  const textButton = "-my-1 cursor-pointer rounded py-1 underline-offset-2 outline-none hover:underline focus-visible:underline disabled:cursor-default disabled:no-underline";
+  return `<div class="mt-1 flex flex-wrap items-center gap-x-3 text-sm">
+      <button type="button" data-action="pick-avatar" ${busy ? "disabled" : ""} class="${textButton} font-medium text-foreground">${busy ? "Đang lưu ảnh…" : state.user.avatarUrl ? "Đổi ảnh" : "Thêm ảnh đại diện"}</button>
+      ${state.user.avatarUrl && !busy ? `<button type="button" data-action="remove-avatar" class="${textButton} text-muted hover:text-foreground">Xoá ảnh</button>` : ""}
+    </div>
+    ${state.avatarError ? `<p role="alert" class="mt-1 text-xs text-danger">${esc(state.avatarError)}</p>` : ""}`;
+}
+
+// ---------------------------------------------------------------- hộp "Chỉnh ảnh đại diện"
+// Chọn ảnh → mở hộp: kéo để chọn phần nằm trong khung tròn, thanh trượt / nút −+ / cuộn chuột để phóng to.
+// Chỉ khi bấm "Lưu ảnh" mới cắt 256×256, gửi lên và đổi ảnh đại diện chính thức. Huỷ, ✕, Esc: giữ ảnh cũ.
+// Bấm ra ngoài không đóng (đang chỉnh dở). Kéo ảnh cập nhật thẳng style, không vẽ lại cả hộp.
+const ZOOM_MAX = 4;
+const crop = { open: false, url: "", img: null, view: 0, zoom: 1, x: 0, y: 0, saving: false, error: "" };
+
+function cropScale() {
+  return (crop.view / Math.min(crop.img.naturalWidth, crop.img.naturalHeight)) * crop.zoom;
+}
+function clampCrop() {
+  const s = cropScale();
+  crop.x = Math.min(0, Math.max(crop.view - crop.img.naturalWidth * s, crop.x));
+  crop.y = Math.min(0, Math.max(crop.view - crop.img.naturalHeight * s, crop.y));
+}
+function paintCrop() {
+  const s = cropScale();
+  const image = document.getElementById("crop-image");
+  image.style.width = `${crop.img.naturalWidth * s}px`;
+  image.style.height = `${crop.img.naturalHeight * s}px`;
+  image.style.transform = `translate(${crop.x}px, ${crop.y}px)`;
+  const range = document.getElementById("crop-zoom");
+  range.value = crop.zoom;
+  range.style.setProperty("--fill", `${((crop.zoom - 1) / (ZOOM_MAX - 1)) * 100}%`);
+  range.setAttribute("aria-valuetext", `Phóng to ${Math.round(crop.zoom * 100)}%`);
+}
+// Phóng to quanh tâm khung: điểm ảnh đang ở giữa khung vẫn ở giữa
+function setZoom(next) {
+  const before = cropScale();
+  const centerX = (crop.view / 2 - crop.x) / before;
+  const centerY = (crop.view / 2 - crop.y) / before;
+  crop.zoom = Math.min(ZOOM_MAX, Math.max(1, next));
+  const after = cropScale();
+  crop.x = crop.view / 2 - centerX * after;
+  crop.y = crop.view / 2 - centerY * after;
+  clampCrop();
+  paintCrop();
+}
+
+function cropDialog() {
+  const iconButton = "inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-muted transition-colors hover:bg-item-hover hover:text-foreground outline-none focus-visible:bg-item-hover focus-visible:text-foreground";
+  return `<div class="overlay-in fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-0 sm:items-center sm:p-4">
+    <div role="dialog" aria-modal="true" aria-labelledby="crop-title" aria-describedby="crop-desc" class="dialog-in relative flex max-h-full w-full flex-col overflow-y-auto rounded-t-2xl border border-border bg-surface p-5 shadow-[0_20px_40px_-12px_rgb(0_0_0/0.25)] sm:max-w-md sm:rounded-2xl sm:p-6">
+      <div class="pr-10">
+        <h2 id="crop-title" class="text-lg font-semibold text-foreground">Chỉnh ảnh đại diện</h2>
+        <p id="crop-desc" class="pretty mt-1 text-sm text-muted">Kéo ảnh để chọn phần hiện trong khung tròn, kéo thanh bên dưới để phóng to.</p>
+      </div>
+      <button type="button" data-crop="cancel" aria-label="Đóng" class="${iconButton} absolute right-3 top-3 sm:right-4 sm:top-4">${icon("x")}</button>
+      <div id="crop-box" tabindex="0" style="width: min(100%, 18rem); aspect-ratio: 1 / 1;" role="application" aria-label="Vùng chỉnh ảnh. Phím mũi tên để dịch ảnh, phím cộng trừ để phóng to thu nhỏ" class="relative mx-auto mt-5 aspect-square w-full max-w-[18rem] cursor-grab touch-none select-none overflow-hidden rounded-xl bg-[#1f1f1f] outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring-focus)] active:cursor-grabbing">
+        <img id="crop-image" src="${crop.url}" alt="" draggable="false" class="pointer-events-none absolute left-0 top-0 max-w-none origin-top-left">
+        <div class="pointer-events-none absolute inset-0 rounded-full shadow-[0_0_0_9999px_rgb(0_0_0/0.5)] ring-2 ring-inset ring-white/80"></div>
+        <span class="pointer-events-none absolute bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white">${icon("move", "h-3.5 w-3.5")}Kéo để căn</span>
+      </div>
+      <div class="mx-auto mt-4 flex w-full max-w-[18rem] items-center gap-1">
+        <button type="button" data-crop="zoom-out" aria-label="Thu nhỏ" class="${iconButton}">${icon("minus")}</button>
+        <input id="crop-zoom" type="range" min="1" max="${ZOOM_MAX}" step="0.01" value="1" aria-label="Phóng to ảnh" class="zoom-range h-11 min-w-0 flex-1">
+        <button type="button" data-crop="zoom-in" aria-label="Phóng to" class="${iconButton}">${icon("plus")}</button>
+      </div>
+      <p id="crop-error" role="alert" class="min-h-[1rem] text-center text-xs text-danger"></p>
+      <div class="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" data-crop="cancel" class="inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-[#ececef] px-4 text-sm font-medium text-foreground transition-colors hover:bg-item-hover outline-none focus-visible:bg-item-hover md:h-10">Huỷ</button>
+        <button type="button" id="crop-save" data-crop="save" class="relative inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover outline-none focus-visible:bg-primary-hover md:h-10"><span id="crop-save-label">Lưu ảnh</span><span id="crop-save-spin" class="absolute inset-0 hidden items-center justify-center">${SPINNER}</span></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openCrop(file) {
+  crop.url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = async () => {
+    Object.assign(crop, { open: true, img, zoom: 1, saving: false, error: "" });
+    const root = document.getElementById("crop-root");
+    root.innerHTML = cropDialog();
+    document.body.style.overflow = "hidden";
+    // Đợi trình duyệt dựng khung (Tailwind tạo class cho phần tử mới sau một nhịp) rồi mới đo
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    // clientWidth: cỡ bố cục, không bị hiệu ứng mở hộp (scale 0.98) làm sai như getBoundingClientRect
+    crop.view = document.getElementById("crop-box").clientWidth;
+    const s = cropScale();
+    crop.x = (crop.view - img.naturalWidth * s) / 2; // bắt đầu ở giữa ảnh
+    crop.y = (crop.view - img.naturalHeight * s) / 2;
+    paintCrop();
+    document.getElementById("crop-box").focus();
+  };
+  img.onerror = () => {
+    URL.revokeObjectURL(crop.url);
+    state.avatarError = AVATAR_ERRORS["anh-khong-doc-duoc"];
+    render();
+  };
+  img.src = crop.url;
+}
+
+function closeCrop() {
+  if (!crop.open) return;
+  crop.open = false;
+  URL.revokeObjectURL(crop.url);
+  document.getElementById("crop-root").innerHTML = "";
+  document.body.style.overflow = "";
+  // Trả tiêu điểm về nút đổi ảnh (ô chọn file bị ẩn, không nhận tiêu điểm được)
+  document.querySelector('[data-action="pick-avatar"]')?.focus();
+}
+
+function setCropSaving(saving, error = "") {
+  crop.saving = saving;
+  const button = document.getElementById("crop-save");
+  button.setAttribute("aria-busy", String(saving));
+  button.setAttribute("aria-disabled", String(saving));
+  document.getElementById("crop-save-label").classList.toggle("invisible", saving);
+  const spin = document.getElementById("crop-save-spin");
+  spin.classList.toggle("hidden", !saving);
+  spin.classList.toggle("flex", saving);
+  document.getElementById("crop-error").textContent = error;
+}
+
+/** Cắt đúng phần trong khung, thu về 256×256 JPEG. */
+function croppedJpeg() {
+  const s = cropScale();
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 256;
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(crop.img, -crop.x / s, -crop.y / s, crop.view / s, crop.view / s, 0, 0, 256, 256);
+  return new Promise((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("anh-khong-doc-duoc"))), "image/jpeg", 0.9));
+}
+
+async function saveCrop() {
+  if (crop.saving) return;
+  setCropSaving(true);
+  try {
+    const blob = await croppedJpeg();
+    const response = await fetch("/api/account/avatar", { method: "PUT", credentials: "same-origin", headers: { "Content-Type": "image/jpeg" }, body: blob })
+      .catch(() => { throw new Error("mat-mang"); });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) throw new Error(data.reason || "loi-may-chu");
+    state.user.avatarUrl = data.avatarUrl;
+    state.avatarError = "";
+    closeCrop();
+    render();
+    document.querySelector('[data-action="pick-avatar"]')?.focus();
+  } catch (error) {
+    setCropSaving(false, AVATAR_ERRORS[error.message] || "Chưa lưu được ảnh, thử lại sau ít phút");
+  }
+}
+
+function changeAvatar(file) {
+  state.avatarError = "";
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) state.avatarError = AVATAR_ERRORS["loai-file"];
+  else if (file.size > AVATAR_MAX_BYTES) state.avatarError = AVATAR_ERRORS["qua-lon"];
+  if (state.avatarError) return render();
+  openCrop(file);
+}
+
+// Xoay ngang điện thoại / đổi cỡ cửa sổ: khung đổi cỡ thì giữ nguyên phần ảnh đang chọn
+addEventListener("resize", () => {
+  if (!crop.open) return;
+  const view = document.getElementById("crop-box").clientWidth;
+  if (!view || view === crop.view) return;
+  const ratio = view / crop.view;
+  crop.x *= ratio;
+  crop.y *= ratio;
+  crop.view = view;
+  clampCrop();
+  paintCrop();
+});
+
+// Kéo ảnh (chuột, ngón tay, bút)
+let drag = null;
+document.addEventListener("pointerdown", (event) => {
+  const box = event.target.closest?.("#crop-box");
+  if (!box || !crop.open || crop.saving) return;
+  drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, x: crop.x, y: crop.y };
+  box.setPointerCapture(event.pointerId);
+});
+document.addEventListener("pointermove", (event) => {
+  if (!drag || event.pointerId !== drag.id) return;
+  crop.x = drag.x + event.clientX - drag.startX;
+  crop.y = drag.y + event.clientY - drag.startY;
+  clampCrop();
+  paintCrop();
+});
+const endDrag = (event) => { if (drag && event.pointerId === drag.id) drag = null; };
+document.addEventListener("pointerup", endDrag);
+document.addEventListener("pointercancel", endDrag);
+document.addEventListener("wheel", (event) => {
+  if (!crop.open || !event.target.closest?.("#crop-box")) return;
+  event.preventDefault();
+  setZoom(crop.zoom * (event.deltaY < 0 ? 1.08 : 1 / 1.08));
+}, { passive: false });
+document.addEventListener("input", (event) => {
+  if (event.target.id === "crop-zoom") setZoom(Number(event.target.value));
+});
+document.addEventListener("keydown", (event) => {
+  if (!crop.open) return;
+  if (event.key === "Escape") { event.preventDefault(); if (!crop.saving) closeCrop(); return; }
+  if (event.key === "Tab") {
+    // Giữ tiêu điểm trong hộp
+    const items = [...document.querySelectorAll('#crop-root [role="dialog"] button, #crop-root [role="dialog"] input, #crop-box')];
+    const index = items.indexOf(document.activeElement);
+    const next = event.shiftKey ? (index <= 0 ? items.length - 1 : index - 1) : (index === items.length - 1 ? 0 : index + 1);
+    event.preventDefault();
+    items[next].focus();
+    return;
+  }
+  if (document.activeElement?.id !== "crop-box") return;
+  const step = event.shiftKey ? 40 : 10;
+  const moves = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
+  if (moves[event.key]) {
+    event.preventDefault();
+    crop.x += moves[event.key][0];
+    crop.y += moves[event.key][1];
+    clampCrop();
+    paintCrop();
+  }
+  if (event.key === "+" || event.key === "=") { event.preventDefault(); setZoom(crop.zoom + 0.2); }
+  if (event.key === "-") { event.preventDefault(); setZoom(crop.zoom - 0.2); }
+});
+document.addEventListener("click", (event) => {
+  const action = event.target.closest?.("[data-crop]")?.dataset.crop;
+  if (!action || !crop.open) return;
+  if (action === "cancel" && !crop.saving) closeCrop();
+  if (action === "zoom-in") setZoom(crop.zoom + 0.25);
+  if (action === "zoom-out") setZoom(crop.zoom - 0.25);
+  if (action === "save") saveCrop();
+});
+
+async function removeAvatar() {
+  state.avatarError = "";
+  state.avatar = "busy";
+  render();
+  try {
+    const response = await fetch("/api/account/avatar", { method: "DELETE", credentials: "same-origin" });
+    if (!response.ok) throw new Error();
+    state.user.avatarUrl = null;
+  } catch {
+    state.avatarError = "Chưa xoá được ảnh, thử lại sau ít phút";
+  }
+  state.avatar = "idle";
+  render();
+}
+
+document.addEventListener("change", (event) => {
+  if (event.target.id === "avatar-file" && event.target.files[0]) {
+    changeAvatar(event.target.files[0]);
+    event.target.value = ""; // chọn lại đúng ảnh đó vẫn mở hộp chỉnh
+  }
+});
+
+// ---------------------------------------------------------------- khối 3: lịch sử giao dịch
+// GET /api/account/trades (src/trades.rs). Nhìn từ phía mình: Bán / Mua CNY, Thanh toán (nhờ người khác), Thanh toán hộ.
+// Giao dịch đang xử lý và khiếu nại đứng đầu; tab "Đang xử lý" gồm cả khiếu nại.
+const fmt = (n) => Number(n).toLocaleString("vi-VN");
+const SIDES = {
+  sell: { label: "Bán CNY", color: "var(--cat-sell)" },
+  buy: { label: "Mua CNY", color: "var(--cat-buy)" },
+  pay: { label: "Thanh toán", color: "var(--cat-pay)" },
+  "pay-for": { label: "Thanh toán hộ", color: "var(--cat-pay)" },
+};
+const TRADE_STATUS = {
+  processing: ["Đang xử lý", "bg-primary-light text-primary"],
+  completed: ["Hoàn tất", "bg-success-bg text-success"],
+  cancelled: ["Đã huỷ", "bg-[#f0f0f2] text-muted"],
+  disputed: ["Khiếu nại", "bg-danger-bg text-danger"],
+};
+const TRADE_TABS = [["all", "Tất cả"], ["processing", "Đang xử lý"], ["completed", "Hoàn tất"], ["cancelled", "Đã huỷ"]];
+const EMPTY_COUNTS = { all: 0, processing: 0, completed: 0, cancelled: 0 };
+const trades = { load: "dang-tai", tab: "all", items: [], counts: { ...EMPTY_COUNTS }, hasMore: false, loadingMore: false };
+
+async function loadTrades({ more = false } = {}) {
+  if (more) trades.loadingMore = true;
+  else trades.load = "dang-tai";
+  render();
+  try {
+    const params = new URLSearchParams({ status: trades.tab, offset: more ? trades.items.length : 0 });
+    const response = await fetch(`/api/account/trades?${params}`, { credentials: "same-origin" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.reason);
+    trades.items = more ? trades.items.concat(data.trades) : data.trades;
+    trades.counts = data.counts;
+    trades.hasMore = data.hasMore;
+    trades.load = "xong";
+  } catch {
+    if (!more) trades.load = "loi";
+  }
+  trades.loadingMore = false;
+  if (preview === "dang-tai") trades.load = "dang-tai";
+  if (preview === "loi") trades.load = "loi";
+  if (preview === "rong") Object.assign(trades, { items: [], counts: { ...EMPTY_COUNTS }, hasMore: false });
+  render();
+}
+
+function partnerAvatar(partner) {
+  if (partner.avatarUrl) return `<img src="${esc(partner.avatarUrl)}" alt="" class="h-6 w-6 shrink-0 rounded-full bg-[#ececef] object-cover">`;
+  return `<span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ececef] text-[10px] font-semibold text-foreground" aria-hidden="true">${esc(initialsOf(partner.displayName))}</span>`;
+}
+
+function tradeStatus(status) {
+  const [label, cls] = TRADE_STATUS[status] || TRADE_STATUS.processing;
+  return `<span class="inline-flex h-6 shrink-0 items-center rounded-full px-2 text-xs font-medium ${cls}">${label}</span>`;
+}
+
+function tradeTabs() {
+  return `<div class="fade-right min-w-0 overflow-x-auto scrollbar-none"><div role="tablist" aria-label="Lọc giao dịch" class="flex w-max items-center gap-1 rounded-xl bg-[#ececef] p-1">
+    ${TRADE_TABS.map(([key, label]) => {
+      const on = key === trades.tab;
+      return `<button type="button" role="tab" data-trade-tab="${key}" aria-selected="${on}" class="inline-flex h-8 shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-lg px-3 text-sm font-medium outline-none transition-colors focus-visible:bg-item-hover ${on ? "bg-surface text-foreground shadow-[0_1px_2px_rgb(0_0_0/0.08)]" : "text-[#5c5c5c] hover:text-foreground"}">${label}<span class="text-xs tabular ${on ? "text-muted" : ""}">${fmt(trades.counts[key] || 0)}</span></button>`;
+    }).join("")}
+  </div></div>`;
+}
+
+function tradeRows() {
+  if (trades.load === "dang-tai") {
+    return `<div aria-busy="true" class="divide-y divide-[#e8e8ec]">${[1, 2, 3].map(() => `<div class="flex items-center gap-4 px-4 py-4 sm:px-5"><div class="flex-1 space-y-2"><div class="h-3.5 w-32 animate-pulse rounded bg-[#ececef]"></div><div class="h-3 w-48 animate-pulse rounded bg-[#ececef]"></div></div><div class="h-5 w-24 animate-pulse rounded bg-[#ececef]"></div><div class="h-6 w-20 animate-pulse rounded-full bg-[#ececef]"></div></div>`).join("")}</div>`;
+  }
+  if (trades.load === "loi") {
+    return `<div role="alert" class="flex flex-col items-center px-4 py-10 text-center"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-danger-bg text-danger">${icon("wifi-off", "h-5 w-5")}</span><p class="mt-3 text-base font-semibold text-foreground">Chưa tải được lịch sử giao dịch</p><p class="mt-1 text-sm text-muted">Kiểm tra mạng rồi thử lại.</p><button type="button" data-action="trades-retry" class="${btnPrimary} mt-4">${icon("rotate-cw")}Thử tải lại</button></div>`;
+  }
+  if (!trades.items.length) {
+    const all = trades.tab === "all";
+    const label = (TRADE_TABS.find(([key]) => key === trades.tab) || ["", ""])[1].toLowerCase();
+    return `<div class="flex flex-col items-center px-4 py-10 text-center"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-background text-muted">${icon("arrow-left-right", "h-5 w-5")}</span>
+      <p class="mt-3 text-base font-semibold text-foreground">${all ? "Chưa có giao dịch nào" : `Không có giao dịch ${label}`}</p>
+      <p class="pretty mt-1 max-w-sm text-sm text-muted">${all ? "Giao dịch hiện ở đây khi tin của bạn nhận chào giá, hoặc khi bạn chào giá cho tin của người khác." : "Chọn tab Tất cả để xem mọi giao dịch."}</p>
+      ${all ? `<a href="index.html" class="${btnPrimary} mt-4">Xem Bảng tin</a>` : ""}</div>`;
+  }
+  const columns = "lg:grid-cols-[minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.75fr)_minmax(0,0.95fr)_minmax(0,1.7fr)_6rem]";
+  const head = `<div class="hidden gap-x-4 border-b border-border px-5 py-2.5 text-xs font-medium text-muted lg:grid ${columns}"><span>Giao dịch</span><span class="text-right">Số tệ</span><span class="text-right">Tỷ giá</span><span class="text-right">Thành tiền</span><span>Đối tác</span><span class="text-right">Trạng thái</span></div>`;
+  const rows = trades.items.map((trade) => {
+    const t = timeParts(trade.at);
+    const kind = SIDES[trade.side] || SIDES.sell;
+    const badge = `<span class="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium" style="color:${kind.color}"><span class="dot"></span>${kind.label}</span>`;
+    const when = `<span class="whitespace-nowrap text-xs text-muted tabular">${t.time} · ${t.day}</span>`;
+    const name = esc(trade.partner.displayName);
+    const profile = `/nguoi-dung/${encodeURIComponent(trade.partner.username)}`;
+    return `
+    <li class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-3.5 sm:px-5 lg:gap-x-4 ${columns}">
+      <div class="flex min-w-0 flex-wrap items-center gap-x-2 lg:flex-col lg:items-start lg:gap-0.5">${badge}${when}</div>
+      <div class="lg:hidden">${tradeStatus(trade.status)}</div>
+      <p class="col-span-2 text-sm text-foreground tabular lg:hidden"><b class="font-semibold">${fmt(trade.amountCny)} ¥</b><span class="text-muted"> × ${fmt(trade.rateVnd)} ₫/¥ = </span><b class="font-semibold">${fmt(trade.totalVnd)} ₫</b></p>
+      <p class="col-span-2 flex min-w-0 items-center gap-1.5 text-xs text-muted lg:hidden">Với <a href="${profile}" class="flex min-w-0 items-center gap-1.5 rounded text-foreground underline-offset-2 outline-none hover:underline focus-visible:underline">${partnerAvatar(trade.partner)}<span class="truncate">${name}</span></a></p>
+      <p class="hidden text-right text-sm font-semibold text-foreground tabular lg:block">${fmt(trade.amountCny)} ¥</p>
+      <p class="hidden text-right text-sm text-foreground tabular lg:block">${fmt(trade.rateVnd)} <span class="text-xs text-muted">₫/¥</span></p>
+      <p class="hidden text-right text-sm font-semibold text-foreground tabular lg:block">${fmt(trade.totalVnd)} ₫</p>
+      <p class="hidden min-w-0 items-center gap-2 text-sm text-foreground lg:flex"><a href="${profile}" class="flex min-w-0 items-center gap-2 rounded underline-offset-2 outline-none hover:underline focus-visible:underline">${partnerAvatar(trade.partner)}<span class="truncate">${name}</span></a></p>
+      <div class="hidden justify-end lg:flex">${tradeStatus(trade.status)}</div>
+    </li>`;
+  }).join("");
+  const more = trades.hasMore
+    ? `<div class="border-t border-border px-4 py-3 text-center sm:px-5"><button type="button" data-action="trades-more" ${trades.loadingMore ? "disabled aria-busy=\"true\"" : ""} class="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-border-strong bg-surface px-3 text-sm font-medium text-foreground hover:bg-item-hover lg:h-9 lg:w-auto lg:rounded-lg lg:border-0 lg:bg-transparent ${ring}">${trades.loadingMore ? SPINNER : ""}Xem thêm${trades.loadingMore ? "" : icon("chevron-down")}</button></div>`
+    : "";
+  return `${head}<ul class="divide-y divide-[#e8e8ec]">${rows}</ul>${more}`;
+}
+
+function tradesCard() {
+  return `<div><section class="${card} overflow-hidden" aria-labelledby="trades-title">
+    <div class="flex flex-col gap-3 px-4 pt-4 pb-3 sm:px-5 md:flex-row md:items-center md:justify-between">
+      <h2 id="trades-title" class="text-base font-semibold text-foreground">Lịch sử giao dịch</h2>
+      ${trades.load === "loi" ? "" : tradeTabs()}
+    </div>
+    <div class="border-t border-border">${tradeRows()}</div>
+  </section></div>`;
+}
+
+// ---------------------------------------------------------------- khối 4: lịch sử đăng nhập
+function statusBadge(row) {
+  if (row.current) return `<span class="inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full bg-primary-light px-2 text-xs font-medium text-primary"><span class="dot"></span>Phiên này</span>`;
+  if (!row.success) return `<span class="inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full bg-warning-bg px-2 text-xs font-medium text-warning">${icon("triangle-alert", "h-3.5 w-3.5")}Sai mật khẩu</span>`;
+  return `<span class="text-xs text-muted">Thành công</span>`;
+}
+
+const placeOf = (row) => row.location || "Chưa xác định vị trí";
+
+function historyRows() {
+  if (state.load === "dang-tai") {
+    return `<div aria-busy="true" class="divide-y divide-[#e8e8ec]">${[1, 2, 3, 4].map(() => `<div class="flex items-center gap-4 px-4 py-4 sm:px-5"><div class="h-9 w-9 animate-pulse rounded-lg bg-[#ececef]"></div><div class="flex-1 space-y-2"><div class="h-3.5 w-40 animate-pulse rounded bg-[#ececef]"></div><div class="h-3 w-56 animate-pulse rounded bg-[#ececef]"></div></div><div class="h-5 w-20 animate-pulse rounded bg-[#ececef]"></div></div>`).join("")}</div>`;
+  }
+  if (state.load === "loi") {
+    return `<div role="alert" class="flex flex-col items-center px-4 py-10 text-center"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-danger-bg text-danger">${icon("wifi-off", "h-5 w-5")}</span><p class="mt-3 text-base font-semibold text-foreground">Chưa tải được lịch sử đăng nhập</p><p class="mt-1 text-sm text-muted">Kiểm tra mạng rồi thử lại.</p><button type="button" data-action="retry" class="${btnPrimary} mt-4">${icon("rotate-cw")}Thử tải lại</button></div>`;
+  }
+  const rows = state.logins.map((r) => {
+    const t = timeParts(r.at);
+    const device = deviceOf(r.userAgent);
+    return `
+    <li class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-3.5 sm:px-5 lg:grid-cols-[auto_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_8rem] lg:gap-x-4 ${r.success ? "" : "bg-[color-mix(in_srgb,var(--warning-bg)_60%,transparent)]"}">
+      <span class="row-span-2 flex h-9 w-9 items-center justify-center rounded-lg bg-background text-muted lg:row-span-1">${icon(device.icon)}</span>
+      <div class="min-w-0">
+        <p class="truncate text-sm font-medium text-foreground">${esc(device.label)}</p>
+        <p class="text-xs text-muted tabular"><span class="whitespace-nowrap">${t.time} · ${t.day}</span><span class="whitespace-nowrap"> · ${t.ago}</span></p>
+      </div>
+      <div class="lg:hidden">${statusBadge(r)}</div>
+      <p class="col-start-2 col-end-4 truncate text-xs text-muted lg:hidden"><span class="tabular">${esc(r.ip)}</span> · ${esc(placeOf(r))}</p>
+      <p class="hidden truncate text-sm text-foreground tabular lg:block">${esc(r.ip)}</p>
+      <p class="hidden truncate text-sm text-foreground lg:block">${esc(placeOf(r))}</p>
+      <div class="hidden justify-end lg:flex">${statusBadge(r)}</div>
+    </li>`;
+  }).join("");
+  const head = `<div class="hidden grid-cols-[2.25rem_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_8rem] gap-x-4 border-b border-border px-5 py-2.5 text-xs font-medium text-muted lg:grid"><span></span><span>Thiết bị · thời gian</span><span>Địa chỉ IP</span><span>Vị trí</span><span class="text-right">Kết quả</span></div>`;
+  const onlyThis = state.logins.length <= 1 ? `<p class="border-t border-border px-4 py-4 text-sm text-muted sm:px-5">Chưa có lần đăng nhập nào khác trong 90 ngày.</p>` : "";
+  return `${head}<ul class="divide-y divide-[#e8e8ec]">${rows}</ul>${onlyThis}`;
+}
+
+function failedSummary() {
+  if (state.load !== "xong") return "";
+  const failed = state.logins.filter((r) => !r.success);
+  if (!failed.length) return "";
+  const last = timeParts(failed[0].at);
+  const from = failed[0].location && failed[0].location !== "Mạng nội bộ" ? `từ ${esc(failed[0].location)}` : `từ IP ${esc(failed[0].ip)}`;
+  const when = last.day === "Hôm nay" ? `lúc ${last.time}` : `lúc ${last.time} ngày ${last.day}`;
+  return `<p class="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-[#fde68a] bg-warning-bg px-3 py-2 text-sm font-medium text-warning sm:mx-5">${icon("triangle-alert", "mt-0.5 h-4 w-4")}<span class="pretty">${failed.length} lần đăng nhập sai mật khẩu, gần nhất ${from} ${when}. Nếu không phải bạn, hãy đổi mật khẩu.</span></p>`;
+}
+
+function logoutOthersButton() {
+  const s = state.loggingOut;
+  if (s === "done") return `<button type="button" disabled class="${btnOutline}">${icon("check")}Đã đăng xuất các thiết bị khác</button>`;
+  return `<button type="button" data-action="logout-others" ${s === "busy" ? 'disabled aria-busy="true"' : ""} class="${btnOutline}">${s === "busy" ? SPINNER : icon("log-out")}Đăng xuất khỏi các thiết bị khác</button>`;
+}
+
+function historyCard() {
+  return `<div><section class="${card} overflow-hidden" aria-labelledby="history-title">
+    <div class="flex flex-wrap items-start justify-between gap-3 px-4 pt-4 pb-3 sm:px-5">
+      <div class="min-w-0">
+        <h2 id="history-title" class="text-base font-semibold text-foreground">Lịch sử đăng nhập</h2>
+        <p class="pretty mt-0.5 text-sm text-muted">20 lần gần nhất trong 90 ngày. Thấy lần nào lạ thì đổi mật khẩu ngay.</p>
+        ${state.loggingOut === "error" ? `<p role="alert" class="mt-1 text-sm text-danger">Chưa đăng xuất được các thiết bị khác, thử lại sau ít phút.</p>` : ""}
+      </div>
+      ${logoutOthersButton()}
+    </div>
+    ${failedSummary()}
+    <div class="border-t border-border">${historyRows()}</div>
+  </section></div>`;
+}
+
+// ---------------------------------------------------------------- render + dữ liệu
+function render() {
+  document.getElementById("app").innerHTML = `${header()}<main class="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-6 sm:px-6">${accountCard()}${tradesCard()}${historyCard()}</main>`;
+}
+
+async function load() {
+  state.load = "dang-tai";
+  render();
+  try {
+    const response = await fetch("/api/account", { credentials: "same-origin" });
+    if (response.status === 401) { location.href = "dang-nhap.html?tiep=tai-khoan.html"; return; }
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.reason);
+    state.user = data.user;
+    state.logins = data.logins;
+    state.load = "xong";
+  } catch {
+    state.load = "loi";
+  }
+  if (preview === "dang-tai") state.load = "dang-tai";
+  if (preview === "loi") state.load = "loi";
+  if (preview === "rong") state.logins = state.logins.filter((r) => r.current).slice(0, 1);
+  render();
+  if (state.user) loadTrades();
+}
+
+async function post(path) {
+  try {
+    const response = await fetch(path, { method: "POST", credentials: "same-origin" });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+document.addEventListener("click", async (event) => {
+  const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "logout") {
+    await post("/api/auth/logout");
+    location.href = "index.html";
+  }
+  if (action === "retry") load();
+  if (action === "trades-retry") loadTrades();
+  if (action === "trades-more" && !trades.loadingMore) loadTrades({ more: true });
+  const tab = event.target.closest("[data-trade-tab]");
+  if (tab && tab.dataset.tradeTab !== trades.tab) {
+    trades.tab = tab.dataset.tradeTab;
+    await loadTrades();
+    document.querySelector(`[data-trade-tab="${trades.tab}"]`)?.focus();
+  }
+  if (action === "pick-avatar" && state.avatar !== "busy") document.getElementById("avatar-file").click();
+  if (action === "remove-avatar" && state.avatar !== "busy") removeAvatar();
+  if (action === "logout-others" && state.loggingOut !== "busy") {
+    state.loggingOut = "busy";
+    render();
+    state.loggingOut = (await post("/api/account/logout-others")) ? "done" : "error";
+    render();
+  }
+});
+
+load();
+</script>
+</body>
+</html>
